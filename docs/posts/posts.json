@@ -5,7 +5,7 @@
     "description": "Welcome to our new blog, My Blog. We hope you enjoy \nreading what we have to say!",
     "author": [
       {
-        "name": "Nora Jones",
+        "name": "Noah Milstein",
         "url": {}
       }
     ],
@@ -13,7 +13,7 @@
     "categories": [],
     "contents": "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
     "preview": "posts/welcome/welcome_files/figure-html5/unnamed-chunk-5-1.png",
-    "last_modified": "2022-03-29T13:23:16-04:00",
+    "last_modified": "2022-03-29T13:42:03-04:00",
     "input_file": "welcome.knit.md"
   },
   {
