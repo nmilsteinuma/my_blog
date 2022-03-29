@@ -1,7 +1,7 @@
 name: "my_blog"
-title: "Noah Milstein DACSS Blog"
+title: "My Blog"
 description: |
-  Noah Milstein DACSS Blog
+  My Blog
 output_dir: "docs"
 navbar:
   right:
