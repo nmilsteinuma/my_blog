@@ -5,7 +5,7 @@ description: |
   reading what we have to say!
 author:
   - name: Nora Jones 
-    url: https://example.com/norajones
+    url: {}
     affiliation: Spacely Sprockets
     affiliation_url: https://example.com/spacelysprokets
 date: 03-29-2022
@@ -13,6 +13,14 @@ output:
   distill::distill_article:
     self_contained: false
 ---
+
+```{r,include=FALSE}
+library(aRtsy)
+```
+
+```{r, include=FALSE}
+library(ggChernoff)
+```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
@@ -22,5 +30,42 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ```
 
+```{r, include=FALSE}
+library(ggplot2)
+```
 
+```{r}
+?aRtsy
+```
+
+```{r}
+set.seed(30)
+
+canvas_maze(color = colorPalette("tuscany2"), polar = TRUE)
+
+```
+
+```{r}
+?canvas_flow()
+set.seed(1)
+canvas_flow(colors = colorPalette("vrolik3"), lines = 3000, lwd = 0.5,
+            iterations = 1000, stepmax = 0.1, angles = NULL)
+# see ?canvas_flow for more input parameters of this function
+```
+
+```{r}
+set.seed(1)
+canvas_flow(colors = colorPalette("vrolik3"), lines = 3000, lwd = 0.5,
+            iterations = 1000, stepmax = 0.1, angles = 'svm')
+# see ?canvas_flow for more input parameters of this function
+```
+
+
+
+```{r}
+?chernoffGrob
+face <- chernoffGrob(.5, .5, size = 1e3, smile = 1, colour = 'black', fill = 'yellow')
+grid::grid.newpage()
+grid::grid.draw(face)
+```
 

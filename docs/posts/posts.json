@@ -6,15 +6,15 @@
     "author": [
       {
         "name": "Nora Jones",
-        "url": "https://example.com/norajones"
+        "url": {}
       }
     ],
     "date": "2022-03-29",
     "categories": [],
-    "contents": "\n\n\n\n",
-    "preview": {},
-    "last_modified": "2022-03-29T12:31:19-04:00",
-    "input_file": {}
+    "contents": "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+    "preview": "posts/welcome/welcome_files/figure-html5/unnamed-chunk-5-1.png",
+    "last_modified": "2022-03-29T13:23:16-04:00",
+    "input_file": "welcome.knit.md"
   },
   {
     "path": "posts/2022-03-29-blog-post-7-networks/",
