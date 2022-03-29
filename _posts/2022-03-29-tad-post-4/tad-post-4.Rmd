@@ -12,8 +12,6 @@ output:
 ---
 
 
-
-
 ```{r, echo=FALSE}
 library(rmarkdown)
 library(RedditExtractoR)
