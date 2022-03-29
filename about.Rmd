@@ -1,7 +1,6 @@
 ---
 title: "About this blog"
-description: |
-  Some additional details about the blog
+description: "Welcome to my rebuilt blog for DACSS \n"
 ---
 
 ```{r setup, include=FALSE}
