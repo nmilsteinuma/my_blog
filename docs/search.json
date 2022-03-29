@@ -10,10 +10,10 @@
     },
     {
       "path": "index.html",
-      "title": "My Blog",
+      "title": "Noah Milstein DACSS Blog",
       "author": [],
       "contents": "\n\n\n\n",
-      "last_modified": "2022-03-29T12:33:15-04:00"
+      "last_modified": "2022-03-29T13:55:48-04:00"
     }
   ],
   "collections": ["posts/posts.json"]

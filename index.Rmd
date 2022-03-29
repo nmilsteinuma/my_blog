@@ -1,5 +1,5 @@
 ---
-title: "My Blog"
+title: "Noah Milstein DACSS Blog"
 site: distill::distill_website
 listing: posts
 ---
