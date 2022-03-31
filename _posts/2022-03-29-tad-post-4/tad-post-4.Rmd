@@ -550,7 +550,7 @@ facet_wrap(~method, ncol = 1, scales = "free_y")+
 
 
 
-```{r, eval=FALSE}
+```{r}
 
 library(methods)
 
@@ -561,7 +561,7 @@ too_gun_dfm
 ```
 
 
-```{r, eval=FALSE}
+```{r}
 
 library(topicmodels)
 
@@ -570,14 +570,14 @@ gun_dfm_lda <- LDA(too_gun_dfm, k = 2, control = list(seed = 777))
 
 ```
 
-```{r,  eval=FALSE}
+```{r  }
 
 gun_dfm_lda_topics <- tidy(gun_dfm_lda, matrix = "beta")
 
 
 ```
 
-```{r,  eval=FALSE}
+```{r  }
 
 gun_top_terms <- gun_dfm_lda_topics %>%
   group_by(topic) %>%
@@ -593,7 +593,43 @@ gun_top_terms %>%
   scale_y_reordered()
 
 ```
-```{r,  eval=FALSE}
+```{r}
+
+library(topicmodels)
+
+gun_dfm_lda <- LDA(too_gun_dfm, k = 4, control = list(seed = 777))
+
+
+```
+
+```{r  }
+
+gun_dfm_lda_topics <- tidy(gun_dfm_lda, matrix = "beta")
+
+
+```
+
+```{r  }
+
+gun_top_terms <- gun_dfm_lda_topics %>%
+  group_by(topic) %>%
+  slice_max(beta, n = 10) %>% 
+  ungroup() %>%
+  arrange(topic, -beta)
+
+gun_top_terms %>%
+  mutate(term = reorder_within(term, beta, topic)) %>%
+  ggplot(aes(beta, term, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ topic, scales = "free") +
+  scale_y_reordered()
+
+```
+
+
+
+
+```{r  }
 
 beta_wide <- gun_dfm_lda_topics %>%
   mutate(topic = paste0("topic", topic)) %>%
@@ -603,7 +639,7 @@ beta_wide <- gun_dfm_lda_topics %>%
 
 ```
 
-```{r, eval=FALSE}
+```{r}
 
 beta_wide %>%
   group_by(direction = log_ratio > 0) %>%
@@ -620,7 +656,7 @@ beta_wide %>%
 
 **Response:** As can be seen above topic modeling may benefit from some data reduction, removing punctuation and stop words would likely be beneficial as can be seen above where a number of the differences between topics are modeled as punctuation and stop words.
 
-```{r, eval=FALSE}
+```{r }
 
 gun_tokens_stopwords_and_punct_removed <- tokens_remove(tokens(new_guns_corpus, remove_punct = TRUE), c(stopwords("english")))
 
@@ -631,17 +667,20 @@ gun_corpus_stopwords_and_punct_removed
 
 ```
 
-```{r,  eval=FALSE}
+```{r  }
 
 library(methods)
 
 too_gun_dfm_no_punct_stopwords<- quanteda::dfm(tokens(gun_corpus_stopwords_and_punct_removed), verbose = FALSE)
 
+
+too_gun_dfm_no_punct_stopwords<-too_gun_dfm_no_punct_stopwords[rowSums(too_gun_dfm_no_punct_stopwords[])>0,]
+
 too_gun_dfm_no_punct_stopwords
 
 ```
 
-```{r,  eval=FALSE}
+```{r  }
 
 library(topicmodels)
 
@@ -652,7 +691,7 @@ gun_dfm_lda_nopunct_stop
 
 ```
 
-```{r,  eval=FALSE}
+```{r }
 
 gun_dfm_lda_topics_nopunct_stop <- tidy(gun_dfm_lda_nopunct_stop, matrix = "beta")
 
@@ -660,7 +699,7 @@ gun_dfm_lda_topics_nopunct_stop
 
 ```
 
-```{r,  eval=FALSE}
+```{r  }
 
 gun_top_terms_no_punct_or_stop<- gun_dfm_lda_topics_nopunct_stop %>%
   group_by(topic) %>%
@@ -677,7 +716,7 @@ gun_top_terms_no_punct_or_stop %>%
 
 ```
 
-```{r,  eval=FALSE}
+```{r  }
 
 beta_wide_no_punct_stop <- gun_dfm_lda_topics_nopunct_stop %>%
   mutate(topic = paste0("topic", topic)) %>%
@@ -687,7 +726,7 @@ beta_wide_no_punct_stop <- gun_dfm_lda_topics_nopunct_stop %>%
 
 ```
 
-```{r,  eval=FALSE}
+```{r  }
 
 beta_wide_no_punct_stop %>%
   group_by(direction = log_ratio > 0) %>%
@@ -1416,7 +1455,43 @@ sum(rowSums(too_gun_dfm_no_punct_stopwords)==0)
 library(topicmodels)
 
 
-gun_dfm_lda_nopunct_stop <- LDA(top_gun_np_sw_all_row, k = 2, control = list(seed = 777))
+gun_dfm_lda_nopunct_stop <- LDA(top_gun_np_sw_all_row, k = 4, control = list(seed = 777))
+
+gun_dfm_lda_nopunct_stop
+
+
+```
+
+```{r}
+
+gun_dfm_lda_topics_nopunct_stop <- tidy(gun_dfm_lda_nopunct_stop, matrix = "beta")
+
+gun_dfm_lda_topics_nopunct_stop
+
+```
+
+```{r}
+
+gun_top_terms_no_punct_or_stop<- gun_dfm_lda_topics_nopunct_stop %>%
+  group_by(topic) %>%
+  slice_max(beta, n = 10) %>% 
+  ungroup() %>%
+  arrange(topic, -beta)
+
+gun_top_terms_no_punct_or_stop %>%
+  mutate(term = reorder_within(term, beta, topic)) %>%
+  ggplot(aes(beta, term, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ topic, scales = "free") +
+  scale_y_reordered()
+
+```
+```{r}
+
+library(topicmodels)
+
+
+gun_dfm_lda_nopunct_stop <- LDA(top_gun_np_sw_all_row, k = 8, control = list(seed = 777))
 
 gun_dfm_lda_nopunct_stop
 
