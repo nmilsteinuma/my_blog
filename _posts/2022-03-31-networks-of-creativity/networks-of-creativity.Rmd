@@ -1,0 +1,78 @@
+---
+title: "Networks of Creativity"
+description: |
+  A short description of the post.
+author:
+  - name: Noah Milstein
+    url: {}
+date: 2022-03-31
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+library(corrr)
+library(readxl)
+library(igraph)
+library(statnet)
+library(network)
+library(tidyverse)
+library(ggnetwork)
+library(GGally)
+library(ggplot2)
+library(ggraph)
+library(sna)
+library(intergraph)
+library(knitr)
+library(GGally)
+library(aRtsy)
+library(stringr)
+
+```
+
+```{r,echo=FALSE}
+
+Wars_in_latter_half_of_20th <- 
+  read_excel("~/Desktop/Spring 2022/Networks/Wars_in_latter_half_of_20th.xlsx")
+
+Wars_in_latter_half_of_20th$In <- 
+  str_trim(Wars_in_latter_half_of_20th$In, side = c("left"))
+
+Wars_in_latter_half_of_20th$Out <- 
+  str_trim(Wars_in_latter_half_of_20th$Out, side = c("left"))
+
+```
+
+```{r}
+Fashion_house_CDs <- read_excel("~/Desktop/Spring 2022/Networks/Fashion_house_CDs.xlsx")
+```
+
+
+```{r, echo=FALSE}
+
+Fashion_house_CDs_edgelist <- as.matrix(Fashion_house_CDs)
+
+Fashion_house_CDs_network_edgelist <- graph.edgelist(Fashion_house_CDs_edgelist, directed=TRUE)
+
+Fashion_house_CDs.ig<-graph_from_data_frame(Fashion_house_CDs)
+
+Fashion_house_CDs_network <- asNetwork(Fashion_house_CDs.ig)
+
+```
+
+
+```{r}
+
+set.seed(777)
+ggplot(Fashion_house_CDs_network, aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_edges(color = "grey25", alpha = 0.25, arrow = arrow(length = unit(2, "pt"), type = "closed"))+
+  geom_nodes(color = "blue", alpha = 0.3, size = 2) +
+  geom_nodetext(aes( label = vertex.names ), size=1)+
+    ggtitle("Networks of Creativity") +
+  theme_blank()
+
+```
+
+
