@@ -28,6 +28,7 @@ library(GGally)
 library(ggplot2)
 library(sna)
 library(intergraph)
+library(ggbiplot)
 library(knitr)
 library(GGally)
 library(aRtsy)
@@ -1195,6 +1196,15 @@ biplot(pr.out, scale = 0)
 
 ```{r}
 
+set.seed(172)
+
+ggbiplot(pr.out, labels =  total_1000s_for_PCA$name, labels.size  =1.5)
+
+```
+
+
+```{r}
+
 pr.out$rotation = -pr.out$rotation 
 
 pr.out$x = -pr.out$x
@@ -1324,6 +1334,12 @@ pr.out_2$x = -pr.out_2$x
 
 biplot(pr.out_2, scale = 0)
 
+```
+```{r}
+
+set.seed(8192)
+
+ggbiplot(pr.out_2, labels =  total_1200s_for_PCA$name, labels.size  =1.5)
 ```
 
 ```{r}

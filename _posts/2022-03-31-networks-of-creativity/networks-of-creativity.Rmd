@@ -66,6 +66,7 @@ Fashion_house_CDs_network <- asNetwork(Fashion_house_CDs.ig)
 ```{r}
 
 set.seed(777)
+
 ggplot(Fashion_house_CDs_network, aes(x = x, y = y, xend = xend, yend = yend)) +
   geom_edges(color = "grey25", alpha = 0.25, arrow = arrow(length = unit(2, "pt"), type = "closed"))+
   geom_nodes(color = "blue", alpha = 0.3, size = 2) +
