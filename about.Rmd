@@ -1,6 +1,8 @@
 ---
 title: "About this blog"
-description: "Welcome to my rebuilt blog for DACSS \n"
+description: Welcome to my rebuilt blog for DACSS Social Networks, Text-as-Data, and
+  Machine-Learning - Noah Milstein Masters Student in DACSS and The University of
+  Massachusetts Amerhst
 ---
 
 ```{r setup, include=FALSE}
