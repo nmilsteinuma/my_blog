@@ -1,0 +1,576 @@
+---
+title: "ML homework 3"
+description: |
+  A short description of the post.
+author:
+  - name: Noah Milstein
+    url: {}
+date: 2022-04-03
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+library(dplyr)
+
+library(ISLR2)
+
+library(tidyverse)
+
+library(knitr)
+
+library(randomForest)
+
+library(tree)
+
+library(glmnet)
+
+library(boot)
+
+library(markdown)
+
+
+```
+
+## Problem Set 3
+
+### Ch. 6
+
+**Basis:**  In this exercise, we will predict the number of applications received using the other variables in the College data set. During my original calculations for homework 2 I did the prediction on the graduation rate rather than applications received so I will be modifying my calculations for parts 
+
+#### (a) 
+
+**Question:** Split the data set into a training set and a test set.
+
+**Answer:** I split the data into training and test set using 1 through the number of rows in the dataset and sampling it  nrow(College)*0.8 times which works out to taking 621.6 row samples with replacement equals FALSE, this equates to and 80%, 20% split in the training and test sets. I specify the college_training as the 80% of College data I specified as my training. Next I find the test set using the converse of the training rows.
+
+```{r}
+
+set.seed(9292)
+
+train_College_numbers <- sample(1:nrow(College), nrow(College)*0.8,
+                                replace = FALSE)
+
+college_training <- College[train_College_numbers,]
+
+college_test <- College[-train_College_numbers,]
+
+
+```
+
+#### (b) 
+
+**Question:** Fit a linear model using least squares on the training set, and report the test error obtained.
+
+**Answer:** I fit a least squares on my 80% training set below using all variables since we will be using a ridge regression that later account for the number of variables we should use as the ridge moves their coefficients towards zero.
+
+```{r}
+
+set.seed(9292)
+
+least_squares_college <- glm(Apps ~. , data=college_training)
+
+```
+
+**Answer:** I then use the predict function using my least squares function and my test data to make prediction for my error rate. I express the test error as the mean square error, which is calculated as 1094646
+
+```{r}
+
+set.seed(9292)
+
+pred_college_for_mse <- predict(least_squares_college, newdata=college_test)
+
+MSE_college_test <- mean((college_test$Apps-pred_college_for_mse)^2)
+
+MSE_college_test %>% kable()
+
+```
+
+#### (c) 
+
+**Question:** Fit a ridge regression model on the training set, with lambda chosen by cross-validation. Report the test error obtained.
+
+**Answer:** Below I make a grid of values that is a sequence of 10 to -2 of length 100 which goes from 10^10 to 10^(-2) creates a set of selected values. In order to fit a ridge model using cross validation I split the model into training and test set. Using the glmnet() function I then plug in my x-ridge model matrix and the y-ridge being the true values from the graduation rate column of the college dataset. This results in a dimension of 18 by 100.
+
+```{r}
+
+set.seed(9292)
+
+x_ridge <- model.matrix(Apps ~ ., College)[, -1] 
+
+y_ridge <- College$Apps
+
+grid <- 10^seq(10, -2, length = 100)
+
+ridge.mod <- glmnet(x_ridge, y_ridge, alpha = 0, lambda = grid)
+
+dim(coef(ridge.mod))
+
+```
+
+**Answer:** Below I then split my data into an 80% 20% split between training and test sets. These values are stored in the train_ridge and test_ridge variables. 
+
+```{r}
+
+set.seed(9292)
+
+train_ridge <- sample(1:nrow(x_ridge), nrow(x_ridge)*0.8 ) 
+
+test_ridge <- (-train_ridge)
+
+y.test_ridge <- y_ridge[test_ridge]
+
+```
+
+**Answer:** I then use the glmnet() function with an alpha of 0 which is a ridge penalty in this case. In this scenario the function is named ridge.mod, this is then put into predict() where it predicts on the test section of the data.
+
+```{r}
+
+set.seed(9292)
+
+ridge.mod <- glmnet(x_ridge[train_ridge, ], y_ridge[train_ridge], 
+                    alpha = 0, lambda = grid, thresh = 1e-12)
+
+ridge.pred <- predict(ridge.mod, s = 4, newx = x_ridge[test_ridge,])
+
+mean((ridge.pred - y.test_ridge)^2) %>% kable()
+
+```
+
+**Answer:** Afterwards we fit the model again using the glmnet() function ridge.mod using a new x from x_ridge and our x and y from training. We then access the 18 coefficients below, as can be seen the ridge moves the coefficients it decides have little impact towns zero.
+
+```{r}
+
+set.seed(9292)
+
+ridge.pred <- predict(ridge.mod, s = 0, newx = x_ridge[test_ridge, ], 
+                      exact = T, x = x_ridge[train_ridge, ], y = y_ridge[train_ridge])
+
+predict(ridge.mod, s = 0, exact = T, type = "coefficients", 
+        x = x_ridge[train_ridge, ], y = y_ridge[train_ridge])[1:18, ]
+
+```
+
+**Answer continued:** Next after beginning these tests we use cross validation to get the optimal tuning parameters from a number of repetitions using cv.glmnet() in this case it takes our training values and an alpha of zero to indicate it is a ridge and uses a number of values of lambda to determine which minimizes mean squared errors. This is plotted below
+
+```{r}
+
+set.seed(9292)
+
+cv.out <- cv.glmnet(x_ridge[train_ridge, ], y_ridge[train_ridge], alpha = 0) 
+
+plot(cv.out)
+
+```
+
+**Answer continued:** The cv.out we calculated above outputs a 1se and min lambda for its mean square errors which I access below to determine the cross validated tuning parameter.
+
+```{r}
+
+set.seed(9292)
+
+bestlam <- cv.out$lambda.min
+
+bestlam
+
+```
+
+**Answer continued:** Finally we use out predict function to see what our mean squared error will be for our tuning parameters than minimizes MSE, in this case it is 191.0022 as seen below compared to the grid values which yielded a 191.9619 at best.
+
+```{r}
+
+set.seed(9292)
+
+ridge.pred <- predict(cv.out, s = bestlam, newx = x_ridge[test_ridge,])
+
+mean((ridge.pred - y.test_ridge)^2) %>% kable()
+
+```
+
+**Answer continued:** The coefficient outputs for the lambda that minimizes MSE are then outputted below. Here Private school, per.alumni, Top10perc, and top25perc, along with Phd having coefficients over 0.05 in predicting the number of applications.
+
+```{r}
+set.seed(9292)
+
+out <- glmnet(x_ridge[train_ridge, ], y_ridge[train_ridge], alpha = 0)
+
+predict(out, type = "coefficients", s = bestlam)[1:18, ]
+
+```
+
+#### (d) 
+
+**Question:** Fit a lasso model on the training set, with lambda chosen by cross validation. Report the test error obtained, along with the number of non-zero coefficient estimates.
+
+**Answer:** The process of creating the lasso is largely similar to that of the ridge though here our inital glmnet() takes an alpha of 1. The plot below this indicates that depending on our choise of tuning parameter lambda, certain coefficients will become zero.
+
+```{r}
+set.seed(9292)
+
+lasso.mod <- glmnet(x_ridge[train_ridge, ], y_ridge[train_ridge], 
+                    alpha = 1, lambda = grid)
+
+plot(lasso.mod)
+
+```
+
+
+**Answer continued:**  We continue this analysis by cross validation using cv.glmnet() with an alpha of 1 to find the coefficients that again, minimize the MSE.
+
+```{r}
+
+set.seed(9292)
+
+cv.out_2 <- cv.glmnet(x_ridge[train_ridge, ], y_ridge[train_ridge], alpha = 1) 
+
+plot(cv.out_2)
+
+```
+
+**Answer continued:** After this cross validation has been calculated we then access the lambda that minimizes MSE. We then use the predict function to calculate predictions for our lasso using the lambda that minimizes MSE this gets a MSE of 190.8808.
+
+```{r}
+
+set.seed(9292)
+
+bestlam <- cv.out_2$lambda.min
+
+lasso.pred <- predict(cv.out_2, s = bestlam, newx = x_ridge[test_ridge,])
+
+mean((lasso.pred - y.test_ridge)^2) %>% kable()
+
+```
+
+**Answer continued:** Finally we calculate and show the coefficients for our equation with the lasso reducing our number of parameters by moving coefficients towards zero that have low impact. Here we remove, Accept, Enroll, F.Undergrad,  Books, Terminal, and S.F.Ratio with other values still being reflected in the equation coefficients.
+
+```{r}
+
+set.seed(9292)
+
+out <- glmnet(x_ridge[train_ridge, ], y_ridge[train_ridge], 
+              alpha = 1, lambda = grid)
+
+lasso.coef <- predict(out, type = "coefficients", s = bestlam)[1:18, ]
+
+lasso.coef
+
+```
+
+#### (e) 
+
+**Basis:** Fit a PCR model on the training set, with M chosen by cross- validation. Report the test error obtained, along with the value of M selected by cross-validation.
+
+```{r, echo=FALSE}
+
+#install.packages("pls")
+library(pls)
+
+```
+
+```{r}
+
+pcr.fit <- pcr(Apps ~., data = college_training, scale = TRUE,
+validation = "CV")
+
+validationplot(pcr.fit, val.type = "MSEP")
+
+```
+
+```{r}
+
+pcr.pred <- predict(pcr.fit, College[-train_College_numbers, ], ncomp = 5) 
+
+mean((pcr.pred - college_test$Apps)^2)
+
+```
+
+### (g) 
+
+**Basis:** Comment on the results obtained. How accurately can we predict the number of college applications received? Is there much difference among the test errors resulting from these five approaches?
+
+
+### Ch. 12, Exercise 8
+
+**Basis:** In Section 12.2.3, a formula for calculating PVE was given in Equation 12.10. We also saw that the PVE can be obtained using the sdev output of the prcomp() function. On the USArrests data, calculate PVE in two ways:
+
+#### Part (a) 
+
+
+**Basis:** Using the sdev output of the prcomp() function, as was done in Section 12.2.3.
+
+```{r} 
+
+pr.out <- prcomp(USArrests, scale = TRUE)
+
+pr.out
+
+```
+
+```{r} 
+
+names(pr.out)
+
+```
+
+```{r}
+
+dim(pr.out$x)
+
+```
+
+```{r}
+
+biplot(pr.out, scale = 0)
+
+```
+```{r}
+pr.out$sdev %>% kable()
+```
+
+```{r}
+
+pr.var <- pr.out$sdev^2
+
+pr.var
+
+```
+
+```{r}
+
+pve <- pr.var / sum(pr.var)
+
+pve
+
+```
+
+#### (b) 
+
+**Basis:** By applying Equation 12.10 directly. That is, use the prcomp() function to compute the principal component loadings. Then, use those loadings in Equation 12.10 to obtain the PVE.
+
+```{r}
+
+#USArrests_scaled<-scale(USArrests)
+
+#dim(USArrests_scaled)
+
+#loadings<-pr.out$rotation
+
+#squared_loadings <- loadings^2
+
+#squared_loadings %*% as.matrix(USArrests_scaled)
+
+#sum(apply(as.matrix(USArrests2)^2, 2, sum))
+
+```
+
+
+### Ch. 12, Exercise 9
+
+**Basis:** Consider the USArrests data. We will now perform hierarchical clustering on the states.
+
+#### (a) 
+
+**Basis:** Using hierarchical clustering with complete linkage and Euclidean distance, cluster the states.
+
+```{r}
+
+USArrests.dist <- dist(USArrests)
+
+USArrests_scaled.labs <- USArrests$labs
+
+plot(hclust(USArrests.dist), xlab = "", sub = "", ylab = "",
+labels = USArrests_scaled.labs, main = "Complete Linkage")
+
+```
+
+#### (b) 
+
+**Basis:** Cut the dendrogram at a height that results in three distinct clusters. Which states belong to which clusters?
+
+```{r}
+
+hc.out <- hclust(dist(USArrests_scaled_2)) 
+
+hc.clusters <- cutree(hc.out, 3)
+
+table(hc.clusters)
+
+```
+
+#### (c) 
+
+**Basis:** Hierarchically cluster the states using complete linkage and Euclidean distance, after scaling the variables to have standard deviation one.
+
+```{r}
+
+USArrests_scaled_c <- scale(USArrests_scaled)
+
+USArrests_scaled_c.dist <- dist(USArrests_scaled_c)
+
+USArrests_scaled.labs <- USArrests$labs
+
+hclust_USArrests_scaled_c<-hclust(USArrests_scaled_c.dist, method="complete")
+
+plot(hclust_USArrests_scaled_c, xlab = "", sub = "", ylab = "",
+labels = USArrests_scaled.labs, main = "Complete Linkage")
+
+```
+
+#### (d) 
+
+**Basis:** What effect does scaling the variables have on the hierarchical clustering obtained? In your opinion, should the variables be scaled before the inter-observation dissimilarities are computed? Provide a justification for your answer.
+
+```{r}
+
+```
+
+
+### Ch. 12, Exercise 10
+
+**Basis:** In this problem, you will generate simulated data, and then perform PCA and K-means clustering on the data.
+#### (a) 
+
+**Basis:** Generate a simulated data set with 20 observations in each of three classes (i.e. 60 observations total), and 50 variables.
+
+Hint: There are a number of functions in R that you can use to generate data. One example is the rnorm() function; runif() is another option. Be sure to add a mean shift to the observations in each class so that there are three distinct classes.
+
+```{r}
+
+set.seed(280)
+
+
+df_1_10<-as.data.frame(replicate(50, rnorm(n=20, mean=0)))
+
+colnames(df_1_10)[1] <- "V1"
+
+
+df_2_10<-as.data.frame(replicate(50,rnorm(n=20, mean=1)))
+
+colnames(df_2_10)[1] <- "V1"
+
+df_2_10_combined<-rbind(df_1_10, df_2_10)
+
+df_3_10<-as.data.frame(replicate(50, rnorm(n=20, mean=0.5)))
+
+colnames(df_3_10)[1] <- "V1"
+
+big_df_combined_10<-rbind(df_2_10_combined, df_3_10)
+
+big_df_combined_10$groups <- NA #initialise
+
+big_df_combined_10$groups[1:20] <- "1"
+
+big_df_combined_10$groups[21:40] <- "2"
+
+big_df_combined_10$groups[41:60] <- "3"
+
+```
+
+
+#### (b) 
+
+**Basis:** Perform PCA on the 60 observations and plot the first two principal component score vectors. Use a different color to indicate the observations in each of the three classes. If the three classes appear separated in this plot, then continue on to part (c). If not, then return to part (a) and modify the simulation so that there is greater separation between the three classes. Do not continue to part (c) until the three classes show at least some separation in the first two principal component score vectors.
+
+
+```{r}
+
+pca_10_b<-prcomp(big_df_combined_10[-51])
+
+```
+
+
+```{r}
+
+plot(pca_10_b$x[, 1:2], pch=17,  col = (big_df_combined_10$groups),
+xlab = "P1", ylab = "P2")
+
+```
+
+#### (c) 
+
+**Basis:** Perform K-means clustering of the observations with K = 3. How well do the clusters that you obtained in K-means clustering compare to the true class labels?
+
+```{r}
+set.seed(8829)
+
+km.out <- kmeans(big_df_combined_10[-51], centers=3) 
+
+km.clusters <- km.out$cluster
+
+table(km.clusters, big_df_combined_10$groups)
+
+```
+
+Hint: You can use the table() function in R to compare the true class labels to the class labels obtained by clustering. Be careful how you interpret the results: K-means clustering will arbitrarily number the clusters, so you cannot simply check whether the true class labels and clustering labels are the same.
+
+#### (d) 
+
+**Basis:** Perform K-means clustering with K = 2. Describe your results.
+
+```{r}
+set.seed(75903)
+
+km.out <- kmeans(big_df_combined_10[-51], centers=2) 
+
+km.clusters <- km.out$cluster
+
+table(km.clusters, big_df_combined_10$groups)
+
+```
+
+#### (e) 
+
+**Basis:**Now perform K-means clustering with K = 4, and describe your results.
+
+```{r}
+set.seed(98367)
+
+km.out <- kmeans(big_df_combined_10[-51], 4)
+
+km.clusters <- km.out$cluster
+
+table(km.clusters, big_df_combined_10$groups)
+
+```
+
+#### (f) 
+
+**Basis:** Now perform K-means clustering with K = 3 on the first two principal component score vectors, rather than on the raw data. That is, perform K-means clustering on the 60 × 2 matrix of which the first column is the first principal component score vector, and the second column is the second principal component score vector. Comment on the results.
+
+```{r}
+
+k.means.pcr <- kmeans(pca_10_b$x[,1:2], 3)
+
+km.clusters <- k.means.pcr$cluster
+
+set.seed(98367)
+
+big_df_no_51<-big_df_combined_10[-51]
+
+table(km.clusters, big_df_combined_10$groups)
+
+```
+
+
+(g) Using the scale() function, perform K-means clustering with K = 3 on the data after scaling each variable to have standard deviation one. How do these results compare to those obtained in (b)? Explain.
+
+```{r}
+
+km.out_g <- kmeans(scale(big_df_combined_10[-51]), centers=3) 
+
+km_g.clusters <- km.out_g$cluster 
+
+table(km_g.clusters, big_df_combined_10$groups )
+
+```
+
+## Written Questions:
+
+**Question 1:** Based on reading for this class, what are the main risks of algorithmic models (machine learning) from a fairness and justice perspective? What forms of modeling/learning and/or sorts of data may pose particular risks of harm? What general strategies might be employed to mitigate these risks? Can you think of any methodological advances that might be pursued by computational and statistical researchers in order to help data analysts make "ethically derived" predictions?
+
+(Project update) Data Exploration: Use appropriate methods to explore the data you plan to use for your project. (It's okay if you change your mind and use a different data set later; this exercise may help you decide.) Include some form of visualization(s) and indications of the unit of analysis, the levels of measurements (e.g.: "9 categorical features–7 dichotomous and 2 with more than two categories– and 14 numerical/quantitative features, for a total of 23), univariate statistics helping characterize the distribution of the features and of the outcome variable (label) you wish to predict if you will be conducting supervised learning for the project. Convey something about relationships among features (predictors). If you are going to use these for prediction, identify any preprocessing you may need to do and options available for cleaning up/transforming data and/or dimension reduction. (Submit with your group or with explanation of why you must work alone.)
+
+
+

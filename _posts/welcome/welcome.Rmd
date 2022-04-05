@@ -1,8 +1,7 @@
 ---
 title: "Welcome to My Blog"
 description: |
-  Welcome to our new blog, My Blog. We hope you enjoy 
-  reading what we have to say!
+  Welcome to our new blog, My Blog, this blog primarily concerning machine learning, text as data, and networks.
 author:
   - name: Noah Milstein 
     url: {}
@@ -62,7 +61,7 @@ canvas_flow(colors = colorPalette("vrolik3"), lines = 3000, lwd = 0.5,
 
 
 
-```{r}
+```{r, include=FALSE}
 ?chernoffGrob
 face <- chernoffGrob(.5, .5, size = 1e3, smile = 1, colour = 'black', fill = 'yellow')
 grid::grid.newpage()

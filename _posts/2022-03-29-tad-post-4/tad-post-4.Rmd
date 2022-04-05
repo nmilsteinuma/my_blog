@@ -65,7 +65,6 @@ New_guns_urls_df <- loadRData("/Users/noahmilstein/Desktop/Spring 2022/Textasdat
 
 
 
-
 ```
 
 ```{r}
@@ -74,11 +73,9 @@ str(New_guns_urls_df)
 
 ```
 
-
 #### Conversion From Data Frame to Corpus
 
 **Explanation:** Below I have processed my initial dataframe from Reddit into a corpus and saved a summary of the resulting data.
-
 
 ```{r, results='hide'}
 
@@ -118,6 +115,7 @@ topfeatures(new_guns_corpus_dfm_tl, 20)
 
 ```
 
+**Explanation:** Getting rid of punctuation helps clarify some of the features and gets rid of many of the pieces of punctuation such as the period and question.
 
 ```{r}
 
@@ -130,6 +128,7 @@ topfeatures(new_guns_corpus_dfm_punct_tl_sw, 20)
 **Explanation:** Though not necessarily statistically informative, the wordcloud below can give some sense of comparative frequency using the limit of minimum count being 6. Reading through these can give a sense of both the communal nature of the forum in asking for recommendations, but also the importance of the word purchase and other words associated with working with, and buying firearms. In the case of the only lowercased data we can gather much less information.
 
 ```{r}
+
 set.seed(123456)
 
 textplot_wordcloud(new_guns_corpus_dfm_tl, min_count = 12, random_order = T, rotation = 0)
@@ -188,6 +187,7 @@ quantile(new_guns_corpus_summary$Sentences)
 **Explanation:** Looking at word counts we see a similar trend reflected where including stopwords and punctuation decreases the quality of data as little information but punctuation and stopwords are included.
 
 ```{r}
+
 word_counts_new_1 <- as.data.frame(sort(colSums(new_guns_corpus_dfm_tl),dec=T))
 
 colnames(word_counts_new_1) <- c("Frequency")
@@ -195,6 +195,7 @@ colnames(word_counts_new_1) <- c("Frequency")
 word_counts_new_1$Rank <- c(1:ncol(new_guns_corpus_dfm_tl))
 
 head(word_counts_new_1)
+
 ```
 
 ```{r}
@@ -208,6 +209,7 @@ word_counts_new$Rank <- c(1:ncol(new_guns_corpus_dfm_punct_tl_sw))
 head(word_counts_new)
 
 ```
+
 ##### Zipf's Law
 
 **Explanation:**  As can be seen from the frequency graphs below, Ziph's Law of inverse proportion. In this case a words rank in freqency is inversely prorportional to the number of times it is observed. Though the uncleaned dataset has far more frequency for its most common words (much of which is punctuation) it appears to follow the law.
@@ -233,12 +235,15 @@ ggplot(word_counts_new_1, mapping = aes(x = Rank, y = Frequency)) +
 **Explanation:** Much of what I do here will be explained in the code and results. Many words appear with a minimum frequency of 4, though non are included in 10% and only 3 words are included in 5%. At a level of 2.5% we get 4 words.
 
 ```{r}
+
 # First I trim the data to only include words that appear at least 4 times
 
 smaller_dfm_4_freq <- dfm_trim(new_guns_corpus_dfm_punct_tl_sw, min_termfreq = 4)
 
 # Next I will look at proportions are see if there are words that are seen in
-# More than 10% and 5% of documents
+
+# More than 10% and 5% of documents and 2.5% of documents
+
 smaller_dfm_10_p <- dfm_trim(smaller_dfm_4_freq, min_docfreq = 0.1, docfreq_type = "prop")
 
 smaller_dfm_5_p <- dfm_trim(smaller_dfm_4_freq, min_docfreq = 0.05, docfreq_type = "prop")
@@ -308,7 +313,7 @@ cor(readability_new_guns$FOG, readability_new_guns$Coleman.Liau.grade, use = "co
 **Explanation:** Next I used the factorial_preprocessing() command to both use n-grams processing and use an infrequent term threshold. This is in order to see what techniques, such as removing punctuation, stopwords, etc lead to a pre-text score devised by Denny and Spirling. This pre-text score indicatess how many k-pairs of terms change the most when the pre-processing strategy is changed. Lower scores indicate more usual results while higher scores indicate more unusual results and they are between 0 and 1. Here we have used n-grams and set an infreqent term threshold. Because of the nature of our data I will use 30% of documents as 
 
 ```{r}
-?factorial_preprocessing
+
 preprocessed_documents <- factorial_preprocessing(
     new_guns_corpus,
     use_ngrams = TRUE,
@@ -334,6 +339,7 @@ head(preprocessed_documents$choices)
 **Explanation:** Next preText is calculated using 50 comparisons and a cosine distance calculation.
 
 ```{r}
+
 #set.seed(12366)
 #preText_results <- preText(
 #    preprocessed_documents,
@@ -345,14 +351,15 @@ head(preprocessed_documents$choices)
 ```
 
 ```{r}
+
 #save(preText_results, file="preText_results_3_27_gun_50_comp.RData")
+
 ```
 
 ```{r}
 
 preText_results <- loadRData("/Users/noahmilstein/Desktop/Spring 2022/Textasdata/text_as_data_work/preText_results_3_27_gun_50_comp.RData")
 
-preText_results
 ```
 
 
@@ -457,6 +464,8 @@ tidy_posts_for_guns %>%
   count(word, sort = TRUE) %>% head() %>% kable()
 
 ```
+
+
 
 ```{r}
 
@@ -652,7 +661,10 @@ beta_wide %>%
 
 ```
 
-#### Topic Modeling analysis
+## Topic Modeling analysis
+
+**Basis:** The crux of this project will be a topic modeling analysis of the top reddit posts and a comparison with the topics in advertisements from *Targeted advertising: documenting the emergence of Gun Culture 2.0 in Guns magazine, 1955–2019* in this paper the author distinguishes 4 broad categories of advertised use, Hunting, Sport/Recreation, Personal protection/self-defense/home or family
+defense, and finally Concealed carry. I will be using topic modeling to see if it is possible to distinguish posts into these use categories and compare to the advertising results.
 
 **Response:** As can be seen above topic modeling may benefit from some data reduction, removing punctuation and stop words would likely be beneficial as can be seen above where a number of the differences between topics are modeled as punctuation and stop words.
 
