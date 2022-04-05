@@ -2207,25 +2207,198 @@ difficult to comprehend on their own. With no punctuation removed the
 first 20 features are not informative.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>topfeatures</span><span class='op'>(</span><span class='va'>new_guns_corpus_dfm_tl</span>, <span class='fl'>20</span><span class='op'>)</span>
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>topfeatures</span><span class='op'>(</span><span class='va'>new_guns_corpus_dfm_tl</span>, <span class='fl'>20</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'>kable</span><span class='op'>(</span><span class='op'>)</span>
 </code></pre>
 </div>
-<pre><code>    .     ?     a   the    my     ,     i    to   for   and    is 
-  425   260   259   211   183   175   175   158   112   108    99 
-   in    it     /    of  with   gun  this    on first 
-   93    89    84    81    80    78    76    76    60 </code></pre>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">x</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">.</td>
+<td style="text-align: right;">425</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">?</td>
+<td style="text-align: right;">260</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">a</td>
+<td style="text-align: right;">259</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">the</td>
+<td style="text-align: right;">211</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">my</td>
+<td style="text-align: right;">183</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">,</td>
+<td style="text-align: right;">175</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">i</td>
+<td style="text-align: right;">175</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">to</td>
+<td style="text-align: right;">158</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">for</td>
+<td style="text-align: right;">112</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">and</td>
+<td style="text-align: right;">108</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">is</td>
+<td style="text-align: right;">99</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">in</td>
+<td style="text-align: right;">93</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">it</td>
+<td style="text-align: right;">89</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">/</td>
+<td style="text-align: right;">84</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">of</td>
+<td style="text-align: right;">81</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">with</td>
+<td style="text-align: right;">80</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">gun</td>
+<td style="text-align: right;">78</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">this</td>
+<td style="text-align: right;">76</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">on</td>
+<td style="text-align: right;">76</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">first</td>
+<td style="text-align: right;">60</td>
+</tr>
+</tbody>
+</table>
 </div>
+<p><strong>Explanation:</strong> Getting rid of punctuation helps
+clarify some of the features and gets rid of many of the pieces of
+punctuation such as the period and question.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>topfeatures</span><span class='op'>(</span><span class='va'>new_guns_corpus_dfm_punct_tl_sw</span>, <span class='fl'>20</span><span class='op'>)</span>
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>topfeatures</span><span class='op'>(</span><span class='va'>new_guns_corpus_dfm_punct_tl_sw</span>, <span class='fl'>20</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'>kable</span><span class='op'>(</span><span class='op'>)</span>
 </code></pre>
 </div>
-<pre><code>     gun    first      new       22      can        s question 
-      78       60       57       43       41       35       31 
-   rifle     just      amp     help   anyone       ar   pistol 
-      29       29       28       27       26       26       26 
-    time     guns     know     good      got        m 
-      25       24       23       22       22       22 </code></pre>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">x</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">gun</td>
+<td style="text-align: right;">78</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">first</td>
+<td style="text-align: right;">60</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">new</td>
+<td style="text-align: right;">57</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">22</td>
+<td style="text-align: right;">43</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">can</td>
+<td style="text-align: right;">41</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">s</td>
+<td style="text-align: right;">35</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">question</td>
+<td style="text-align: right;">31</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">rifle</td>
+<td style="text-align: right;">29</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">just</td>
+<td style="text-align: right;">29</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">amp</td>
+<td style="text-align: right;">28</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">help</td>
+<td style="text-align: right;">27</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">anyone</td>
+<td style="text-align: right;">26</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ar</td>
+<td style="text-align: right;">26</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pistol</td>
+<td style="text-align: right;">26</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">time</td>
+<td style="text-align: right;">25</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">guns</td>
+<td style="text-align: right;">24</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">know</td>
+<td style="text-align: right;">23</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">good</td>
+<td style="text-align: right;">22</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">got</td>
+<td style="text-align: right;">22</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">m</td>
+<td style="text-align: right;">22</td>
+</tr>
+</tbody>
+</table>
 </div>
 <h4 id="world-cloud">World Cloud</h4>
 <p><strong>Explanation:</strong> Though not necessarily statistically
@@ -2263,16 +2436,55 @@ types on average we see a mean of 9.18 and qunantiles that indicate a
 range of 2-45 with 50% being between 4 and 13 types.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>new_guns_corpus_summary</span><span class='op'>$</span><span class='va'>Types</span><span class='op'>)</span>
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>new_guns_corpus_summary</span><span class='op'>$</span><span class='va'>Types</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'>kable</span><span class='op'>(</span><span class='op'>)</span>
 </code></pre>
 </div>
-<pre><code>[1] 9.18</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: right;">x</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">9.18</td>
+</tr>
+</tbody>
+</table>
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>new_guns_corpus_summary</span><span class='op'>$</span><span class='va'>Types</span><span class='op'>)</span>
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>new_guns_corpus_summary</span><span class='op'>$</span><span class='va'>Types</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'>kable</span><span class='op'>(</span><span class='op'>)</span>
 </code></pre>
 </div>
-<pre><code>  0%  25%  50%  75% 100% 
- 2.0  4.0  7.5 13.0 45.0 </code></pre>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">x</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">0%</td>
+<td style="text-align: right;">2.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">25%</td>
+<td style="text-align: right;">4.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">50%</td>
+<td style="text-align: right;">7.5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">75%</td>
+<td style="text-align: right;">13.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">100%</td>
+<td style="text-align: right;">45.0</td>
+</tr>
+</tbody>
+</table>
 </div>
 <h5 id="tokens">Tokens</h5>
 <p><strong>Explanation:</strong> Tokens are relatively similar to types
@@ -2280,16 +2492,55 @@ in this case. Here there is a mean of 9.72 but a range of 2-55 with the
 middle 50% ranging from 4-13 tokens, as was the case for types.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>new_guns_corpus_summary</span><span class='op'>$</span><span class='va'>Tokens</span><span class='op'>)</span>
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>new_guns_corpus_summary</span><span class='op'>$</span><span class='va'>Tokens</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'>kable</span><span class='op'>(</span><span class='op'>)</span> 
 </code></pre>
 </div>
-<pre><code>[1] 9.72</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: right;">x</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">9.72</td>
+</tr>
+</tbody>
+</table>
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>new_guns_corpus_summary</span><span class='op'>$</span><span class='va'>Tokens</span><span class='op'>)</span>
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>new_guns_corpus_summary</span><span class='op'>$</span><span class='va'>Tokens</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'>kable</span><span class='op'>(</span><span class='op'>)</span>
 </code></pre>
 </div>
-<pre><code>  0%  25%  50%  75% 100% 
-   2    4    8   13   55 </code></pre>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">x</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">0%</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">25%</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">50%</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">75%</td>
+<td style="text-align: right;">13</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">100%</td>
+<td style="text-align: right;">55</td>
+</tr>
+</tbody>
+</table>
 </div>
 <h5 id="sentances">Sentances</h5>
 <p><strong>Explanation:</strong> As is indicated below, it appears that
@@ -2297,16 +2548,55 @@ the number of sentences in each post is generally one. Arroding to the
 qunatile statistics the most sentences in any post</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>new_guns_corpus_summary</span><span class='op'>$</span><span class='va'>Sentences</span><span class='op'>)</span>
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>new_guns_corpus_summary</span><span class='op'>$</span><span class='va'>Sentences</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'>kable</span><span class='op'>(</span><span class='op'>)</span>
 </code></pre>
 </div>
-<pre><code>[1] 1.18</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: right;">x</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1.18</td>
+</tr>
+</tbody>
+</table>
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>new_guns_corpus_summary</span><span class='op'>$</span><span class='va'>Sentences</span><span class='op'>)</span>
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>new_guns_corpus_summary</span><span class='op'>$</span><span class='va'>Sentences</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'>kable</span><span class='op'>(</span><span class='op'>)</span>
 </code></pre>
 </div>
-<pre><code>  0%  25%  50%  75% 100% 
-   1    1    1    1    3 </code></pre>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">x</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">0%</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">25%</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">50%</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">75%</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">100%</td>
+<td style="text-align: right;">3</td>
+</tr>
+</tbody>
+</table>
 </div>
 <h5 id="word-counts">Word counts</h5>
 <p><strong>Explanation:</strong> Looking at word counts we see a similar
@@ -2368,6 +2658,8 @@ the law.</p>
 </div>
 <p><img src="tad-post-4_files/figure-html5/unnamed-chunk-15-1.png" width="624" /></p>
 </div>
+<p>** Basis:** The trend is largely the same as stop words with many
+more observations of the most frequently occurring words.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>ggplot</span><span class='op'>(</span><span class='va'>word_counts_new_1</span>, mapping <span class='op'>=</span> <span class='fu'>aes</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>Rank</span>, y <span class='op'>=</span> <span class='va'>Frequency</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> 
@@ -2390,7 +2682,9 @@ included in 5%. At a level of 2.5% we get 4 words.</p>
 <span class='va'>smaller_dfm_4_freq</span> <span class='op'>&lt;-</span> <span class='fu'>dfm_trim</span><span class='op'>(</span><span class='va'>new_guns_corpus_dfm_punct_tl_sw</span>, min_termfreq <span class='op'>=</span> <span class='fl'>4</span><span class='op'>)</span>
 
 <span class='co'># Next I will look at proportions are see if there are words that are seen in</span>
-<span class='co'># More than 10% and 5% of documents</span>
+
+<span class='co'># More than 10% and 5% of documents and 2.5% of documents</span>
+
 <span class='va'>smaller_dfm_10_p</span> <span class='op'>&lt;-</span> <span class='fu'>dfm_trim</span><span class='op'>(</span><span class='va'>smaller_dfm_4_freq</span>, min_docfreq <span class='op'>=</span> <span class='fl'>0.1</span>, docfreq_type <span class='op'>=</span> <span class='st'>"prop"</span><span class='op'>)</span>
 
 <span class='va'>smaller_dfm_5_p</span> <span class='op'>&lt;-</span> <span class='fu'>dfm_trim</span><span class='op'>(</span><span class='va'>smaller_dfm_4_freq</span>, min_docfreq <span class='op'>=</span> <span class='fl'>0.05</span>, docfreq_type <span class='op'>=</span> <span class='st'>"prop"</span><span class='op'>)</span>
@@ -2486,7 +2780,7 @@ used n-grams and set an infreqent term threshold. Because of the nature
 of our data I will use 30% of documents as</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='op'>?</span><span class='va'>factorial_preprocessing</span>
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>21312</span><span class='op'>)</span>
 <span class='va'>preprocessed_documents</span> <span class='op'>&lt;-</span> <span class='fu'>factorial_preprocessing</span><span class='op'>(</span>
     <span class='va'>new_guns_corpus</span>,
     use_ngrams <span class='op'>=</span> <span class='cn'>TRUE</span>,
@@ -2550,549 +2844,8 @@ comparisons and a cosine distance calculation.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='va'>preText_results</span> <span class='op'>&lt;-</span> <span class='fu'>loadRData</span><span class='op'>(</span><span class='st'>"/Users/noahmilstein/Desktop/Spring 2022/Textasdata/text_as_data_work/preText_results_3_27_gun_50_comp.RData"</span><span class='op'>)</span>
-
-<span class='va'>preText_results</span>
 </code></pre>
 </div>
-<pre><code>$preText_scores
-    preText_score preprocessing_steps
-1      0.04157825       P-N-L-S-W-I-3
-2      0.04157825         N-L-S-W-I-3
-3      0.04157825         P-L-S-W-I-3
-4      0.04157825           L-S-W-I-3
-5      0.04157825         P-N-S-W-I-3
-6      0.04157825           N-S-W-I-3
-7      0.04157825           P-S-W-I-3
-8      0.04157825             S-W-I-3
-9      0.04157825         P-N-L-W-I-3
-10     0.04157825           N-L-W-I-3
-11     0.04157825           P-L-W-I-3
-12     0.04157825             L-W-I-3
-13     0.04157825           P-N-W-I-3
-14     0.04157825             N-W-I-3
-15     0.04157825             P-W-I-3
-16     0.04157825               W-I-3
-17     0.04157825         P-N-L-S-I-3
-18     0.04157825           N-L-S-I-3
-19     0.04157825           P-L-S-I-3
-20     0.04157825             L-S-I-3
-21     0.04157825           P-N-S-I-3
-22     0.04157825             N-S-I-3
-23     0.04157825             P-S-I-3
-24     0.04157825               S-I-3
-25     0.04157825           P-N-L-I-3
-26     0.04157825             N-L-I-3
-27     0.04157825             P-L-I-3
-28     0.04157825               L-I-3
-29     0.04157825             P-N-I-3
-30     0.04157825               N-I-3
-31     0.04157825               P-I-3
-32     0.04157825                 I-3
-33     0.04815400         P-N-L-S-W-3
-34     0.08058534           N-L-S-W-3
-35     0.04403401           P-L-S-W-3
-36     0.08427290             L-S-W-3
-37     0.04864279           P-N-S-W-3
-38     0.07599185             N-S-W-3
-39     0.04470926             P-S-W-3
-40     0.08186325               S-W-3
-41     0.02723578           P-N-L-W-3
-42     0.02629912             N-L-W-3
-43     0.02280946             P-L-W-3
-44     0.02777490               L-W-3
-45     0.02723578             P-N-W-3
-46     0.02629912               N-W-3
-47     0.02280946               P-W-3
-48     0.02777490                 W-3
-49     0.02647384           P-N-L-S-3
-50     0.08304385             N-L-S-3
-51     0.02334213             P-L-S-3
-52     0.07225887               L-S-3
-53     0.02706859             P-N-S-3
-54     0.08697989               N-S-3
-55     0.02384351               P-S-3
-56     0.07767802                 S-3
-57     0.02647384             P-N-L-3
-58     0.02777727               N-L-3
-59     0.02334213               P-L-3
-60     0.01888648                 L-3
-61     0.02647384               P-N-3
-62     0.02777727                 N-3
-63     0.02334213                 P-3
-64     0.01888648                   3
-65     0.04157825         P-N-L-S-W-I
-66     0.04157825           N-L-S-W-I
-67     0.04157825           P-L-S-W-I
-68     0.04157825             L-S-W-I
-69     0.04157825           P-N-S-W-I
-70     0.04157825             N-S-W-I
-71     0.04157825             P-S-W-I
-72     0.04157825               S-W-I
-73     0.04157825           P-N-L-W-I
-74     0.04157825             N-L-W-I
-75     0.04157825             P-L-W-I
-76     0.04157825               L-W-I
-77     0.04157825             P-N-W-I
-78     0.04157825               N-W-I
-79     0.04157825               P-W-I
-80     0.04157825                 W-I
-81     0.04157825           P-N-L-S-I
-82     0.04157825             N-L-S-I
-83     0.04157825             P-L-S-I
-84     0.04157825               L-S-I
-85     0.04157825             P-N-S-I
-86     0.04157825               N-S-I
-87     0.04157825               P-S-I
-88     0.04157825                 S-I
-89     0.04157825             P-N-L-I
-90     0.04157825               N-L-I
-91     0.04157825               P-L-I
-92     0.04157825                 L-I
-93     0.04157825               P-N-I
-94     0.04157825                 N-I
-95     0.04157825                 P-I
-96     0.04157825                   I
-97     0.07109905           P-N-L-S-W
-98     0.16021925             N-L-S-W
-99     0.06767075             P-L-S-W
-100    0.17095529               L-S-W
-101    0.07098343             P-N-S-W
-102    0.15776534               N-S-W
-103    0.06802275               P-S-W
-104    0.16850136                 S-W
-105    0.02723578             P-N-L-W
-106    0.02344916               N-L-W
-107    0.02280946               P-L-W
-108    0.02739263                 L-W
-109    0.02723578               P-N-W
-110    0.02344916                 N-W
-111    0.02280946                 P-W
-112    0.02739263                   W
-113    0.05006683             P-N-L-S
-114    0.22396649               N-L-S
-115    0.04704759               P-L-S
-116    0.23717659                 L-S
-117    0.05064631               P-N-S
-118    0.21022978                 N-S
-119    0.04752479                 P-S
-120    0.23146371                   S
-121    0.02635536               P-N-L
-122    0.03527452                 N-L
-123    0.02342946                 P-L
-124    0.10226138                   L
-125    0.02635536                 P-N
-126    0.03527452                   N
-127    0.02342946                   P
-
-$ranked_preText_scores
-    preText_score preprocessing_steps
-1      0.23717659                 L-S
-2      0.23146371                   S
-3      0.22396649               N-L-S
-4      0.21022978                 N-S
-5      0.17095529               L-S-W
-6      0.16850136                 S-W
-7      0.16021925             N-L-S-W
-8      0.15776534               N-S-W
-9      0.10226138                   L
-10     0.08697989               N-S-3
-11     0.08427290             L-S-W-3
-12     0.08304385             N-L-S-3
-13     0.08186325               S-W-3
-14     0.08058534           N-L-S-W-3
-15     0.07767802                 S-3
-16     0.07599185             N-S-W-3
-17     0.07225887               L-S-3
-18     0.07109905           P-N-L-S-W
-19     0.07098343             P-N-S-W
-20     0.06802275               P-S-W
-21     0.06767075             P-L-S-W
-22     0.05064631               P-N-S
-23     0.05006683             P-N-L-S
-24     0.04864279           P-N-S-W-3
-25     0.04815400         P-N-L-S-W-3
-26     0.04752479                 P-S
-27     0.04704759               P-L-S
-28     0.04470926             P-S-W-3
-29     0.04403401           P-L-S-W-3
-30     0.04157825       P-N-L-S-W-I-3
-31     0.04157825         N-L-S-W-I-3
-32     0.04157825         P-L-S-W-I-3
-33     0.04157825           L-S-W-I-3
-34     0.04157825         P-N-S-W-I-3
-35     0.04157825           N-S-W-I-3
-36     0.04157825           P-S-W-I-3
-37     0.04157825             S-W-I-3
-38     0.04157825         P-N-L-W-I-3
-39     0.04157825           N-L-W-I-3
-40     0.04157825           P-L-W-I-3
-41     0.04157825             L-W-I-3
-42     0.04157825           P-N-W-I-3
-43     0.04157825             N-W-I-3
-44     0.04157825             P-W-I-3
-45     0.04157825               W-I-3
-46     0.04157825         P-N-L-S-I-3
-47     0.04157825           N-L-S-I-3
-48     0.04157825           P-L-S-I-3
-49     0.04157825             L-S-I-3
-50     0.04157825           P-N-S-I-3
-51     0.04157825             N-S-I-3
-52     0.04157825             P-S-I-3
-53     0.04157825               S-I-3
-54     0.04157825           P-N-L-I-3
-55     0.04157825             N-L-I-3
-56     0.04157825             P-L-I-3
-57     0.04157825               L-I-3
-58     0.04157825             P-N-I-3
-59     0.04157825               N-I-3
-60     0.04157825               P-I-3
-61     0.04157825                 I-3
-62     0.04157825         P-N-L-S-W-I
-63     0.04157825           N-L-S-W-I
-64     0.04157825           P-L-S-W-I
-65     0.04157825             L-S-W-I
-66     0.04157825           P-N-S-W-I
-67     0.04157825             N-S-W-I
-68     0.04157825             P-S-W-I
-69     0.04157825               S-W-I
-70     0.04157825           P-N-L-W-I
-71     0.04157825             N-L-W-I
-72     0.04157825             P-L-W-I
-73     0.04157825               L-W-I
-74     0.04157825             P-N-W-I
-75     0.04157825               N-W-I
-76     0.04157825               P-W-I
-77     0.04157825                 W-I
-78     0.04157825           P-N-L-S-I
-79     0.04157825             N-L-S-I
-80     0.04157825             P-L-S-I
-81     0.04157825               L-S-I
-82     0.04157825             P-N-S-I
-83     0.04157825               N-S-I
-84     0.04157825               P-S-I
-85     0.04157825                 S-I
-86     0.04157825             P-N-L-I
-87     0.04157825               N-L-I
-88     0.04157825               P-L-I
-89     0.04157825                 L-I
-90     0.04157825               P-N-I
-91     0.04157825                 N-I
-92     0.04157825                 P-I
-93     0.04157825                   I
-94     0.03527452                 N-L
-95     0.03527452                   N
-96     0.02777727               N-L-3
-97     0.02777727                 N-3
-98     0.02777490               L-W-3
-99     0.02777490                 W-3
-100    0.02739263                 L-W
-101    0.02739263                   W
-102    0.02723578           P-N-L-W-3
-103    0.02723578             P-N-W-3
-104    0.02723578             P-N-L-W
-105    0.02723578               P-N-W
-106    0.02706859             P-N-S-3
-107    0.02647384           P-N-L-S-3
-108    0.02647384             P-N-L-3
-109    0.02647384               P-N-3
-110    0.02635536               P-N-L
-111    0.02635536                 P-N
-112    0.02629912             N-L-W-3
-113    0.02629912               N-W-3
-114    0.02384351               P-S-3
-115    0.02344916               N-L-W
-116    0.02344916                 N-W
-117    0.02342946                 P-L
-118    0.02342946                   P
-119    0.02334213             P-L-S-3
-120    0.02334213               P-L-3
-121    0.02334213                 P-3
-122    0.02280946             P-L-W-3
-123    0.02280946               P-W-3
-124    0.02280946               P-L-W
-125    0.02280946                 P-W
-126    0.01888648                 L-3
-127    0.01888648                   3
-
-$choices
-              removePunctuation removeNumbers lowercase  stem
-P-N-L-S-W-I-3              TRUE          TRUE      TRUE  TRUE
-N-L-S-W-I-3               FALSE          TRUE      TRUE  TRUE
-P-L-S-W-I-3                TRUE         FALSE      TRUE  TRUE
-L-S-W-I-3                 FALSE         FALSE      TRUE  TRUE
-P-N-S-W-I-3                TRUE          TRUE     FALSE  TRUE
-N-S-W-I-3                 FALSE          TRUE     FALSE  TRUE
-P-S-W-I-3                  TRUE         FALSE     FALSE  TRUE
-S-W-I-3                   FALSE         FALSE     FALSE  TRUE
-P-N-L-W-I-3                TRUE          TRUE      TRUE FALSE
-N-L-W-I-3                 FALSE          TRUE      TRUE FALSE
-P-L-W-I-3                  TRUE         FALSE      TRUE FALSE
-L-W-I-3                   FALSE         FALSE      TRUE FALSE
-P-N-W-I-3                  TRUE          TRUE     FALSE FALSE
-N-W-I-3                   FALSE          TRUE     FALSE FALSE
-P-W-I-3                    TRUE         FALSE     FALSE FALSE
-W-I-3                     FALSE         FALSE     FALSE FALSE
-P-N-L-S-I-3                TRUE          TRUE      TRUE  TRUE
-N-L-S-I-3                 FALSE          TRUE      TRUE  TRUE
-P-L-S-I-3                  TRUE         FALSE      TRUE  TRUE
-L-S-I-3                   FALSE         FALSE      TRUE  TRUE
-P-N-S-I-3                  TRUE          TRUE     FALSE  TRUE
-N-S-I-3                   FALSE          TRUE     FALSE  TRUE
-P-S-I-3                    TRUE         FALSE     FALSE  TRUE
-S-I-3                     FALSE         FALSE     FALSE  TRUE
-P-N-L-I-3                  TRUE          TRUE      TRUE FALSE
-N-L-I-3                   FALSE          TRUE      TRUE FALSE
-P-L-I-3                    TRUE         FALSE      TRUE FALSE
-L-I-3                     FALSE         FALSE      TRUE FALSE
-P-N-I-3                    TRUE          TRUE     FALSE FALSE
-N-I-3                     FALSE          TRUE     FALSE FALSE
-P-I-3                      TRUE         FALSE     FALSE FALSE
-I-3                       FALSE         FALSE     FALSE FALSE
-P-N-L-S-W-3                TRUE          TRUE      TRUE  TRUE
-N-L-S-W-3                 FALSE          TRUE      TRUE  TRUE
-P-L-S-W-3                  TRUE         FALSE      TRUE  TRUE
-L-S-W-3                   FALSE         FALSE      TRUE  TRUE
-P-N-S-W-3                  TRUE          TRUE     FALSE  TRUE
-N-S-W-3                   FALSE          TRUE     FALSE  TRUE
-P-S-W-3                    TRUE         FALSE     FALSE  TRUE
-S-W-3                     FALSE         FALSE     FALSE  TRUE
-P-N-L-W-3                  TRUE          TRUE      TRUE FALSE
-N-L-W-3                   FALSE          TRUE      TRUE FALSE
-P-L-W-3                    TRUE         FALSE      TRUE FALSE
-L-W-3                     FALSE         FALSE      TRUE FALSE
-P-N-W-3                    TRUE          TRUE     FALSE FALSE
-N-W-3                     FALSE          TRUE     FALSE FALSE
-P-W-3                      TRUE         FALSE     FALSE FALSE
-W-3                       FALSE         FALSE     FALSE FALSE
-P-N-L-S-3                  TRUE          TRUE      TRUE  TRUE
-N-L-S-3                   FALSE          TRUE      TRUE  TRUE
-P-L-S-3                    TRUE         FALSE      TRUE  TRUE
-L-S-3                     FALSE         FALSE      TRUE  TRUE
-P-N-S-3                    TRUE          TRUE     FALSE  TRUE
-N-S-3                     FALSE          TRUE     FALSE  TRUE
-P-S-3                      TRUE         FALSE     FALSE  TRUE
-S-3                       FALSE         FALSE     FALSE  TRUE
-P-N-L-3                    TRUE          TRUE      TRUE FALSE
-N-L-3                     FALSE          TRUE      TRUE FALSE
-P-L-3                      TRUE         FALSE      TRUE FALSE
-L-3                       FALSE         FALSE      TRUE FALSE
-P-N-3                      TRUE          TRUE     FALSE FALSE
-N-3                       FALSE          TRUE     FALSE FALSE
-P-3                        TRUE         FALSE     FALSE FALSE
-3                         FALSE         FALSE     FALSE FALSE
-P-N-L-S-W-I                TRUE          TRUE      TRUE  TRUE
-N-L-S-W-I                 FALSE          TRUE      TRUE  TRUE
-P-L-S-W-I                  TRUE         FALSE      TRUE  TRUE
-L-S-W-I                   FALSE         FALSE      TRUE  TRUE
-P-N-S-W-I                  TRUE          TRUE     FALSE  TRUE
-N-S-W-I                   FALSE          TRUE     FALSE  TRUE
-P-S-W-I                    TRUE         FALSE     FALSE  TRUE
-S-W-I                     FALSE         FALSE     FALSE  TRUE
-P-N-L-W-I                  TRUE          TRUE      TRUE FALSE
-N-L-W-I                   FALSE          TRUE      TRUE FALSE
-P-L-W-I                    TRUE         FALSE      TRUE FALSE
-L-W-I                     FALSE         FALSE      TRUE FALSE
-P-N-W-I                    TRUE          TRUE     FALSE FALSE
-N-W-I                     FALSE          TRUE     FALSE FALSE
-P-W-I                      TRUE         FALSE     FALSE FALSE
-W-I                       FALSE         FALSE     FALSE FALSE
-P-N-L-S-I                  TRUE          TRUE      TRUE  TRUE
-N-L-S-I                   FALSE          TRUE      TRUE  TRUE
-P-L-S-I                    TRUE         FALSE      TRUE  TRUE
-L-S-I                     FALSE         FALSE      TRUE  TRUE
-P-N-S-I                    TRUE          TRUE     FALSE  TRUE
-N-S-I                     FALSE          TRUE     FALSE  TRUE
-P-S-I                      TRUE         FALSE     FALSE  TRUE
-S-I                       FALSE         FALSE     FALSE  TRUE
-P-N-L-I                    TRUE          TRUE      TRUE FALSE
-N-L-I                     FALSE          TRUE      TRUE FALSE
-P-L-I                      TRUE         FALSE      TRUE FALSE
-L-I                       FALSE         FALSE      TRUE FALSE
-P-N-I                      TRUE          TRUE     FALSE FALSE
-N-I                       FALSE          TRUE     FALSE FALSE
-P-I                        TRUE         FALSE     FALSE FALSE
-I                         FALSE         FALSE     FALSE FALSE
-P-N-L-S-W                  TRUE          TRUE      TRUE  TRUE
-N-L-S-W                   FALSE          TRUE      TRUE  TRUE
-P-L-S-W                    TRUE         FALSE      TRUE  TRUE
-L-S-W                     FALSE         FALSE      TRUE  TRUE
-P-N-S-W                    TRUE          TRUE     FALSE  TRUE
-N-S-W                     FALSE          TRUE     FALSE  TRUE
-P-S-W                      TRUE         FALSE     FALSE  TRUE
-S-W                       FALSE         FALSE     FALSE  TRUE
-P-N-L-W                    TRUE          TRUE      TRUE FALSE
-N-L-W                     FALSE          TRUE      TRUE FALSE
-P-L-W                      TRUE         FALSE      TRUE FALSE
-L-W                       FALSE         FALSE      TRUE FALSE
-P-N-W                      TRUE          TRUE     FALSE FALSE
-N-W                       FALSE          TRUE     FALSE FALSE
-P-W                        TRUE         FALSE     FALSE FALSE
-W                         FALSE         FALSE     FALSE FALSE
-P-N-L-S                    TRUE          TRUE      TRUE  TRUE
-N-L-S                     FALSE          TRUE      TRUE  TRUE
-P-L-S                      TRUE         FALSE      TRUE  TRUE
-L-S                       FALSE         FALSE      TRUE  TRUE
-P-N-S                      TRUE          TRUE     FALSE  TRUE
-N-S                       FALSE          TRUE     FALSE  TRUE
-P-S                        TRUE         FALSE     FALSE  TRUE
-S                         FALSE         FALSE     FALSE  TRUE
-P-N-L                      TRUE          TRUE      TRUE FALSE
-N-L                       FALSE          TRUE      TRUE FALSE
-P-L                        TRUE         FALSE      TRUE FALSE
-L                         FALSE         FALSE      TRUE FALSE
-P-N                        TRUE          TRUE     FALSE FALSE
-N                         FALSE          TRUE     FALSE FALSE
-P                          TRUE         FALSE     FALSE FALSE
-                          FALSE         FALSE     FALSE FALSE
-              removeStopwords infrequent_terms use_ngrams
-P-N-L-S-W-I-3            TRUE             TRUE       TRUE
-N-L-S-W-I-3              TRUE             TRUE       TRUE
-P-L-S-W-I-3              TRUE             TRUE       TRUE
-L-S-W-I-3                TRUE             TRUE       TRUE
-P-N-S-W-I-3              TRUE             TRUE       TRUE
-N-S-W-I-3                TRUE             TRUE       TRUE
-P-S-W-I-3                TRUE             TRUE       TRUE
-S-W-I-3                  TRUE             TRUE       TRUE
-P-N-L-W-I-3              TRUE             TRUE       TRUE
-N-L-W-I-3                TRUE             TRUE       TRUE
-P-L-W-I-3                TRUE             TRUE       TRUE
-L-W-I-3                  TRUE             TRUE       TRUE
-P-N-W-I-3                TRUE             TRUE       TRUE
-N-W-I-3                  TRUE             TRUE       TRUE
-P-W-I-3                  TRUE             TRUE       TRUE
-W-I-3                    TRUE             TRUE       TRUE
-P-N-L-S-I-3             FALSE             TRUE       TRUE
-N-L-S-I-3               FALSE             TRUE       TRUE
-P-L-S-I-3               FALSE             TRUE       TRUE
-L-S-I-3                 FALSE             TRUE       TRUE
-P-N-S-I-3               FALSE             TRUE       TRUE
-N-S-I-3                 FALSE             TRUE       TRUE
-P-S-I-3                 FALSE             TRUE       TRUE
-S-I-3                   FALSE             TRUE       TRUE
-P-N-L-I-3               FALSE             TRUE       TRUE
-N-L-I-3                 FALSE             TRUE       TRUE
-P-L-I-3                 FALSE             TRUE       TRUE
-L-I-3                   FALSE             TRUE       TRUE
-P-N-I-3                 FALSE             TRUE       TRUE
-N-I-3                   FALSE             TRUE       TRUE
-P-I-3                   FALSE             TRUE       TRUE
-I-3                     FALSE             TRUE       TRUE
-P-N-L-S-W-3              TRUE            FALSE       TRUE
-N-L-S-W-3                TRUE            FALSE       TRUE
-P-L-S-W-3                TRUE            FALSE       TRUE
-L-S-W-3                  TRUE            FALSE       TRUE
-P-N-S-W-3                TRUE            FALSE       TRUE
-N-S-W-3                  TRUE            FALSE       TRUE
-P-S-W-3                  TRUE            FALSE       TRUE
-S-W-3                    TRUE            FALSE       TRUE
-P-N-L-W-3                TRUE            FALSE       TRUE
-N-L-W-3                  TRUE            FALSE       TRUE
-P-L-W-3                  TRUE            FALSE       TRUE
-L-W-3                    TRUE            FALSE       TRUE
-P-N-W-3                  TRUE            FALSE       TRUE
-N-W-3                    TRUE            FALSE       TRUE
-P-W-3                    TRUE            FALSE       TRUE
-W-3                      TRUE            FALSE       TRUE
-P-N-L-S-3               FALSE            FALSE       TRUE
-N-L-S-3                 FALSE            FALSE       TRUE
-P-L-S-3                 FALSE            FALSE       TRUE
-L-S-3                   FALSE            FALSE       TRUE
-P-N-S-3                 FALSE            FALSE       TRUE
-N-S-3                   FALSE            FALSE       TRUE
-P-S-3                   FALSE            FALSE       TRUE
-S-3                     FALSE            FALSE       TRUE
-P-N-L-3                 FALSE            FALSE       TRUE
-N-L-3                   FALSE            FALSE       TRUE
-P-L-3                   FALSE            FALSE       TRUE
-L-3                     FALSE            FALSE       TRUE
-P-N-3                   FALSE            FALSE       TRUE
-N-3                     FALSE            FALSE       TRUE
-P-3                     FALSE            FALSE       TRUE
-3                       FALSE            FALSE       TRUE
-P-N-L-S-W-I              TRUE             TRUE      FALSE
-N-L-S-W-I                TRUE             TRUE      FALSE
-P-L-S-W-I                TRUE             TRUE      FALSE
-L-S-W-I                  TRUE             TRUE      FALSE
-P-N-S-W-I                TRUE             TRUE      FALSE
-N-S-W-I                  TRUE             TRUE      FALSE
-P-S-W-I                  TRUE             TRUE      FALSE
-S-W-I                    TRUE             TRUE      FALSE
-P-N-L-W-I                TRUE             TRUE      FALSE
-N-L-W-I                  TRUE             TRUE      FALSE
-P-L-W-I                  TRUE             TRUE      FALSE
-L-W-I                    TRUE             TRUE      FALSE
-P-N-W-I                  TRUE             TRUE      FALSE
-N-W-I                    TRUE             TRUE      FALSE
-P-W-I                    TRUE             TRUE      FALSE
-W-I                      TRUE             TRUE      FALSE
-P-N-L-S-I               FALSE             TRUE      FALSE
-N-L-S-I                 FALSE             TRUE      FALSE
-P-L-S-I                 FALSE             TRUE      FALSE
-L-S-I                   FALSE             TRUE      FALSE
-P-N-S-I                 FALSE             TRUE      FALSE
-N-S-I                   FALSE             TRUE      FALSE
-P-S-I                   FALSE             TRUE      FALSE
-S-I                     FALSE             TRUE      FALSE
-P-N-L-I                 FALSE             TRUE      FALSE
-N-L-I                   FALSE             TRUE      FALSE
-P-L-I                   FALSE             TRUE      FALSE
-L-I                     FALSE             TRUE      FALSE
-P-N-I                   FALSE             TRUE      FALSE
-N-I                     FALSE             TRUE      FALSE
-P-I                     FALSE             TRUE      FALSE
-I                       FALSE             TRUE      FALSE
-P-N-L-S-W                TRUE            FALSE      FALSE
-N-L-S-W                  TRUE            FALSE      FALSE
-P-L-S-W                  TRUE            FALSE      FALSE
-L-S-W                    TRUE            FALSE      FALSE
-P-N-S-W                  TRUE            FALSE      FALSE
-N-S-W                    TRUE            FALSE      FALSE
-P-S-W                    TRUE            FALSE      FALSE
-S-W                      TRUE            FALSE      FALSE
-P-N-L-W                  TRUE            FALSE      FALSE
-N-L-W                    TRUE            FALSE      FALSE
-P-L-W                    TRUE            FALSE      FALSE
-L-W                      TRUE            FALSE      FALSE
-P-N-W                    TRUE            FALSE      FALSE
-N-W                      TRUE            FALSE      FALSE
-P-W                      TRUE            FALSE      FALSE
-W                        TRUE            FALSE      FALSE
-P-N-L-S                 FALSE            FALSE      FALSE
-N-L-S                   FALSE            FALSE      FALSE
-P-L-S                   FALSE            FALSE      FALSE
-L-S                     FALSE            FALSE      FALSE
-P-N-S                   FALSE            FALSE      FALSE
-N-S                     FALSE            FALSE      FALSE
-P-S                     FALSE            FALSE      FALSE
-S                       FALSE            FALSE      FALSE
-P-N-L                   FALSE            FALSE      FALSE
-N-L                     FALSE            FALSE      FALSE
-P-L                     FALSE            FALSE      FALSE
-L                       FALSE            FALSE      FALSE
-P-N                     FALSE            FALSE      FALSE
-N                       FALSE            FALSE      FALSE
-P                       FALSE            FALSE      FALSE
-                        FALSE            FALSE      FALSE
-
-$regression_results
-    Coefficient          SE                Variable
-1  0.0692437554 0.008765654               Intercept
-2 -0.0248352010 0.006026387      Remove Punctuation
-3 -0.0012912608 0.006026387          Remove Numbers
-4  0.0008042152 0.006026387               Lowercase
-5  0.0315263364 0.006026387                Stemming
-6 -0.0031236074 0.006026387        Remove Stopwords
-7 -0.0194667091 0.006026387 Remove Infrequent Terms
-8 -0.0194780796 0.006026387              Use NGrams
-                Model
-1 Gun Pretext Results
-2 Gun Pretext Results
-3 Gun Pretext Results
-4 Gun Pretext Results
-5 Gun Pretext Results
-6 Gun Pretext Results
-7 Gun Pretext Results
-8 Gun Pretext Results</code></pre>
 </div>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
@@ -3364,7 +3117,7 @@ that firearms, and the words used to describe them, are percieved</p>
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>methods</span><span class='op'>)</span>
 
-<span class='va'>too_gun_dfm</span><span class='op'>&lt;-</span> <span class='fu'>quanteda</span><span class='fu'>::</span><span class='fu'><a href='https://quanteda.io/reference/dfm.html'>dfm</a></span><span class='op'>(</span><span class='va'>new_guns_corpus</span>, verbose <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+<span class='va'>too_gun_dfm</span><span class='op'>&lt;-</span> <span class='fu'>quanteda</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/quanteda/man/dfm.html'>dfm</a></span><span class='op'>(</span><span class='va'>new_guns_corpus</span>, verbose <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 
 <span class='va'>too_gun_dfm</span>
 </code></pre>
@@ -3468,7 +3221,16 @@ docs    with tiny ar15s and mcx / similar , where does
 </div>
 <p><img src="tad-post-4_files/figure-html5/unnamed-chunk-51-1.png" width="624" /></p>
 </div>
-<h4 id="topic-modeling-analysis">Topic Modeling analysis</h4>
+<h2 id="topic-modeling-analysis">Topic Modeling analysis</h2>
+<p><strong>Basis:</strong> The crux of this project will be a topic
+modeling analysis of the top reddit posts and a comparison with the
+topics in advertisements from <em>Targeted advertising: documenting the
+emergence of Gun Culture 2.0 in Guns magazine, 1955–2019</em> in this
+paper the author distinguishes 4 broad categories of advertised use,
+Hunting, Sport/Recreation, Personal protection/self-defense/home or
+family defense, and finally Concealed carry. I will be using topic
+modeling to see if it is possible to distinguish posts into these use
+categories and compare to the advertising results.</p>
 <p><strong>Response:</strong> As can be seen above topic modeling may
 benefit from some data reduction, removing punctuation and stop words
 would likely be beneficial as can be seen above where a number of the
@@ -3509,7 +3271,7 @@ text6 :
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>methods</span><span class='op'>)</span>
 
-<span class='va'>too_gun_dfm_no_punct_stopwords</span><span class='op'>&lt;-</span> <span class='fu'>quanteda</span><span class='fu'>::</span><span class='fu'><a href='https://quanteda.io/reference/dfm.html'>dfm</a></span><span class='op'>(</span><span class='fu'>tokens</span><span class='op'>(</span><span class='va'>gun_corpus_stopwords_and_punct_removed</span><span class='op'>)</span>, verbose <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+<span class='va'>too_gun_dfm_no_punct_stopwords</span><span class='op'>&lt;-</span> <span class='fu'>quanteda</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/quanteda/man/dfm.html'>dfm</a></span><span class='op'>(</span><span class='fu'>tokens</span><span class='op'>(</span><span class='va'>gun_corpus_stopwords_and_punct_removed</span><span class='op'>)</span>, verbose <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 
 
 <span class='va'>too_gun_dfm_no_punct_stopwords</span><span class='op'>&lt;-</span><span class='va'>too_gun_dfm_no_punct_stopwords</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/colSums.html'>rowSums</a></span><span class='op'>(</span><span class='va'>too_gun_dfm_no_punct_stopwords</span><span class='op'>[</span><span class='op'>]</span><span class='op'>)</span><span class='op'>&gt;</span><span class='fl'>0</span>,<span class='op'>]</span>
@@ -3883,13 +3645,13 @@ topics and language.</p>
     <span class='fu'><a href='https://rdrr.io/r/base/load.html'>load</a></span><span class='op'>(</span><span class='va'>fileName</span><span class='op'>)</span>
     <span class='fu'><a href='https://rdrr.io/r/base/get.html'>get</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/ls.html'>ls</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/ls.html'>ls</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>!=</span> <span class='st'>"fileName"</span><span class='op'>]</span><span class='op'>)</span>
 <span class='op'>}</span>
-<span class='va'>New_guns_urls_df</span> <span class='op'>&lt;-</span> <span class='fu'>loadRData</span><span class='op'>(</span><span class='st'>"/Users/noahmilstein/Desktop/Spring 2022/Textasdata/text_as_data_work/top_guns_urls.RData"</span><span class='op'>)</span>
+<span class='va'>top_guns_urls_df</span> <span class='op'>&lt;-</span> <span class='fu'>loadRData</span><span class='op'>(</span><span class='st'>"/Users/noahmilstein/Desktop/Spring 2022/Textasdata/text_as_data_work/top_guns_urls.RData"</span><span class='op'>)</span>
 </code></pre>
 </div>
 </div>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span><span class='op'>(</span><span class='va'>New_guns_urls_df</span><span class='op'>)</span>
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span><span class='op'>(</span><span class='va'>top_guns_urls_df</span><span class='op'>)</span>
 </code></pre>
 </div>
 <pre><code>&#39;data.frame&#39;:   996 obs. of  6 variables:
@@ -3907,9 +3669,9 @@ dataframe from Reddit into a corpus and saved a summary of the resulting
 data.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>new_guns_urls_df</span><span class='op'>&lt;-</span><span class='va'>New_guns_urls_df</span><span class='op'>[</span>,<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"title"</span>, <span class='st'>"date_utc"</span>, <span class='st'>"comments"</span><span class='op'>)</span><span class='op'>]</span>
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>top_guns_urls_df</span><span class='op'>&lt;-</span><span class='va'>top_guns_urls_df</span><span class='op'>[</span>,<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"title"</span>, <span class='st'>"date_utc"</span>, <span class='st'>"comments"</span><span class='op'>)</span><span class='op'>]</span>
 
-<span class='va'>new_guns_corpus</span><span class='op'>&lt;-</span><span class='fu'>corpus</span><span class='op'>(</span><span class='va'>new_guns_urls_df</span><span class='op'>$</span><span class='va'>title</span><span class='op'>)</span>
+<span class='va'>new_guns_corpus</span><span class='op'>&lt;-</span><span class='fu'>corpus</span><span class='op'>(</span><span class='va'>top_guns_urls_df</span><span class='op'>$</span><span class='va'>title</span><span class='op'>)</span>
 
 <span class='va'>new_guns_documents</span><span class='op'>&lt;-</span><span class='va'>new_guns_corpus</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span>,<span class='op'>]</span>
 
@@ -4181,7 +3943,7 @@ arbitrarily by their post number, in this case all 3 complexity method
 exhibit similar trends.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>readability_new_guns</span><span class='op'>$</span><span class='va'>added_dates</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='va'>New_guns_urls_df</span><span class='op'>$</span><span class='va'>date_utc</span><span class='op'>)</span>
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>readability_new_guns</span><span class='op'>$</span><span class='va'>added_dates</span><span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='va'>top_guns_urls_df</span><span class='op'>$</span><span class='va'>date_utc</span><span class='op'>)</span>
 
 <span class='fu'>ggplot</span><span class='op'>(</span><span class='va'>readability_new_guns</span>, <span class='fu'>aes</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>added_dates</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
   <span class='fu'>geom_smooth</span><span class='op'>(</span><span class='fu'>aes</span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>Flesch.Kincaid</span><span class='op'>)</span>, color <span class='op'>=</span> <span class='st'>"black"</span><span class='op'>)</span> <span class='op'>+</span> 
@@ -4946,7 +4708,7 @@ give us a sense of which words in the dataset are occurring together</p>
 </div>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>new_guns_urls_df_2</span><span class='op'>&lt;-</span><span class='va'>new_guns_urls_df</span>
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>new_guns_urls_df_2</span><span class='op'>&lt;-</span><span class='va'>top_guns_urls_df</span>
 
 <span class='va'>new_guns_urls_df_2</span><span class='op'>$</span><span class='va'>text</span><span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>996</span>, by<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>
 
@@ -5094,7 +4856,7 @@ that firearms, and the words used to describe them, are percieved</p>
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>methods</span><span class='op'>)</span>
 
-<span class='va'>too_gun_dfm</span><span class='op'>&lt;-</span> <span class='fu'>quanteda</span><span class='fu'>::</span><span class='fu'><a href='https://quanteda.io/reference/dfm.html'>dfm</a></span><span class='op'>(</span><span class='va'>new_guns_corpus</span>, verbose <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+<span class='va'>too_gun_dfm</span><span class='op'>&lt;-</span> <span class='fu'>quanteda</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/quanteda/man/dfm.html'>dfm</a></span><span class='op'>(</span><span class='va'>new_guns_corpus</span>, verbose <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 
 <span class='va'>too_gun_dfm</span>
 </code></pre>
@@ -5549,31 +5311,10 @@ text6 :
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>annotated.guns_corpus</span><span class='op'>$</span><span class='va'>token</span><span class='op'>)</span>
-</code></pre>
-</div>
-<pre><code># A tibble: 6 × 11
-  doc_id   sid tid   token  token_with_ws lemma  upos  xpos  feats    
-   &lt;int&gt; &lt;int&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;         &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    
-1      1     1 1     Second &quot;Second &quot;     second ADJ   JJ    Degree=P…
-2      1     1 2     AR     &quot;AR &quot;         ar     NOUN  NN    Number=S…
-3      1     1 3     build  &quot;build&quot;       build  NOUN  NN    Number=S…
-4      1     1 4     :      &quot;: &quot;          :      PUNCT :     &lt;NA&gt;     
-5      1     1 5     300    &quot;300&quot;         300    NUM   CD    NumType=…
-6      1     1 6     blk    &quot;blk &quot;        blk    NOUN  NN    Number=S…
-# … with 2 more variables: tid_source &lt;chr&gt;, relation &lt;chr&gt;</code></pre>
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>annotated.guns_corpus</span><span class='op'>$</span><span class='va'>document</span><span class='op'>)</span>
-</code></pre>
-</div>
-<pre><code>  doc_id
-1      1
-2      2
-3      3
-4      4
-5      5
-6      6</code></pre>
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>doc_id_guns</span><span class='op'>&lt;-</span><span class='va'>annotated.guns_corpus</span><span class='op'>$</span><span class='va'>document</span>
+
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>annotated.guns_corpus</span><span class='op'>$</span><span class='va'>document</span><span class='op'>)</span>
+
+<span class='va'>doc_id_guns</span><span class='op'>&lt;-</span><span class='va'>annotated.guns_corpus</span><span class='op'>$</span><span class='va'>document</span>
 
 <span class='va'>doc_id_guns</span><span class='op'>$</span><span class='va'>date</span><span class='op'>&lt;-</span><span class='va'>new_guns_urls_df</span><span class='op'>$</span><span class='va'>date_utc</span>
 
@@ -5594,7 +5335,6 @@ text6 :
     <span class='fu'>theme_bw</span><span class='op'>(</span><span class='op'>)</span>
 </code></pre>
 </div>
-<p><img src="tad-post-4_files/figure-html5/unnamed-chunk-131-1.png" width="624" /></p>
 </div>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
@@ -5607,7 +5347,40 @@ text6 :
 </div>
 </div>
 <h2 id="unsupervised-learning-knn">Unsupervised Learning KNN</h2>
-<div class="sourceCode" id="cb73"><pre
+<h2 id="last-scrape-hot-posts-and-combining-all-data.">Last Scrape Hot
+Posts and combining all data.</h2>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='co'>#hot_guns_urls &lt;- find_thread_urls(subreddit="guns", sort_by="hot")</span>
+<span class='co'># save(hot_guns_urls, file="hot_guns_urls.RData")</span>
+<span class='va'>hot_guns_urls</span><span class='op'>&lt;-</span><span class='fu'>loadRData</span><span class='op'>(</span><span class='st'>"/Users/noahmilstein/Desktop/my_blog/_posts/2022-03-29-tad-post-4/hot_guns_urls.RData"</span><span class='op'>)</span>
+
+<span class='va'>hot_guns_urls_df</span><span class='op'>&lt;-</span><span class='va'>hot_guns_urls</span><span class='op'>[</span>,<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"title"</span>, <span class='st'>"date_utc"</span>, <span class='st'>"comments"</span><span class='op'>)</span><span class='op'>]</span>
+<span class='co'>#hot_guns_urls_df</span>
+</code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>hot_guns_urls_df</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>844</span>, <span class='fl'>1</span><span class='op'>)</span>
+
+<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>new_guns_urls_df</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>980</span>, <span class='fl'>1</span><span class='op'>)</span>
+
+<span class='va'>hg_and_ng</span><span class='op'>&lt;-</span><span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>rbind</a></span><span class='op'>(</span><span class='va'>hot_guns_urls_df</span>, <span class='va'>new_guns_urls_df</span><span class='op'>)</span>
+
+<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>top_guns_urls_df</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>996</span>, <span class='fl'>1</span><span class='op'>)</span>
+
+<span class='va'>whole_data_frame</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>rbind</a></span><span class='op'>(</span><span class='va'>hg_and_ng</span>, <span class='va'>top_guns_urls_df</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>whole_data_frame_unique</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/unique.html'>unique</a></span><span class='op'>(</span><span class='va'>whole_data_frame</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<div class="sourceCode" id="cb62"><pre
 class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
