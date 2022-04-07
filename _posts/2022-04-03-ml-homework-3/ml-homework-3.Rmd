@@ -11,6 +11,11 @@ output:
     self_contained: false
 ---
 
+ISLR Ch. 6, Exercise 9e and update 9g (assigned for HW 2), looking back at your HW 2 answers for context
+ISLR Ch. 12, Exercise 8
+ISLR Ch. 12, Exercise 9
+ISLR Ch. 12, Exercise 10
+
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 
 library(dplyr)
@@ -290,13 +295,13 @@ mean((pcr.pred - college_test$Apps)^2)
 
 **Basis:** Comment on the results obtained. How accurately can we predict the number of college applications received? Is there much difference among the test errors resulting from these five approaches?
 
+**Answer:**
 
 ### Ch. 12, Exercise 8
 
 **Basis:** In Section 12.2.3, a formula for calculating PVE was given in Equation 12.10. We also saw that the PVE can be obtained using the sdev output of the prcomp() function. On the USArrests data, calculate PVE in two ways:
 
 #### Part (a) 
-
 
 **Basis:** Using the sdev output of the prcomp() function, as was done in Section 12.2.3.
 
@@ -351,17 +356,17 @@ pve
 
 ```{r}
 
-#USArrests_scaled<-scale(USArrests)
+USArrests_scaled<-scale(USArrests)
 
-#dim(USArrests_scaled)
+loadings <- pr.out$rotation
 
-#loadings<-pr.out$rotation
+top_of_equation <- (USArrests_scaled %*% squared_loadings)
 
-#squared_loadings <- loadings^2
+top_of_equation_squared <- top_of_equation^2
 
-#squared_loadings %*% as.matrix(USArrests_scaled)
+sum_squared_loadings <- apply(top_of_equation_squared, 2, sum)
 
-#sum(apply(as.matrix(USArrests2)^2, 2, sum))
+sum_squared_loadings / sum(USArrests_scaled^2)
 
 ```
 
@@ -391,7 +396,7 @@ labels = USArrests_scaled.labs, main = "Complete Linkage")
 
 ```{r}
 
-hc.out <- hclust(dist(USArrests_scaled_2)) 
+hc.out <- hclust(dist(USArrests_scaled)) 
 
 hc.clusters <- cutree(hc.out, 3)
 
@@ -422,9 +427,7 @@ labels = USArrests_scaled.labs, main = "Complete Linkage")
 
 **Basis:** What effect does scaling the variables have on the hierarchical clustering obtained? In your opinion, should the variables be scaled before the inter-observation dissimilarities are computed? Provide a justification for your answer.
 
-```{r}
-
-```
+**Answer:** 
 
 
 ### Ch. 12, Exercise 10
@@ -446,13 +449,13 @@ df_1_10<-as.data.frame(replicate(50, rnorm(n=20, mean=0)))
 colnames(df_1_10)[1] <- "V1"
 
 
-df_2_10<-as.data.frame(replicate(50,rnorm(n=20, mean=1)))
+df_2_10<-as.data.frame(replicate(50,rnorm(n=20, mean=0.5)))
 
 colnames(df_2_10)[1] <- "V1"
 
 df_2_10_combined<-rbind(df_1_10, df_2_10)
 
-df_3_10<-as.data.frame(replicate(50, rnorm(n=20, mean=0.5)))
+df_3_10<-as.data.frame(replicate(50, rnorm(n=20, mean=1)))
 
 colnames(df_3_10)[1] <- "V1"
 
@@ -568,7 +571,17 @@ table(km_g.clusters, big_df_combined_10$groups )
 
 ## Written Questions:
 
-**Question 1:** Based on reading for this class, what are the main risks of algorithmic models (machine learning) from a fairness and justice perspective? What forms of modeling/learning and/or sorts of data may pose particular risks of harm? What general strategies might be employed to mitigate these risks? Can you think of any methodological advances that might be pursued by computational and statistical researchers in order to help data analysts make "ethically derived" predictions?
+### Question 1:
+
+**Question:** Based on reading for this class, what are the main risks of algorithmic models (machine learning) from a fairness and justice perspective? What forms of modeling/learning and/or sorts of data may pose particular risks of harm? What general strategies might be employed to mitigate these risks? Can you think of any methodological advances that might be pursued by computational and statistical researchers in order to help data analysts make "ethically derived" predictions?
+
+**Answer:** Based on the readings for this class there are a great number of potential fairness and justice risks of the use of models in many areas of life. The primary ones are the reinforcement of systems that perpetuate inequality or direct harm to a group through self-reinforcing predictions and punitive or financial outcomes. As O'neal writes the collegiate arms race has inflated prices far beyond inflation while predicted outcomes of policing models ignore white collar crimes and encourage increased policing which leads to more punitive outcomes which have far reaching social and financial consequences. 
+
+The algorithms that appear to carry the most risk are predictive algorithms in the financial and social spaces. Predicting issues such as recidivism and crime are inevitable going to reinforce the structure in the world they are meant to predict and since algorithms are stagnant they cannot evolve to do anything but reflect what they are engineered to do.
+
+Mitigation of risk is difficult in modeling as algorithms are inherently reductive and based on the past, as a result there are areas that they simply should not be used in, perhaps the methodological advance could be 
+
+In earlier chapters, while no acknowledging fault fault, the author explains the widespread harm caused by predictive algorithms in finance that assisted in creating the 2008 housing bubble. When the bubble burst the burden of the fallout was felt by poor and middle class households who were given sub prime loan and subsequently foreclosed, lost their savings and credit. As O'neal points out these issues are due to the opaque nature in being often non-interpretable due to complexity and inherent mathematical structure. In addition the scale by which certain algorithms such as recidivism and policing.
 
 (Project update) Data Exploration: Use appropriate methods to explore the data you plan to use for your project. (It's okay if you change your mind and use a different data set later; this exercise may help you decide.) Include some form of visualization(s) and indications of the unit of analysis, the levels of measurements (e.g.: "9 categorical features–7 dichotomous and 2 with more than two categories– and 14 numerical/quantitative features, for a total of 23), univariate statistics helping characterize the distribution of the features and of the outcome variable (label) you wish to predict if you will be conducting supervised learning for the project. Convey something about relationships among features (predictors). If you are going to use these for prediction, identify any preprocessing you may need to do and options available for cleaning up/transforming data and/or dimension reduction. (Submit with your group or with explanation of why you must work alone.)
 

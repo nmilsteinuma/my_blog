@@ -81,7 +81,7 @@ str(New_guns_urls_df)
 
 new_guns_urls_df<-New_guns_urls_df[,c("title", "date_utc", "comments")]
 
-new_guns_corpus<-corpus(new_guns_urls_df$title)
+new_guns_corpus <- corpus(new_guns_urls_df$title)
 
 new_guns_documents<-new_guns_corpus[1:10,]
 
