@@ -45,7 +45,6 @@ library(rvest)
 library(tidytext)
 library(text2vec)
 library(preText)
-library(topicmodels)
 library(ggplot2)
 library(pals)
 library(reshape2)
@@ -78,7 +77,7 @@ new_guns_urls <- loadRData("/Users/noahmilstein/Desktop/Spring 2022/Textasdata/t
 # Next I extract the 4 columns that I will need, title, date, comments
 # and non-title text
 
-new_guns_urls_df<-New_guns_urls[,c("title", "date_utc", "comments", "text")]
+new_guns_urls_df<-new_guns_urls[,c("title", "date_utc", "comments", "text")]
 
 # Next I load the top posts of all time on the thread which go back to 2017 
 # With observations to march 2022 when it was scraped.
@@ -245,6 +244,7 @@ set.seed(836)
 
 # next I make my first LDA model below
 
+?LDA
 lda_model <- LDA$new(n_topics = 20, doc_topic_prior = 0.1, 
                      topic_word_prior = 0.01)
 
@@ -350,6 +350,9 @@ dim(myDfm)
 ```
 
 ```{r}
+
+set.seed(836)
+
 cor_topic_model <- stm(myDfm, K = 5, 
                    verbose = FALSE, init.type = "Spectral")
 ```
@@ -362,6 +365,8 @@ labelTopics(cor_topic_model)
 ```
 
 ```{r}
+
+set.seed(836)
 
 whole_data_frame_unique_empty<- whole_data_frame_unique[-c(120, 276, 2195),]
 
@@ -391,6 +396,8 @@ myModel <- stm(myDfm,
 ```
 
 ```{r}
+set.seed(836)
+
 labelTopics(myModel)
 ```
 
@@ -402,6 +409,8 @@ plot(myModel, type = "summary")
 ```
 
 ```{r}
+set.seed(836)
+
 # get the words
 myTopicNames <- labelTopics(myModel, n=4)$frex
 
@@ -418,6 +427,14 @@ myTopicLabels
 ```
 
 ```{r}
+modelEffects <- estimateEffect(formula=1:k~comments, 
+        stmobj = myModel, 
+        metadata = whole_data_frame_unique_empty)
+
+```
+
+
+```{r, eval=FALSE}
 
 set.seed(836)
 
@@ -450,7 +467,10 @@ for (i in 1:k){
 
 ```
 
-```{r}
+```{r, eval=FALSE}
+
+set.seed(836)
+
 differentKs <- searchK(myDfm, 
         K = c(5,25,50), 
         prevalence =~ comments, 
@@ -460,6 +480,7 @@ differentKs <- searchK(myDfm,
         init.type = "Spectral")
 
 plot(differentKs)
+
 ```
 
 The results of the model above indicate 4 properties including held out likelihood, which indicates a better model when it is larger, 
@@ -499,6 +520,9 @@ plot(myModel_2, type = "summary")
 ```
 
 ```{r}
+
+set.seed(836)
+
 # get the words
 myTopicNames <- labelTopics(myModel_2, n=4)$frex
 
@@ -518,10 +542,17 @@ myTopicLabels
 
 set.seed(836)
 
-# estimate effects
 modelEffects <- estimateEffect(formula=1:k~comments, 
         stmobj = myModel_2, 
         metadata = whole_data_frame_unique_empty)
+
+```
+
+
+```{r, eval = FALSE}
+
+
+# estimate effects
 
 # plot effects
 
@@ -549,29 +580,41 @@ for (i in 1:k){
 
 ```{r}
 
+library(topicmodels)
+
+```
+
+
+```{r}
+
 set.seed(836)
 
 
 # load stopwords
 english_stopwords <- readLines("https://slcladal.github.io/resources/stopwords_en.txt", encoding = "UTF-8")
+
 # create corpus object
-
-processedCorpus_guns <- data.frame(doc_id=row.names(whole_data_frame_unique),
+textdata <- data.frame(doc_id=row.names(whole_data_frame_unique),
                        text=whole_data_frame_unique$all_text)
+corpus <- Corpus(DataframeSource(textdata))
 
-corpus <- Corpus(DataframeSource(df_all_guns_for_corpus))
+
+
 
 # Preprocessing chain
 
 processedCorpus_guns <- tm_map(corpus, content_transformer(tolower))
-processedCorpus_guns <- tm_map(processedCorpus, removeWords, english_stopwords)
+processedCorpus_guns <- tm_map(processedCorpus_guns, removeWords, english_stopwords)
 
 ```
 
 ```{r}
+
+set.seed(836)
+
 minimumFrequency <- 5
 
-DTM <- DocumentTermMatrix(processedCorpus, control = list(bounds = list(global = c(minimumFrequency, Inf))))
+DTM <- DocumentTermMatrix(processedCorpus_guns, control = list(bounds = list(global = c(minimumFrequency, Inf))))
 
 ```
 
@@ -584,6 +627,7 @@ dim(DTM)
 ```
 
 ```{r}
+
 sel_idx <- slam::row_sums(DTM) > 0
 DTM <- DTM[sel_idx, ]
 
@@ -756,7 +800,7 @@ samples<-sample.int(2424, 10)
 
 exampleIds <- samples
 
-lapply(corpus[exampleIds], as.character)
+lapply(processedCorpus_guns[exampleIds], as.character)
 
 ```
 
@@ -849,10 +893,13 @@ df_for_visualization$group_numbers <- seq(1, 20, 1)
 ggplot(df_for_visualization, aes(x=group_names, y=countsOfPrimaryTopics,  
                                  fill=group_names)) + 
   geom_bar(stat = "identity" )+  theme_classic() +
-   theme(axis.text.x = element_text(angle = 90, hjust = 1, size=4),legend.key.size = unit(0.3, 'cm'), #change legend key size
+   theme(axis.text.x = element_text(angle = 90, hjust = 1, size=3),legend.key.size = unit(0.3, 'cm'), #change legend key size
         legend.key.height = unit(0.4, 'cm'), #change legend key height
         legend.key.width = unit(0.4, 'cm'),) +  
-scale_fill_manual(values = paste0(alphabet(20), "FF"))
+scale_fill_manual(values = paste0(alphabet(20), "FF"))+ 
+  xlab("Topic Groups") +
+  ylab("Number of Posts in Group") + 
+  guides(fill=guide_legend(title="Topic Groups"))
 ?theme
 
 ```
@@ -873,9 +920,10 @@ df_for_visualization_relevant$group_numbers <- c(1,7,8,11,17)
 
 ggplot(df_for_visualization_relevant, aes(x=group_names, y=`df_for_visualization[c(1, 7, 8, 11, 17), ]`,  fill=group_names)) + 
   geom_bar(stat = "identity" ) +    
-  scale_fill_manual(values = paste0(alphabet(20), "FF")) +
+  scale_fill_manual(values = paste0(alphabet(20), "FF")) +   theme_classic() +
    theme(axis.text.x = element_text(size = 6))+
-  scale_x_discrete(guide = guide_axis(n.dodge = 2))
+  scale_x_discrete(guide = guide_axis(n.dodge = 2)) + xlab("Topic Groups") +
+  ylab("Number of Posts in Group") + guides(fill=guide_legend(title="Topic Groups"))
 
 ```
 
