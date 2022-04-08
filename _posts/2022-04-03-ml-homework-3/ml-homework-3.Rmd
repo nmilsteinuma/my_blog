@@ -12,8 +12,11 @@ output:
 ---
 
 ISLR Ch. 6, Exercise 9e and update 9g (assigned for HW 2), looking back at your HW 2 answers for context
+
 ISLR Ch. 12, Exercise 8
+
 ISLR Ch. 12, Exercise 9
+
 ISLR Ch. 12, Exercise 10
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
@@ -356,17 +359,20 @@ pve
 
 ```{r}
 
-USArrests_scaled<-scale(USArrests)
+USArrests_scaled <- scale(USArrests)
+
+#dim(USArrests_scaled)
 
 loadings <- pr.out$rotation
 
-top_of_equation <- (USArrests_scaled %*% squared_loadings)
+# dim(loadings)
 
-top_of_equation_squared <- top_of_equation^2
 
-sum_squared_loadings <- apply(top_of_equation_squared, 2, sum)
+loadings_times_var <- (USArrests_scaled %*% loadings)
 
-sum_squared_loadings / sum(USArrests_scaled^2)
+sum_squares <- apply(loadings_times_var^2, 2, sum)
+
+sum_squares / sum(sum_squares)
 
 ```
 
@@ -433,6 +439,7 @@ labels = USArrests_scaled.labs, main = "Complete Linkage")
 ### Ch. 12, Exercise 10
 
 **Basis:** In this problem, you will generate simulated data, and then perform PCA and K-means clustering on the data.
+
 #### (a) 
 
 **Basis:** Generate a simulated data set with 20 observations in each of three classes (i.e. 60 observations total), and 50 variables.
@@ -444,22 +451,22 @@ Hint: There are a number of functions in R that you can use to generate data. On
 set.seed(280)
 
 
-df_1_10<-as.data.frame(replicate(50, rnorm(n=20, mean=0)))
+df_1_10 <- as.data.frame(replicate(50, rnorm(n=20, mean=0, sd = 2)))
 
 colnames(df_1_10)[1] <- "V1"
 
 
-df_2_10<-as.data.frame(replicate(50,rnorm(n=20, mean=0.5)))
+df_2_10<-as.data.frame(replicate(50, rnorm(n=20, mean=0.5)))
 
 colnames(df_2_10)[1] <- "V1"
 
-df_2_10_combined<-rbind(df_1_10, df_2_10)
+df_2_10_combined <- rbind(df_1_10, df_2_10)
 
-df_3_10<-as.data.frame(replicate(50, rnorm(n=20, mean=1)))
+df_3_10 <- as.data.frame(replicate(50, rnorm(n=20, mean=1)))
 
 colnames(df_3_10)[1] <- "V1"
 
-big_df_combined_10<-rbind(df_2_10_combined, df_3_10)
+big_df_combined_10 <- rbind(df_2_10_combined, df_3_10)
 
 big_df_combined_10$groups <- NA #initialise
 

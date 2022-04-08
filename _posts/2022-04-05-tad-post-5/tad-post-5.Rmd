@@ -19,7 +19,7 @@ output:
 
 **Content:** The content of this post uses LDA (Latent Dirichlet Allocation) in 2 different ways with the latter half borrowing heavily from Martin Schweinberger's github explanation for analysis and visualization of topic modeling.
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, cache = TRUE}
 library(rmarkdown)
 library(RedditExtractoR)
 library(jsonlite)
@@ -59,7 +59,7 @@ remotes::install_github("rlesur/klippy")
 
 **Loading Data:** 
 
-```{r}
+```{r, cache = TRUE}
 set.seed(836)
 # First I use a fucntion to load an RData file as R has no default 
 
@@ -83,7 +83,7 @@ new_guns_urls_df<-new_guns_urls[,c("title", "date_utc", "comments", "text")]
 # With observations to march 2022 when it was scraped.
 
 top_guns_urls <- loadRData("/Users/noahmilstein/Desktop/Spring 2022/Textasdata/text_as_data_work/top_guns_urls.RData")
-
+top_guns_urls
 top_guns_urls_df<-top_guns_urls[,c("title", "date_utc", "comments",  "text")]
 
 #hot_guns_urls <- find_thread_urls(subreddit="guns", sort_by="hot")
@@ -101,7 +101,7 @@ hot_guns_urls_df<-hot_guns_urls[,c("title", "date_utc", "comments", "text")]
 
 **Cleaning Data:** I begin cleaning the data below by adding row-names to the dataframe since the default was simply the title of the post. Next I add all of the posts to the same dataframe to be analyzed together and comprise a larger corpus. Though this will clearly be biased towards recent posts as of march 2022 this is of less concern than if it were a more political reddit, however because politics are generally absent the posts will still represent a useable subset of 
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -130,7 +130,7 @@ whole_data_frame <- rbind(hg_and_ng, top_guns_urls_df)
 
 Since all of the posts come from the same sub Reddit I have to ensure that all posts are unique as to avoid bias towards any particular set of words. This is because top posts, hot posts, and recent posts could all include the same post if it were to qualify for any of the categories by the reddit algorithm.
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -155,7 +155,7 @@ whole_data_frame_unique$"all_text" <- sapply(whole_data_frame_unique$"all_text",
 
 Next I must convert the character vector of dates into an actual date object using the as.Date() function.
 
-```{r}
+```{r,cache = TRUE}
 
 set.seed(836)
 
@@ -168,7 +168,7 @@ whole_data_frame_unique$date_utc <- as.Date(whole_data_frame_unique$date_utc)
 
 Next I begin to split my data into 2 sets, being the training and validation sets.
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -181,7 +181,7 @@ whole_data_frame_tokens <- word_tokenizer(whole_data_frame_tokens)
 ```
 
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -201,7 +201,7 @@ dim(vocab_whole_df)
 ```
 
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -214,7 +214,7 @@ v_for_whole_df <- prune_vocabulary(vocab_whole_df, term_count_min = 10,
 ```
 
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -224,7 +224,7 @@ vectorizer_whole_df <- vocab_vectorizer(v_for_whole_df)
 
 ```
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -238,7 +238,7 @@ dtm_whole_df <- create_dtm(itoken_whole_df, vectorizer_whole_df,
 ### Inital LDA Analysis
 
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -250,7 +250,7 @@ lda_model <- LDA$new(n_topics = 20, doc_topic_prior = 0.1,
 
 ```
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -262,7 +262,7 @@ doc_topic_distr <-
                           progressbar = FALSE)
 ```
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -275,7 +275,7 @@ barplot(doc_topic_distr[1, ], xlab = "topic",
 
 ```
 
-```{r}
+```{r,cache = TRUE}
 
 set.seed(836)
 
@@ -287,7 +287,7 @@ lda_model$get_top_words(n = 10, topic_number = c(1L, 5L, 10L), lambda = 1)
 
 
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -300,7 +300,7 @@ lda_model$get_top_words(n = 10, topic_number = c(1L, 5L, 10L), lambda = 0.2)
 
 #### LDA on Second Part of Data
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -311,7 +311,7 @@ dtm_other_part <- create_dtm(it2, vectorizer_whole_df, type = "dgTMatrix")
 
 ```
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -319,7 +319,7 @@ new_doc_topic_distr = lda_model$transform(dtm_other_part)
 
 ```
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -330,12 +330,12 @@ perplexity(dtm_other_part,
            doc_topic_distribution = new_doc_topic_distr)
 ```
 
-```{r}
+```{r, cache = TRUE}
 library(stm)
 ```
 
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -349,7 +349,7 @@ dim(myDfm)
 
 ```
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -357,14 +357,14 @@ cor_topic_model <- stm(myDfm, K = 5,
                    verbose = FALSE, init.type = "Spectral")
 ```
 
-```{r}
+```{r, cache = TRUE}
 set.seed(836)
 
 labelTopics(cor_topic_model)
 
 ```
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -377,7 +377,7 @@ thoughts_whole_df <- findThoughts(cor_topic_model,
 
 ```
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -395,20 +395,20 @@ myModel <- stm(myDfm,
 
 ```
 
-```{r}
+```{r, cache = TRUE}
 set.seed(836)
 
 labelTopics(myModel)
 ```
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
 plot(myModel, type = "summary")
 ```
 
-```{r}
+```{r, cache = TRUE}
 set.seed(836)
 
 # get the words
@@ -426,7 +426,7 @@ for (i in 1:k){
 myTopicLabels
 ```
 
-```{r}
+```{r,cache = TRUE}
 modelEffects <- estimateEffect(formula=1:k~comments, 
         stmobj = myModel, 
         metadata = whole_data_frame_unique_empty)
@@ -485,7 +485,7 @@ plot(differentKs)
 
 The results of the model above indicate 4 properties including held out likelihood, which indicates a better model when it is larger, 
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -494,7 +494,6 @@ k <- 25
 
 # specify model
 
-?stm
 myModel_2 <- stm(myDfm,
             K = k, 
             max.em.its = 1000, 
@@ -503,7 +502,7 @@ myModel_2 <- stm(myDfm,
 
 ```
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -511,7 +510,7 @@ labelTopics(myModel)
 
 ```
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -519,7 +518,7 @@ plot(myModel_2, type = "summary")
 
 ```
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -538,7 +537,7 @@ for (i in 1:k){
 myTopicLabels
 ```
 
-```{r}
+```{r,cache = TRUE}
 
 set.seed(836)
 
@@ -578,14 +577,14 @@ for (i in 1:k){
 
 ```
 
-```{r}
+```{r, cache = TRUE}
 
 library(topicmodels)
 
 ```
 
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -608,7 +607,7 @@ processedCorpus_guns <- tm_map(processedCorpus_guns, removeWords, english_stopwo
 
 ```
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -618,7 +617,7 @@ DTM <- DocumentTermMatrix(processedCorpus_guns, control = list(bounds = list(glo
 
 ```
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -626,7 +625,7 @@ dim(DTM)
 
 ```
 
-```{r}
+```{r, cache = TRUE}
 
 sel_idx <- slam::row_sums(DTM) > 0
 DTM <- DTM[sel_idx, ]
@@ -635,7 +634,7 @@ textdata <- textdata[sel_idx, ]
 
 ```
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -649,14 +648,14 @@ result <- ldatuning::FindTopicsNumber(
 )
 ```
 
-```{r}
+```{r, cache = TRUE}
 
 FindTopicsNumber_plot(result)
 
 ```
 
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -668,14 +667,14 @@ set.seed(9161)
 topicModel <- LDA(DTM, K, method="Gibbs", control=list(iter = 500, verbose = 25))
 ```
 
-```{r}
+```{r, cache = TRUE}
 # have a look a some of the results (posterior distributions)
 tmResult <- posterior(topicModel)
 # format of the resulting object
 attributes(tmResult)
 ```
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -684,7 +683,7 @@ nTerms(DTM)              # lengthOfVocab
 
 ```
 
-```{r}
+```{r,cache = TRUE}
 
 set.seed(836)
 
@@ -693,14 +692,14 @@ beta <- tmResult$terms   # get beta from results
 dim(beta)                # K distributions over nTerms(DTM) terms
 ```
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
 rowSums(beta) 
 ```
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -708,7 +707,7 @@ nDocs(DTM)               # size of collection
 
 ```
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -718,7 +717,7 @@ dim(theta)
 
 ```
 
-```{r}
+```{r,cache = TRUE}
 
 set.seed(836)
 
@@ -729,7 +728,7 @@ terms(topicModel, 10)
 
 Here we have actually distinguished a couple of groups that might be useful, 14 is the only one with defense, and 17 is the only one with hunting. 1, 7, 11, involve the word range within their topic. Carry is only found in group 8. This would indicate that the term is the in the top 10 in these groups. These are listed on their own below.
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -739,7 +738,7 @@ exampleTermData[, c(1,7,8, 11,17)]
 
 ```
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -751,7 +750,7 @@ topicNames
 
 ```
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -772,7 +771,7 @@ wordcloud(words, probabilities, random.order = FALSE, color = mycolors)
 
 ```
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -792,7 +791,7 @@ mycolors <- brewer.pal(8, "Dark2")
 wordcloud(words, probabilities, random.order = FALSE, color = mycolors)
 ```
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(928)
 
@@ -805,7 +804,7 @@ lapply(processedCorpus_guns[exampleIds], as.character)
 ```
 
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -822,7 +821,7 @@ ggplot(data = vizDataFrame, aes(topic, value, fill = document), ylab = "proporti
   facet_wrap(~ document, ncol = N)
 ```
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -830,7 +829,7 @@ topicNames <- apply(lda::top.topic.words(beta, 5, by.score = T), 2, paste, colla
 
 ```
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -848,7 +847,7 @@ sort(topicProportions, decreasing = TRUE)
 
 ```
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -858,7 +857,7 @@ paste(round(soP, 5), ":", names(soP))
 
 ```
 
-```{r}
+```{r, cache = TRUE}
 countsOfPrimaryTopics <- rep(0, K)
 names(countsOfPrimaryTopics) <- topicNames
 for (i in 1:nDocs(DTM)) {
@@ -870,7 +869,7 @@ for (i in 1:nDocs(DTM)) {
 sort(countsOfPrimaryTopics, decreasing = TRUE)
 ```
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -880,7 +879,7 @@ paste(so, ":", names(so))
 
 ```
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 
@@ -906,7 +905,7 @@ scale_fill_manual(values = paste0(alphabet(20), "FF"))+
 
 ### Major Topics Visualization
 
-```{r}
+```{r, cache = TRUE}
 
 set.seed(836)
 

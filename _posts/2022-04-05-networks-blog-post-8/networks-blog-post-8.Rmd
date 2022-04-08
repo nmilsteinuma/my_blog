@@ -827,3 +827,373 @@ ylab = "Cumulative Proportion of Variance Explained", ylim = c(0, 1), type = "b"
 
 ```
 
+### CUG 1000s
+
+```{r}
+
+trans.cug<-cug.test(wars_1000s,FUN=gtrans,mode="digraph",cmode="size")
+trans.cug
+
+```
+
+```{r}
+
+plot(trans.cug)
+
+```
+
+```{r}
+#t-stat between observed and simulated networks
+(trans.cug$obs.stat-mean(trans.cug$rep.stat))/sd(trans.cug$rep.stat)
+```
+
+```{r}
+cug.t<-function(cug.object){
+  (cug.object$obs.stat-mean(cug.object$rep.stat))/sd(cug.object$rep.stat)
+}
+```
+
+```{r}
+#compare network transitivity to null conditional on size
+trans.cug<-cug.test(wars_1000s,FUN=gtrans,mode="digraph",cmode="size", reps = 100)
+trans.cug
+```
+
+```{r}
+#plot vs. simulation results
+plot(trans.cug)
+```
+
+```{r}
+#t-stat between observed and simulated networks
+cug.t(trans.cug)
+```
+
+### CUG 1100s
+
+```{r}
+
+trans.cug<-cug.test(wars_1100s,FUN=gtrans,mode="digraph",cmode="size")
+trans.cug
+
+```
+
+```{r}
+
+plot(trans.cug)
+
+```
+
+```{r}
+#t-stat between observed and simulated networks
+(trans.cug$obs.stat-mean(trans.cug$rep.stat))/sd(trans.cug$rep.stat)
+```
+
+```{r}
+cug.t<-function(cug.object){
+  (cug.object$obs.stat-mean(cug.object$rep.stat))/sd(cug.object$rep.stat)
+}
+```
+
+```{r}
+#compare network transitivity to null conditional on size
+trans.cug<-cug.test(wars_1100s,FUN=gtrans,mode="digraph",cmode="size", reps = 100)
+trans.cug
+```
+
+```{r}
+#plot vs. simulation results
+plot(trans.cug)
+```
+
+```{r}
+#t-stat between observed and simulated networks
+cug.t(trans.cug)
+```
+
+### CUG 1200s
+
+```{r}
+
+trans.cug<-cug.test(wars_1200s,FUN=gtrans,mode="digraph",cmode="size")
+trans.cug
+
+```
+
+```{r}
+
+plot(trans.cug)
+
+```
+
+```{r}
+#t-stat between observed and simulated networks
+(trans.cug$obs.stat-mean(trans.cug$rep.stat))/sd(trans.cug$rep.stat)
+```
+
+```{r}
+cug.t<-function(cug.object){
+  (cug.object$obs.stat-mean(cug.object$rep.stat))/sd(cug.object$rep.stat)
+}
+```
+
+```{r}
+#compare network transitivity to null conditional on size
+trans.cug<-cug.test(wars_1200s,FUN=gtrans,mode="digraph",cmode="size", reps = 100)
+trans.cug
+```
+
+```{r}
+#plot vs. simulation results
+plot(trans.cug)
+```
+
+```{r}
+#t-stat between observed and simulated networks
+cug.t(trans.cug)
+```
+
+### CUG Test Centralization 1000s
+
+```{r}
+#compare network degree centralization to null conditional on size
+c.degree.cug <-cug.test(wars_1000s,FUN=centralization,  FUN.arg=list(FUN=degree, cmode="indegree"), mode="digraph", cmode="size") 
+#plot vs simulation results
+plot(c.degree.cug)
+```
+
+```{r}
+#t-stat between observed and simulated networks
+cug.t(c.degree.cug)
+```
+
+```{r}
+#compare network betweenness centralization to null conditional on size
+b.degree.cug <-cug.test(wars_1000s,FUN=centralization,  FUN.arg=list(FUN=betweenness, cmode="directed"), mode="digraph", cmode="size", reps=100) 
+#plot vs simulation results
+plot(b.degree.cug)
+```
+
+```{r}
+#t-stat between observed and simulated networks
+cug.t(b.degree.cug)
+```
+
+### CUG Test Centralization 1200s
+
+```{r}
+#compare network degree centralization to null conditional on size
+c.degree.cug <-cug.test(wars_1100s,FUN=centralization,  FUN.arg=list(FUN=degree, cmode="indegree"), mode="digraph", cmode="size") 
+#plot vs simulation results
+plot(c.degree.cug)
+```
+
+```{r}
+#t-stat between observed and simulated networks
+cug.t(c.degree.cug)
+```
+
+```{r}
+#compare network betweenness centralization to null conditional on size
+b.degree.cug <-cug.test(wars_1100s,FUN=centralization,  FUN.arg=list(FUN=betweenness, cmode="directed"), mode="digraph", cmode="size", reps=100) 
+#plot vs simulation results
+plot(b.degree.cug)
+```
+
+```{r}
+#t-stat between observed and simulated networks
+cug.t(b.degree.cug)
+```
+
+### CUG Test Centralization 1200s
+
+```{r}
+#compare network degree centralization to null conditional on size
+c.degree.cug <-cug.test(wars_1200s,FUN=centralization,  FUN.arg=list(FUN=degree, cmode="indegree"), mode="digraph", cmode="size") 
+#plot vs simulation results
+plot(c.degree.cug)
+```
+
+```{r}
+#t-stat between observed and simulated networks
+cug.t(c.degree.cug)
+```
+
+```{r}
+#compare network betweenness centralization to null conditional on size
+b.degree.cug <-cug.test(wars_1200s,FUN=centralization,  FUN.arg=list(FUN=betweenness, cmode="directed"), mode="digraph", cmode="size", reps=100) 
+#plot vs simulation results
+plot(b.degree.cug)
+```
+
+```{r}
+#t-stat between observed and simulated networks
+cug.t(b.degree.cug)
+```
+
+### Conditioning on Different Network Properties 1000s
+
+```{r}
+#compare network transitivity to null conditional on dyads
+trans.cug<-cug.test(wars_1000s,FUN=gtrans,mode="digraph",cmode="dyad")
+trans.cug
+```
+
+```{r}
+#plot vs simulation results
+plot(trans.cug)
+```
+
+```{r}
+#t-stat between observed and simulated networks
+cug.t(trans.cug)
+```
+
+```{r}
+#compare network transitivity to null conditional on edges (density)
+trans.cug<-cug.test(wars_1000s,FUN=gtrans,mode="digraph",cmode="edges", reps=100)
+trans.cug
+```
+
+```{r}
+#plot vs simulation results
+plot(trans.cug)
+```
+
+```{r}
+#t-stat between observed and simulated networks
+cug.t(trans.cug)
+```
+
+### Conditioning on Different Network Properties 1100s
+
+```{r}
+#compare network transitivity to null conditional on dyads
+trans.cug<-cug.test(wars_1100s,FUN=gtrans,mode="digraph",cmode="dyad")
+trans.cug
+```
+
+```{r}
+#plot vs simulation results
+plot(trans.cug)
+```
+
+```{r}
+#t-stat between observed and simulated networks
+cug.t(trans.cug)
+```
+
+```{r}
+#compare network transitivity to null conditional on edges (density)
+trans.cug<-cug.test(wars_1100s,FUN=gtrans,mode="digraph",cmode="edges", reps=100)
+trans.cug
+```
+
+```{r}
+#plot vs simulation results
+plot(trans.cug)
+```
+
+```{r}
+#t-stat between observed and simulated networks
+cug.t(trans.cug)
+```
+
+### Conditioning on Different Network Properties 1200s
+
+```{r}
+#compare network transitivity to null conditional on dyads
+trans.cug<-cug.test(wars_1200s,FUN=gtrans,mode="digraph",cmode="dyad")
+trans.cug
+```
+
+```{r}
+#plot vs simulation results
+plot(trans.cug)
+```
+
+```{r}
+#t-stat between observed and simulated networks
+cug.t(trans.cug)
+```
+
+```{r}
+#compare network transitivity to null conditional on edges (density)
+trans.cug<-cug.test(wars_1200s,FUN=gtrans,mode="digraph",cmode="edges", reps=100)
+trans.cug
+```
+
+```{r}
+#plot vs simulation results
+plot(trans.cug)
+```
+
+```{r}
+#t-stat between observed and simulated networks
+cug.t(trans.cug)
+```
+
+```{r}
+#create empty dataframe for simulations
+trials<-data.frame(id=1:100, gdens=NA, gtrans=NA, cent.deg=NA, cent.bet=NA)
+```
+
+```{r}
+#simulate PA networks and add stats to trials dataframe: size
+for ( i in 1:100 ){ 
+  pa.ig<- igraph::sample_pa(n = network.size(wars_in_1000s_network), directed=TRUE)
+  pa.stat<-intergraph::asNetwork(pa.ig)
+  trials$gdens<-gden(pa.stat)
+  trials$gtrans[i] <- gtrans(pa.stat)
+  trials$cent.deg[i] <- centralization(pa.stat, FUN=degree, cmode="indegree")
+  trials$cent.bet[i] <-centralization(pa.stat, FUN=betweenness)
+}
+```
+
+```{r}
+summary(trials)
+
+```
+
+```{r}
+sim.t<-function(g, trials){
+  temp<-data.frame(density=c(gden(g),mean(trials$gdens),sd(trials$gdens)),
+             transitivity=c(gtrans(g),mean(trials$gtrans),sd(trials$gtrans)),
+             indegCent=c(centralization(g, FUN=degree, cmode="indegree"),mean(trials$cent.deg), sd(trials$cent.deg)),
+             betwCent=c(centralization(g, FUN=betweenness), mean(trials$cent.bet), sd(trials$cent.bet)))
+  rownames(temp)<-c("Observed","Simulated", "SD")
+  temp<-data.frame(t(temp))
+  temp$tvalue<-(temp$Observed-temp$Simulated)/temp$SD
+  temp
+}
+```
+
+```{r}
+plot.sim.t<-function(g,trials){
+  temp<-data.frame(net.stat=c("gtrans","cent.deg","cent.bet"), x=c(gtrans(g),centralization(g, FUN=degree, cmode="indegree"), centralization(g, FUN=betweenness)))
+  trials%>%
+    select(gtrans:cent.bet)%>%
+    gather(key="net.stat",value = "estimate")%>%
+    ggplot(aes(estimate)) +
+    geom_histogram() +
+    facet_wrap(net.stat ~ ., scales="free", ncol=3) +
+    geom_vline(data=temp, aes(xintercept=x),
+               linetype="dashed", size=1, colour="red")
+}
+```
+
+
+```{r}
+#check for differences from null
+
+sim.t(g=wars_1000s, trials)
+
+```
+
+```{r}
+
+# plot.sim.t(wars_1000s, trials)
+
+```
+
+
