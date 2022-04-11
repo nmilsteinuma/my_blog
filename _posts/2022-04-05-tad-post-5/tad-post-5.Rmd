@@ -83,7 +83,7 @@ new_guns_urls_df<-new_guns_urls[,c("title", "date_utc", "comments", "text")]
 # With observations to march 2022 when it was scraped.
 
 top_guns_urls <- loadRData("/Users/noahmilstein/Desktop/Spring 2022/Textasdata/text_as_data_work/top_guns_urls.RData")
-top_guns_urls
+
 top_guns_urls_df<-top_guns_urls[,c("title", "date_utc", "comments",  "text")]
 
 #hot_guns_urls <- find_thread_urls(subreddit="guns", sort_by="hot")

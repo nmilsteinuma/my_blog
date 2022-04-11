@@ -11,9 +11,7 @@ output:
     self_contained: false
 ---
 
-ISLR Ch. 6, Exercise 9e and update 9g (assigned for HW 2), looking back at your HW 2 answers for context
 
-ISLR Ch. 12, Exercise 8
 
 ISLR Ch. 12, Exercise 9
 
@@ -46,7 +44,7 @@ library(markdown)
 
 ### Ch. 6
 
-**Basis:**  In this exercise, we will predict the number of applications received using the other variables in the College data set. During my original calculations for homework 2 I did the prediction on the graduation rate rather than applications received so I will be modifying my calculations for parts 
+**Basis:**  In this exercise, we will predict the number of applications received using the other variables in the College data set. During my original calculations for homework 2 I did the prediction on the graduation rate rather than applications received so I will be modifying my calculations for parts a through e to reflect this and enable me to interpret part g correctly.
 
 #### (a) 
 
@@ -72,7 +70,7 @@ college_test <- College[-train_College_numbers,]
 
 **Question:** Fit a linear model using least squares on the training set, and report the test error obtained.
 
-**Answer:** I fit a least squares on my 80% training set below using all variables since we will be using a ridge regression that later account for the number of variables we should use as the ridge moves their coefficients towards zero.
+**Fitting Linear Model on training set:** I fit a least squares on my 80% training set below using all variables since we will be using a ridge regression that later account for the number of variables we should use as the ridge moves their coefficients towards zero. In this first regression "least_squares_college" all will be included
 
 ```{r}
 
@@ -80,9 +78,11 @@ set.seed(9292)
 
 least_squares_college <- glm(Apps ~. , data=college_training)
 
+summary(least_squares_college)
+
 ```
 
-**Answer:** I then use the predict function using my least squares function and my test data to make prediction for my error rate. I express the test error as the mean square error, which is calculated as 1094646
+**Obtaining Test MSE:** In order to obtain test error I use the predict function and the least_squares_college linear model in my previous code and apply it to my test data. I report test error as Mean Squared error which is calculated below as the difference between the true value of the number of applications minus the predicted number, squared. I obtain a result of 1,094,646 as my MSE.
 
 ```{r}
 
@@ -100,7 +100,7 @@ MSE_college_test %>% kable()
 
 **Question:** Fit a ridge regression model on the training set, with lambda chosen by cross-validation. Report the test error obtained.
 
-**Answer:** Below I make a grid of values that is a sequence of 10 to -2 of length 100 which goes from 10^10 to 10^(-2) creates a set of selected values. In order to fit a ridge model using cross validation I split the model into training and test set. Using the glmnet() function I then plug in my x-ridge model matrix and the y-ridge being the true values from the graduation rate column of the college dataset. This results in a dimension of 18 by 100.
+**Answer:** Below I make a grid of values that is a sequence of 10 to -2 of length 100 which goes from 10^10 to 10^(-2) and creates a set of selected values. In order to fit a ridge model using cross validation I split the model into training and test set. Using the glmnet() function I then plug in my x-ridge model matrix and the y-ridge being the true values from the graduation rate column of the college dataset. This results in a dimension of 18 by 100.
 
 ```{r}
 
@@ -132,7 +132,7 @@ y.test_ridge <- y_ridge[test_ridge]
 
 ```
 
-**Answer:** I then use the glmnet() function with an alpha of 0 which is a ridge penalty in this case. In this scenario the function is named ridge.mod, this is then put into predict() where it predicts on the test section of the data.
+**Answer:** I then use the glmnet() function with an alpha of 0 which is a ridge penalty in this case. In this scenario the function is named ridge.mod, this is then put into predict() where it predicts on the test section of the data. The resulting mean squared error is 1,082,823 which is a 11,823 unit improvement over the original GLM with no variable coefficinets moved towards zero.
 
 ```{r}
 
@@ -147,7 +147,7 @@ mean((ridge.pred - y.test_ridge)^2) %>% kable()
 
 ```
 
-**Answer:** Afterwards we fit the model again using the glmnet() function ridge.mod using a new x from x_ridge and our x and y from training. We then access the 18 coefficients below, as can be seen the ridge moves the coefficients it decides have little impact towns zero.
+**Answer:** Afterwards we fit the model again using the glmnet() function ridge.mod using a new x from x_ridge and our x and y from training. We then access the 18 coefficients below, as can be seen the ridge moves the coefficients it decides have little impact towards zero.
 
 ```{r}
 
@@ -185,7 +185,7 @@ bestlam
 
 ```
 
-**Answer continued:** Finally we use out predict function to see what our mean squared error will be for our tuning parameters than minimizes MSE, in this case it is 191.0022 as seen below compared to the grid values which yielded a 191.9619 at best.
+**Answer continued:** Finally we use out predict function to see what our mean squared error will be for our tuning parameters than minimizes MSE, in this case it is *924,234.4* as seen below compared to the grid values which yielded a *1,082,823* at best.
 
 ```{r}
 
@@ -197,7 +197,7 @@ mean((ridge.pred - y.test_ridge)^2) %>% kable()
 
 ```
 
-**Answer continued:** The coefficient outputs for the lambda that minimizes MSE are then outputted below. Here Private school, per.alumni, Top10perc, and top25perc, along with Phd having coefficients over 0.05 in predicting the number of applications.
+**Answer continued:** The coefficient outputs for the lambda that minimizes MSE are then expressed below. Here a number of coefficients remain in the function when predicting the number of applications received using a ridge regression.
 
 ```{r}
 set.seed(9292)
@@ -212,7 +212,7 @@ predict(out, type = "coefficients", s = bestlam)[1:18, ]
 
 **Question:** Fit a lasso model on the training set, with lambda chosen by cross validation. Report the test error obtained, along with the number of non-zero coefficient estimates.
 
-**Answer:** The process of creating the lasso is largely similar to that of the ridge though here our inital glmnet() takes an alpha of 1. The plot below this indicates that depending on our choise of tuning parameter lambda, certain coefficients will become zero.
+**Answer:** The process of creating the lasso is largely similar to that of the ridge though here our initial glmnet() takes an alpha of 1. The plot below this indicates that depending on our choice of tuning parameter lambda, certain coefficients will become zero.
 
 ```{r}
 set.seed(9292)
@@ -237,7 +237,7 @@ plot(cv.out_2)
 
 ```
 
-**Answer continued:** After this cross validation has been calculated we then access the lambda that minimizes MSE. We then use the predict function to calculate predictions for our lasso using the lambda that minimizes MSE this gets a MSE of 190.8808.
+**Answer continued:** After this cross validation has been calculated we then access the lambda that minimizes MSE. We then use the predict function to calculate predictions for our lasso using the lambda that minimizes MSE this gets a MSE of *1,082,717*.
 
 ```{r}
 
@@ -251,7 +251,7 @@ mean((lasso.pred - y.test_ridge)^2) %>% kable()
 
 ```
 
-**Answer continued:** Finally we calculate and show the coefficients for our equation with the lasso reducing our number of parameters by moving coefficients towards zero that have low impact. Here we remove, Accept, Enroll, F.Undergrad,  Books, Terminal, and S.F.Ratio with other values still being reflected in the equation coefficients.
+**Answer continued:** Finally we calculate and show the coefficients for our equation with the lasso reducing our number of parameters by moving coefficients towards zero that have low impacts.
 
 ```{r}
 
@@ -264,33 +264,6 @@ lasso.coef <- predict(out, type = "coefficients", s = bestlam)[1:18, ]
 
 lasso.coef
 
-```
-
-#### (e) 
-
-**Basis:** Fit a PCR model on the training set, with M chosen by cross- validation. Report the test error obtained, along with the value of M selected by cross-validation.
-
-```{r, echo=FALSE}
-
-#install.packages("pls")
-library(pls)
-
-```
-
-```{r}
-
-pcr.fit <- pcr(Apps ~., data = college_training, scale = TRUE,
-validation = "CV")
-
-validationplot(pcr.fit, val.type = "MSEP")
-
-```
-
-```{r}
-
-pcr.pred <- predict(pcr.fit, College[-train_College_numbers, ], ncomp = 5) 
-
-mean((pcr.pred - college_test$Apps)^2)
 
 ```
 
@@ -298,7 +271,7 @@ mean((pcr.pred - college_test$Apps)^2)
 
 **Basis:** Comment on the results obtained. How accurately can we predict the number of college applications received? Is there much difference among the test errors resulting from these five approaches?
 
-**Answer:**
+**Answer:** The results are relatively similar across the 3 models. Mean squared errors are close to a million with some methods improving by about 10,000 though still making quite high MSE. No method appears to significantly alter the results of the regression with lasso not appearing to move any coefficients towards zero and drop the impact of any particular variaable.
 
 ### Ch. 12, Exercise 8
 
@@ -308,6 +281,8 @@ mean((pcr.pred - college_test$Apps)^2)
 
 **Basis:** Using the sdev output of the prcomp() function, as was done in Section 12.2.3.
 
+**Answer:** Using sdev and prcomp() on USA arrests on USArrests as in 12.2.3 we first start by using our principal component function prcomp(), inside of this we add USArrests and scale our variables for consistency. These princpal components are represented by pr.out
+
 ```{r} 
 
 pr.out <- prcomp(USArrests, scale = TRUE)
@@ -315,6 +290,8 @@ pr.out <- prcomp(USArrests, scale = TRUE)
 pr.out
 
 ```
+
+**Answer 2:** Next we see 4 names in the output of our principal component function results, one of which is sdev which will need to calculate our PVE.
 
 ```{r} 
 
@@ -333,9 +310,14 @@ dim(pr.out$x)
 biplot(pr.out, scale = 0)
 
 ```
+
+**Answer 3:** We see our 4 sdev, or standard deviations for Murder, Assault, UrbanPop and Rape.
+
 ```{r}
 pr.out$sdev %>% kable()
 ```
+
+**Answer 4:** First we square our sdevs to acquire our variance.
 
 ```{r}
 
@@ -344,6 +326,8 @@ pr.var <- pr.out$sdev^2
 pr.var
 
 ```
+
+**Answer 5:** Next we divide these values of our variance by their sum in the denominator.
 
 ```{r}
 
@@ -356,6 +340,8 @@ pve
 #### (b) 
 
 **Basis:** By applying Equation 12.10 directly. That is, use the prcomp() function to compute the principal component loadings. Then, use those loadings in Equation 12.10 to obtain the PVE.
+
+**Answer:** In order to obtain PVE directly we must first obtain our loadings using prcomp, which I caclualted earlier as pr.out <- prcomp(USArrests, scale = TRUE). The loading's are represented as the rotations of the principal component. I then multiply these by the matrix of scaled USArrests observations which have each state represented with each of the 4 variables, Using matrix multiplication on the USArrests data and loading's we have the first part of the top of 12.10, this is then squared and summed. This is then divided by the sum of the previously calculated squared matrix multipliation. This results in identical PVE's to those obtained by code alone.
 
 ```{r}
 
@@ -385,14 +371,20 @@ sum_squares / sum(sum_squares)
 
 **Basis:** Using hierarchical clustering with complete linkage and Euclidean distance, cluster the states.
 
+**Answer:** Below I use hierarchical clustering on the US states, this is done using the dist() function between states in the USArrests matrix, by default this uses eucliean distance, no diagonal or upper portion of the data which would repeat the values below the matrix diagonal. Next I use hclust() which performs hierarchical clustering with complete linkage.
+
 ```{r}
+
+# First dist() is used on USArrests to compute euclidean 
+# distance between the observations in each state.
 
 USArrests.dist <- dist(USArrests)
 
-USArrests_scaled.labs <- USArrests$labs
+# Next I acquire the labels from the dendrogram graph using the labels
+# From USArrests
+USArrest.labs <- rownames(USArrests)
 
-plot(hclust(USArrests.dist), xlab = "", sub = "", ylab = "",
-labels = USArrests_scaled.labs, main = "Complete Linkage")
+plot(hclust(USArrests.dist, method="complete"), xlab = "", sub = "", ylab = "", main = "Complete Linkage")
 
 ```
 
@@ -400,29 +392,79 @@ labels = USArrests_scaled.labs, main = "Complete Linkage")
 
 **Basis:** Cut the dendrogram at a height that results in three distinct clusters. Which states belong to which clusters?
 
+**Answer:** Below I have used the function cutree, which cuts a tree specified in an hclust() into a spcified number of groups, in this case 3. After running this function I manually extract the rows from the table that represent state membership into each group with having a 1, as opposed to a zero in that group representing that the observation belongs to it. 
+
 ```{r}
 
-hc.out <- hclust(dist(USArrests_scaled)) 
 
-hc.clusters <- cutree(hc.out, 3)
+set.seed(8437)
 
-table(hc.clusters)
+# First I use clust() on our USArrests euclidean distance with complete linkage
+# Next I use cutree() to cut the USArrests.dist data into 3 clusters.
 
+hc.clusters <- cutree(hclust(USArrests.dist, method="complete"), 3)
+
+# I then add these to a table with each observations repective label
+
+table_with_3_clusters <- table(hc.clusters, USArrest.labs)
+
+# I then take all 3 rows on their own
+
+table_with_3_clusters_r1 <- table_with_3_clusters[1,]
+
+table_with_3_clusters_r2 <- table_with_3_clusters[2,]
+
+table_with_3_clusters_r3 <- table_with_3_clusters[3,]
+
+# I finally take these rows and find when they are eqivalent to one since 
+# each row is a group and 1 indicates the state belongs to it.
+
+table_with_3_clusters_r1[table_with_3_clusters_r1 == 1] %>% kable()
+
+table_with_3_clusters_r2[table_with_3_clusters_r2 == 1] %>% kable()
+
+table_with_3_clusters_r3[table_with_3_clusters_r3 == 1] %>% kable()
+
+
+```
+
+
+**Answer 2:** I then plot the results below using a red line at a level which creates 3 groups.
+
+```{r}
+
+plot(hclust(USArrests.dist, method="complete"), labels = USArrest.labs) 
+abline(h = 100, col = "red")
 ```
 
 #### (c) 
 
 **Basis:** Hierarchically cluster the states using complete linkage and Euclidean distance, after scaling the variables to have standard deviation one.
 
+**Answer:** In this problem I follow largely the same as before with the exception of the scaling of the USArrests data to have a mean of 0 and a standard deviation of 1. This is first done with the scale() function.
+
 ```{r}
 
-USArrests_scaled_c <- scale(USArrests_scaled)
+set.seed(213)
 
-USArrests_scaled_c.dist <- dist(USArrests_scaled_c)
+# First I use the scale function to scale the observations to the std of 1 
+# and mean of zero this is done with scale()
 
-USArrests_scaled.labs <- USArrests$labs
+USArrests_scaled_c <- scale(USArrests)
+ 
+# Next I compute the distance with dist() specifying that it will be using
+# The euclidean method, though this is the default.
 
-hclust_USArrests_scaled_c<-hclust(USArrests_scaled_c.dist, method="complete")
+USArrests_scaled_c.dist <- dist(USArrests_scaled_c, method = "euclidean" )
+
+# Next I find labels using the rownames from the dataset.
+
+USArrests_scaled.labs <- rownames(USArrests_scaled_c)
+
+# Finally I use the hclust() function to apply hierarchical clustering to the 
+# data, in this case using complete clustering.
+
+hclust_USArrests_scaled_c <- hclust(USArrests_scaled_c.dist, method="complete")
 
 plot(hclust_USArrests_scaled_c, xlab = "", sub = "", ylab = "",
 labels = USArrests_scaled.labs, main = "Complete Linkage")
@@ -433,7 +475,7 @@ labels = USArrests_scaled.labs, main = "Complete Linkage")
 
 **Basis:** What effect does scaling the variables have on the hierarchical clustering obtained? In your opinion, should the variables be scaled before the inter-observation dissimilarities are computed? Provide a justification for your answer.
 
-**Answer:** 
+**Answer:** Scaling the variables breaks them into far more small clusters and likely distinguishes them more closely at more levels. This is likely as distinguishing between groups will be based on a common scale that reduces possible scale differences within the dataset. As a result of this I would argue that scaling is beneficial, though the data is per 100,000 residents so it is scaled to some extent, certain states have far higher density and population so the meaning of per-100,000 can have differing impact. Though it likely helps to have all variables on the same scale it is not as useful as it would be in a scenario with variables using a different basis of measurement from one another, such as total deaths and deaths per-100,000 residents, or percent of violent crimes in the state. I
 
 
 ### Ch. 12, Exercise 10
@@ -446,29 +488,49 @@ labels = USArrests_scaled.labs, main = "Complete Linkage")
 
 Hint: There are a number of functions in R that you can use to generate data. One example is the rnorm() function; runif() is another option. Be sure to add a mean shift to the observations in each class so that there are three distinct classes.
 
+**Answer:** In order to generate 20 observations of 3 classes I used the code and random generation functions below.
+
 ```{r}
 
 set.seed(280)
 
+
+# First I take an rnorm with 20 observation and 3 different means
+
+# and 3 different standard deviations to observe the effect of this
+
+# In generating principal components, I then use replicate to run this
+
+# simulation for 50 variables so it is replacted 50 times
 
 df_1_10 <- as.data.frame(replicate(50, rnorm(n=20, mean=0, sd = 2)))
 
 colnames(df_1_10)[1] <- "V1"
 
 
-df_2_10<-as.data.frame(replicate(50, rnorm(n=20, mean=0.5)))
+# I repeat this again with different mean and sd
+
+df_2_10<-as.data.frame(replicate(50, rnorm(n=20, mean=0.5, sd= 0.8)))
 
 colnames(df_2_10)[1] <- "V1"
 
+# I then combine data frams
+
 df_2_10_combined <- rbind(df_1_10, df_2_10)
+
+# I repeat this again with different mean and sd
 
 df_3_10 <- as.data.frame(replicate(50, rnorm(n=20, mean=1)))
 
 colnames(df_3_10)[1] <- "V1"
 
+# All data frames are then combined, after which I label the rows as to 
+
+# know which class they are in.
+
 big_df_combined_10 <- rbind(df_2_10_combined, df_3_10)
 
-big_df_combined_10$groups <- NA #initialise
+big_df_combined_10$groups <- NA 
 
 big_df_combined_10$groups[1:20] <- "1"
 
@@ -483,13 +545,19 @@ big_df_combined_10$groups[41:60] <- "3"
 
 **Basis:** Perform PCA on the 60 observations and plot the first two principal component score vectors. Use a different color to indicate the observations in each of the three classes. If the three classes appear separated in this plot, then continue on to part (c). If not, then return to part (a) and modify the simulation so that there is greater separation between the three classes. Do not continue to part (c) until the three classes show at least some separation in the first two principal component score vectors.
 
+**Answer:** Next I perform PCA on the 60 randomly generated observations.
 
 ```{r}
 
-pca_10_b<-prcomp(big_df_combined_10[-51])
+# I perform principal components on all by column 51 as this column has the 
+
+# Group numbers in it for later reference.
+
+pca_10_b <- prcomp(big_df_combined_10[-51])
 
 ```
 
+**Answer Continued:** Using the base R plot function below we see that the components have separated noticeably. The black points on the right have the highest standard deviation of 2 while the red in the middle have a smaller standard deviation of 0.8 while the green points on the far right have an standard deviation of 1.
 
 ```{r}
 
@@ -502,8 +570,11 @@ xlab = "P1", ylab = "P2")
 
 **Basis:** Perform K-means clustering of the observations with K = 3. How well do the clusters that you obtained in K-means clustering compare to the true class labels?
 
+**Answer:** Though it is difficult to interpret in some ways due to class labels, it appears as if K-means put all of the correct observations in group 2 and 3 but mis-classified many in group 1, for this see it put 9 in the incorrect groups. This is understandable as this group was created in my simulated data using the highest variance so it is concieveable that if its standard deviation was lower the algorithm would classify it more accurately, however in this case it was often incorrect.
+
 ```{r}
-set.seed(8829)
+
+set.seed(928)
 
 km.out <- kmeans(big_df_combined_10[-51], centers=3) 
 
@@ -513,16 +584,16 @@ table(km.clusters, big_df_combined_10$groups)
 
 ```
 
-Hint: You can use the table() function in R to compare the true class labels to the class labels obtained by clustering. Be careful how you interpret the results: K-means clustering will arbitrarily number the clusters, so you cannot simply check whether the true class labels and clustering labels are the same.
-
 #### (d) 
 
-**Basis:** Perform K-means clustering with K = 2. Describe your results.
+**Basis:** Perform K-means clustering with K = 2. Describe your results. 
+
+**Answer:** In this case using 2 cluster will force the clusters to go from 2 to 3 which we see in the km.out$cluster output being only groups one and two. 
 
 ```{r}
 set.seed(75903)
 
-km.out <- kmeans(big_df_combined_10[-51], centers=2) 
+km.out <- kmeans(big_df_combined_10[-51], centers=2,  nstart = 20) 
 
 km.clusters <- km.out$cluster
 
@@ -564,7 +635,9 @@ table(km.clusters, big_df_combined_10$groups)
 ```
 
 
-(g) Using the scale() function, perform K-means clustering with K = 3 on the data after scaling each variable to have standard deviation one. How do these results compare to those obtained in (b)? Explain.
+#### (g)
+
+**Basis:** Using the scale() function, perform K-means clustering with K = 3 on the data after scaling each variable to have standard deviation one. How do these results compare to those obtained in (b)? Explain.
 
 ```{r}
 
