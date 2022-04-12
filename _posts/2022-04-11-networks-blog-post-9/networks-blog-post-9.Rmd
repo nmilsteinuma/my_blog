@@ -601,6 +601,8 @@ plot(wars_in_1000s.wt, wars_in_1000s.ig, vertex.size=0.5, edge.size=0.25, edge.a
 
 ### Machine Learning, Regression and Principle Components:
 
+#### Principal Components 1000s
+
 ```{r}
 
 total_1000s_for_PCA <- total_1000s_brokerag_reg_binom[-c(20:27)]
@@ -649,7 +651,8 @@ biplot(pr.out, scale = 0)
 
 set.seed(172)
 
-ggbiplot(pr.out, labels =  total_1000s_for_PCA$name, labels.size  =1.5)
+ggbiplot(pr.out, labels =  total_1000s_for_PCA$name, labels.size  =1.5) + 
+  labs(title="Principal Components 1000s")+ theme_minimal()
 
 ```
 
@@ -697,6 +700,60 @@ plot(cumsum(pve), xlab = "Principal Component",
 ylab = "Cumulative Proportion of Variance Explained", ylim = c(0, 1), type = "b")
 
 ```
+
+#### Label Propagation 1100s:
+
+The first community cluster below is done using label propagation. This results in 39 groups
+
+```{r}
+set.seed(23)
+comm.lab<-label.propagation.community(wars_in_1100s.ig)
+#Inspect clustering object
+# igraph::groups(comm.lab)
+
+```
+
+```{r, echo=FALSE, warning=FALSE}
+
+set.seed(123)
+
+plot(comm.lab,wars_in_1100s.ig, vertex.size=0.5, edge.size=0.25, edge.arrow.size=.25,  vertex.label.dist=1.5,vertex.label.cex=0.25,asp = 0)
+
+
+```
+
+#### Walktrap 1000s:
+
+Walktrap classification as seen below results in 19 distinct communities.
+
+```{r}
+
+set.seed(238)
+#Run clustering algorithm: fast_greedy
+wars_in_1100s.wt<-walktrap.community(wars_in_1100s.ig)
+
+#igraph::groups(wars_in_1000s.wt)
+
+```
+
+Adding more steps resulted in 19 groups for both 10 and 20 steps.
+
+```{r}
+#Run & inspect clustering algorithm: 10 steps
+#igraph::groups(walktrap.community(wars_in_1000s.ig, steps=10)) 
+#Run & inspect clustering algorithm: 20 steps
+#igraph::groups(walktrap.community(wars_in_1000s.ig ,steps=20))
+#Run & inspect clustering algorithm
+```
+
+```{r, echo=FALSE}
+
+plot(wars_in_1100s.wt, wars_in_1100s.ig, vertex.size=0.5, edge.size=0.25, edge.arrow.size=.25,  vertex.label.dist=1.5,vertex.label.cex=0.25,asp = 0)
+
+
+```
+
+#### Principal Components 1200s
 
 ```{r}
 
@@ -790,7 +847,194 @@ biplot(pr.out_2, scale = 0)
 
 set.seed(8192)
 
-ggbiplot(pr.out_2, labels =  total_1200s_for_PCA$name, labels.size  =1.5)
+ggbiplot(pr.out_2, labels =  total_1200s_for_PCA$name, labels.size  =1.5) + labs(title="Principal Components 1200s")+
+  theme_minimal()
+
+```
+
+```{r}
+
+pr.out$sdev
+
+```
+
+```{r}
+
+pr.var_2 <- pr.out_2$sdev^2
+
+pr.var_2
+
+```
+
+```{r}
+
+pve_2 <- pr.var_2 / sum(pr.var_2)
+
+pve_2
+
+```
+
+```{r}
+
+par(mfrow = c(1, 2))
+plot(pve_2, xlab = "Principal Component",
+ylab = "Proportion of Variance Explained", ylim = c(0, 1),
+type = "b")
+
+plot(cumsum(pve_2), xlab = "Principal Component",
+ylab = "Cumulative Proportion of Variance Explained", ylim = c(0, 1), type = "b")
+
+```
+
+#### Label Propagation 1200s:
+
+The first community cluster below is done using label propagation. This results in 39 groups
+
+```{r}
+set.seed(23)
+comm.lab<-label.propagation.community(wars_in_1200s.ig)
+#Inspect clustering object
+# igraph::groups(comm.lab)
+
+```
+
+```{r, echo=FALSE, warning=FALSE}
+
+set.seed(123)
+
+plot(comm.lab,wars_in_1200s.ig, vertex.size=0.5, edge.size=0.25, edge.arrow.size=.25,  vertex.label.dist=1.5,vertex.label.cex=0.25,asp = 0)
+
+
+```
+
+#### Walktrap 1200s:
+
+Walktrap classification as seen below results in 19 distinct communities.
+
+```{r}
+
+set.seed(238)
+#Run clustering algorithm: fast_greedy
+wars_in_1200s.wt<-walktrap.community(wars_in_1200s.ig)
+
+#igraph::groups(wars_in_1000s.wt)
+
+```
+
+Adding more steps resulted in 19 groups for both 10 and 20 steps.
+
+```{r}
+#Run & inspect clustering algorithm: 10 steps
+#igraph::groups(walktrap.community(wars_in_1000s.ig, steps=10)) 
+#Run & inspect clustering algorithm: 20 steps
+#igraph::groups(walktrap.community(wars_in_1000s.ig ,steps=20))
+#Run & inspect clustering algorithm
+```
+
+```{r, echo=FALSE}
+
+plot(wars_in_1200s.wt, wars_in_1200s.ig, vertex.size=0.5, edge.size=0.25, edge.arrow.size=.25,  vertex.label.dist=1.5,vertex.label.cex=0.25,asp = 0)
+
+
+```
+
+#### Principal Components 1100s
+
+```{r}
+
+names(total_1100s)
+
+```
+
+```{r}
+
+total_1100s_brokerag_reg<-total_1100s
+
+```
+
+```{r}
+total_1100s_brokerag_reg$win_rate <- (total_1100s_brokerag_reg$outdegree/total_1100s_brokerag_reg$totdegree)
+```
+
+```{r}
+total_1100s_brokerag_reg$loss_rate <- (total_1100s_brokerag_reg$indegree/total_1100s_brokerag_reg$totdegree)
+```
+
+```{r}
+
+total_1100s_brokerag_reg_binom <- total_1100s_brokerag_reg %>% mutate(more_win_or_loss = case_when(
+  win_rate < 0.5 ~ 0,
+    win_rate >= 0.5 ~ 1))
+
+```
+
+```{r}
+
+total_1100s_for_PCA <- total_1100s_brokerag_reg_binom[-c(20:27)]
+
+
+apply(total_1100s_for_PCA[-1], 2, mean)
+
+```
+
+```{r}
+
+apply(total_1100s_for_PCA[-1], 2, var)
+
+```
+
+```{r}
+
+# I cannot scale variables with 
+
+total_1100s_for_PCA<-total_1100s_for_PCA[-c(8,10)]
+
+```
+
+```{r}
+
+pr.out_2 <- prcomp(total_1100s_for_PCA[-c(1,7)], scale = TRUE)
+
+```
+
+```{r}
+names(pr.out_2)
+```
+
+```{r}
+pr.out_2$center
+```
+
+```{r}
+
+pr.out_2$scale
+
+```
+
+```{r, results=FALSE, echo=FALSE}
+pr.out_2$rotation
+```
+
+```{r}
+biplot(pr.out_2, scale = 0)
+```
+
+```{r}
+
+pr.out_2$rotation = -pr.out_2$rotation 
+
+pr.out_2$x = -pr.out_2$x
+
+biplot(pr.out_2, scale = 0)
+
+```
+```{r}
+
+set.seed(8192)
+
+ggbiplot(pr.out_2, labels =  total_1100s_for_PCA$name, labels.size  =1.5) + labs(title="Principal Components 1100s")+
+  theme_minimal()
+
 ```
 
 ```{r}

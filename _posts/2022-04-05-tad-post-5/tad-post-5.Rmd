@@ -99,7 +99,7 @@ hot_guns_urls_df<-hot_guns_urls[,c("title", "date_utc", "comments", "text")]
 
 ```
 
-**Cleaning Data:** I begin cleaning the data below by adding row-names to the dataframe since the default was simply the title of the post. Next I add all of the posts to the same dataframe to be analyzed together and comprise a larger corpus. Though this will clearly be biased towards recent posts as of march 2022 this is of less concern than if it were a more political reddit, however because politics are generally absent the posts will still represent a useable subset of 
+**Cleaning Data:** I begin cleaning the data below by adding row-names to the dataframe since the default was simply the title of the post. Next I add all of the posts to the same dataframe to be analyzed together and comprise a larger corpus. Though this will clearly be biased towards recent posts as of march 2022 this is of less concern than if it were a more political reddit, however because politics are generally absent the posts will still represent a usable subset of 
 
 ```{r}
 
