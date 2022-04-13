@@ -264,6 +264,10 @@ ggplot(wars_in_1000s_network, aes(x = x, y = y, xend = xend, yend = yend)) +
   theme_blank()
 
 ```
+```{r}
+summary(wars_in_1100s_network)
+```
+
 
 ### 1100s GGplot
 

@@ -1,0 +1,1872 @@
+---
+title: "TAD Blog Post 6"
+description: |
+  A short description of the post.
+author:
+  - name: Noah Milstein
+    url: {}
+date: 2022-04-12
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+## Blog Post 5 Text as Data
+
+#### Background and Content
+
+**Background:** My 5th blog post complied below specifically concerns the use of unsupervised learning methods on the data I intend to use for my final project which comprises 2711 blog posts from the Subreddit r/guns which is described as a "A place for responsible gun owners and enthusiasts to talk about guns without the politics." (from r/guns About Community) and since it is a somewhat a-political group a great deal of conversation on the message board concerns purchasing and use of firearms directly from the consumers. As a result it is a useful source for understanding consumer behavior and firearms as a piece of material culture.
+
+**Content:** The content of this post uses LDA (Latent Dirichlet Allocation) in 2 different ways with the latter half borrowing heavily from Martin Schweinberger's github explanation for analysis and visualization of topic modeling.
+
+```{r, echo=FALSE}
+library(rmarkdown)
+library(RedditExtractoR)
+library(jsonlite)
+library(tidyverse)
+library(stringr)
+library(dplyr)
+library(httr)
+library(tm)
+library(corpus)
+library(quanteda)
+library(textclean)
+library(knitr)
+library(lubridate)
+library(cleanNLP)
+library(quanteda.textstats)
+library(quanteda.textplots)
+library(SnowballC)
+library(wordcloud)
+library(RColorBrewer)
+library(stopwords)
+library(tidyverse)
+library(rvest)
+library(tidytext)
+library(text2vec)
+library(preText)
+library(ggplot2)
+library(pals)
+library(reshape2)
+library(lda)
+library(ldatuning)
+# install klippy for copy-to-clipboard button in code chunks
+remotes::install_github("rlesur/klippy")
+
+```
+
+#### Loading and Cleaning 
+
+**Loading Data:** 
+
+```{r}
+set.seed(836)
+# First I use a fucntion to load an RData file as R has no default 
+
+loadRData <- function(fileName){
+#loads an RData file, and returns it
+    load(fileName)
+    get(ls()[ls() != "fileName"])
+}
+
+# My first data frame comprises new posts as of march 26 2022 which are taken 
+# from the 15th-26th of march primarily. 
+
+new_guns_urls <- loadRData("/Users/noahmilstein/Desktop/Spring 2022/Textasdata/text_as_data_work/New_reddit_posts_3_26.RData")
+
+# Next I extract the 4 columns that I will need, title, date, comments
+# and non-title text
+
+new_guns_urls_df<-new_guns_urls[,c("title", "date_utc", "comments", "text")]
+
+# Next I load the top posts of all time on the thread which go back to 2017 
+# With observations to march 2022 when it was scraped.
+
+top_guns_urls <- loadRData("/Users/noahmilstein/Desktop/Spring 2022/Textasdata/text_as_data_work/top_guns_urls.RData")
+
+top_guns_urls_df<-top_guns_urls[,c("title", "date_utc", "comments",  "text")]
+
+#hot_guns_urls <- find_thread_urls(subreddit="guns", sort_by="hot")
+# save(hot_guns_urls, file="hot_guns_urls.RData")
+
+# Next "hot" posts are loaded which are also primarily from march 2022
+
+hot_guns_urls<-
+  loadRData("/Users/noahmilstein/Desktop/my_blog/_posts/2022-03-29-tad-post-4/hot_guns_urls.RData")
+
+hot_guns_urls_df<-hot_guns_urls[,c("title", "date_utc", "comments", "text")]
+#hot_guns_urls_df
+
+```
+
+**Cleaning Data:** I begin cleaning the data below by adding row-names to the dataframe since the default was simply the title of the post. Next I add all of the posts to the same dataframe to be analyzed together and comprise a larger corpus. Though this will clearly be biased towards recent posts as of march 2022 this is of less concern than if it were a more political reddit, however because politics are generally absent the posts will still represent a usable subset of 
+
+```{r}
+
+set.seed(836)
+
+#First I add rownames from 1 to 844 to the hot guns data frame
+
+rownames(hot_guns_urls_df) <- seq(1, 844, 1)
+
+#Next I add rownames from 1 to 980 to the new guns data frame
+
+rownames(new_guns_urls_df) <- seq(1, 980, 1)
+
+#Next I add the two row named data framed together by row.
+
+hg_and_ng<-rbind(hot_guns_urls_df, new_guns_urls_df)
+
+#After this I add rownames from 1 to 996 to the top guns data frame
+
+rownames(top_guns_urls_df) <- seq(1, 996, 1)
+
+# Finally I bind together the new and hot guns combined data frame with the 
+# top guns data frame by row
+
+whole_data_frame <- rbind(hg_and_ng, top_guns_urls_df)
+
+```
+
+Since all of the posts come from the same sub Reddit I have to ensure that all posts are unique as to avoid bias towards any particular set of words. This is because top posts, hot posts, and recent posts could all include the same post if it were to qualify for any of the categories by the reddit algorithm.
+
+```{r}
+
+set.seed(836)
+
+# First I remove all non-unique rows from the data frame
+
+whole_data_frame_unique <- unique(whole_data_frame)
+
+# Next I add together the title and text of each reddit post to 
+# ensure I am using all of the linguistic data in each post.
+
+whole_data_frame_unique$all_text<-
+  paste(whole_data_frame_unique$title, whole_data_frame_unique$text)
+
+# Next I remove all line breaks from the posts to ensure aesthetic 
+# specifications such as /r and /n are not included in the corpus
+
+whole_data_frame_unique$"all_text" <- sapply(whole_data_frame_unique$"all_text",
+                                    function(x) { gsub("[\r\n]", "", x)  }) 
+
+whole_data_frame_unique$"all_text" <- sapply(whole_data_frame_unique$"all_text",
+                                    function(x) { gsub("[\031\034\024]", "`", x) })
+
+```
+
+Next I must convert the character vector of dates into an actual date object using the as.Date() function.
+
+```{r,cache = TRUE}
+
+set.seed(836)
+
+# As can be seen below I replace the previous date_utc column which was not 
+# a date object with date_utc as a date object.
+
+whole_data_frame_unique$date_utc <- as.Date(whole_data_frame_unique$date_utc)
+
+```
+
+Next I begin to split my data into 2 sets, being the training and validation sets.
+
+```{r}
+
+set.seed(836)
+
+# First I take my first 1900 posts to lowercase then tokenize them
+
+whole_data_frame_tokens <- tolower(whole_data_frame_unique$all_text[1:1900])
+
+whole_data_frame_tokens <- word_tokenizer(whole_data_frame_tokens)
+
+```
+
+
+```{r}
+
+set.seed(836)
+
+# Next I use itoken from text2vec to iterate over my inputs to create a 
+#vocabulary
+
+itoken_whole_df <- itoken(whole_data_frame_tokens,
+ids = whole_data_frame_unique$id[1:1900], progressbar = FALSE)
+
+vocab_whole_df <- create_vocabulary(itoken_whole_df)
+
+# I then observe the dimension of the new vocabulary
+
+dim(vocab_whole_df)
+
+
+```
+
+
+```{r}
+
+set.seed(836)
+
+# Next I prune the vocabulary to require a minimum term count of ten
+# That is not in more than 20% of douments
+
+v_for_whole_df <- prune_vocabulary(vocab_whole_df, term_count_min = 10, 
+                                   doc_proportion_max = 0.2)
+
+```
+
+
+```{r}
+
+set.seed(836)
+
+# next these tokens are converted into vector space
+
+vectorizer_whole_df <- vocab_vectorizer(v_for_whole_df)
+
+```
+
+```{r}
+
+set.seed(836)
+
+# Here the vectorized vocabulary is used to create a document term matrix
+
+dtm_whole_df <- create_dtm(itoken_whole_df, vectorizer_whole_df, 
+                           type = "dgTMatrix")
+
+```
+
+### Inital LDA Analysis
+
+
+```{r}
+
+set.seed(836)
+
+# next I make my first LDA model below
+
+
+lda_model <- text2vec::LDA$new(n_topics = 20, doc_topic_prior = 0.1, 
+                     topic_word_prior = 0.01)
+
+```
+
+```{r}
+
+set.seed(836)
+
+# next the model is fit to my document term matrix
+
+doc_topic_distr <- 
+ lda_model$fit_transform(x = dtm_whole_df, n_iter = 1000, 
+                          convergence_tol = 0.001, n_check_convergence = 25, 
+                          progressbar = FALSE)
+```
+
+```{r}
+
+set.seed(836)
+
+# To see that the 20 topics have worked I apply the topic model to the first 
+# post which is mostly topic 10 with some 6.
+
+barplot(doc_topic_distr[1, ], xlab = "topic", 
+        ylab = "proportion", ylim = c(0, 1), 
+        names.arg = 1:ncol(doc_topic_distr))
+
+```
+
+```{r}
+
+set.seed(836)
+
+# Next we look at the top 10 words for 3 of the topics being 1, 5, and 10
+
+lda_model$get_top_words(n = 10, topic_number = c(1L, 5L, 10L), lambda = 1)
+
+```
+
+
+
+```{r}
+
+set.seed(836)
+
+# Next using the recommended lambda of 0.2 we again look at the top 10 words 
+# for topics 1, 5, and 10
+
+lda_model$get_top_words(n = 10, topic_number = c(1L, 5L, 10L), lambda = 0.2)
+
+```
+
+#### LDA on Second Part of Data
+
+```{r}
+
+set.seed(836)
+
+
+it2 <- itoken(whole_data_frame_unique$all_text[1901:2711], tolower, word_tokenizer, ids =whole_data_frame_unique$id[1901:2711])
+
+dtm_other_part <- create_dtm(it2, vectorizer_whole_df, type = "dgTMatrix")
+
+```
+
+```{r}
+
+set.seed(836)
+
+new_doc_topic_distr = lda_model$transform(dtm_other_part)
+
+```
+
+```{r}
+
+set.seed(836)
+
+# Calculates perplexity between new and old topic word distribution
+text2vec::perplexity(dtm_other_part, 
+           topic_word_distribution = lda_model$topic_word_distribution, 
+           doc_topic_distribution = new_doc_topic_distr)
+```
+
+```{r}
+library(stm)
+```
+
+
+```{r}
+
+set.seed(836)
+
+myDfm <- dfm(whole_data_frame_unique$all_text,
+  tolower=TRUE,
+  remove = stopwords('en'), 
+  remove_punct = TRUE
+  )
+
+dim(myDfm)
+
+```
+
+```{r}
+
+set.seed(836)
+
+cor_topic_model <- stm(myDfm, K = 5, 
+                   verbose = FALSE, init.type = "Spectral")
+```
+
+```{r}
+set.seed(836)
+
+labelTopics(cor_topic_model)
+
+```
+
+```{r}
+
+set.seed(836)
+
+whole_data_frame_unique_empty<- whole_data_frame_unique[-c(120, 276, 2195),]
+
+thoughts_whole_df <- findThoughts(cor_topic_model, 
+    texts = whole_data_frame_unique_empty$all_text, 
+    topics = c(1:5),
+    n = 1)
+
+```
+
+```{r}
+
+set.seed(836)
+
+# choose our number of topics
+k <- 5
+myDfm
+# specify model
+
+myModel <- stm(myDfm,
+            K = k, 
+            max.em.its = 1000, 
+            seed = 1234, 
+            init.type = "Spectral")
+
+```
+
+```{r}
+set.seed(836)
+
+labelTopics(myModel)
+```
+
+```{r}
+
+set.seed(836)
+
+plot(myModel, type = "summary")
+```
+
+```{r}
+set.seed(836)
+
+# get the words
+myTopicNames <- labelTopics(myModel, n=4)$frex
+
+# set up an empty vector
+myTopicLabels <- rep(NA, k)
+
+# set up a loop to go through the topics and collapse the words to a single name
+for (i in 1:k){
+	myTopicLabels[i] <- paste(myTopicNames[i,], collapse = "_")
+}
+
+# print the names
+myTopicLabels
+```
+
+```{r,cache = TRUE}
+modelEffects <- estimateEffect(formula=1:k~comments, 
+        stmobj = myModel, 
+        metadata = whole_data_frame_unique_empty)
+
+```
+
+
+```{r, eval=FALSE}
+
+set.seed(836)
+
+# estimate effects
+modelEffects <- estimateEffect(formula=1:k~comments, 
+        stmobj = myModel, 
+        metadata = whole_data_frame_unique_empty)
+
+# plot effects
+
+myRows <- 2
+par(mfrow=c(myRows,3), bty="n", lwd=2)
+for (i in 1:k){
+	plot.estimateEffect(modelEffects, 
+        covariate ="comments",  
+        xlim=c(-.25,.25), 
+        model = myModel, 
+        topics = modelEffects$topics[i], 
+        method = "difference", 
+        cov.value1 = 1, 
+        cov.value2=0, 
+        main = myTopicLabels[i], 
+        printlegend=F, 
+        linecol="grey26", 
+        labeltype="custom", 
+        verbose.labels=F, 
+        custom.labels=c(""))
+	par(new=F)
+}
+
+```
+
+```{r, eval=FALSE}
+
+set.seed(836)
+
+differentKs <- searchK(myDfm, 
+        K = c(5,25,50), 
+        prevalence =~ comments, 
+        N=250, 
+        data = whole_data_frame_unique_empty,
+        max.em.its = 1000,
+        init.type = "Spectral")
+
+plot(differentKs)
+
+```
+
+The results of the model above indicate 4 properties including held out likelihood, which indicates a better model when it is larger, 
+
+```{r}
+
+set.seed(836)
+
+# choose our number of topics
+k <- 25
+
+# specify model
+
+myModel_2 <- stm(myDfm,
+            K = k, 
+            max.em.its = 1000, 
+            seed = 1234, 
+            init.type = "Spectral")
+
+```
+
+```{r}
+
+set.seed(836)
+
+labelTopics(myModel)
+
+```
+
+```{r}
+
+set.seed(836)
+
+plot(myModel_2, type = "summary")
+
+```
+
+```{r}
+
+set.seed(836)
+
+# get the words
+myTopicNames <- labelTopics(myModel_2, n=4)$frex
+
+# set up an empty vector
+myTopicLabels <- rep(NA, k)
+
+# set up a loop to go through the topics and collapse the words to a single name
+for (i in 1:k){
+	myTopicLabels[i] <- paste(myTopicNames[i,], collapse = "_")
+}
+
+# print the names
+myTopicLabels
+```
+
+```{r,cache = TRUE}
+
+set.seed(836)
+
+modelEffects <- estimateEffect(formula=1:k~comments, 
+        stmobj = myModel_2, 
+        metadata = whole_data_frame_unique_empty)
+
+```
+
+
+```{r, eval = FALSE}
+
+
+# estimate effects
+
+# plot effects
+
+myRows <- 4
+par(mfrow=c(myRows,3), bty="n", lwd=2)
+for (i in 1:k){
+	plot.estimateEffect(modelEffects, 
+        covariate ="comments",  
+        xlim=c(-.25,.25), 
+        model = myModel_2, 
+        topics = modelEffects$topics[i], 
+        method = "difference", 
+        cov.value1 = 1, 
+        cov.value2=0, 
+        main = myTopicLabels[i], 
+        printlegend=F, 
+        linecol="grey26", 
+        labeltype="custom", 
+        verbose.labels=F, 
+        custom.labels=c(""))
+	par(new=F)
+}
+
+```
+
+```{r}
+
+library(topicmodels)
+
+```
+
+
+```{r}
+
+set.seed(836)
+
+
+# load stopwords
+english_stopwords <- readLines("https://slcladal.github.io/resources/stopwords_en.txt", encoding = "UTF-8")
+
+# create corpus object
+textdata <- data.frame(doc_id=row.names(whole_data_frame_unique),
+                       text=whole_data_frame_unique$all_text)
+corpus <- Corpus(DataframeSource(textdata))
+
+
+
+
+# Preprocessing chain
+
+processedCorpus_guns <- tm_map(corpus, content_transformer(tolower))
+processedCorpus_guns <- tm_map(processedCorpus_guns, removeWords, english_stopwords)
+
+```
+
+```{r}
+
+set.seed(836)
+
+minimumFrequency <- 5
+
+DTM <- DocumentTermMatrix(processedCorpus_guns, control = list(bounds = list(global = c(minimumFrequency, Inf))))
+
+```
+
+```{r}
+
+set.seed(836)
+
+dim(DTM)
+
+```
+
+```{r}
+
+sel_idx <- slam::row_sums(DTM) > 0
+DTM <- DTM[sel_idx, ]
+
+textdata <- textdata[sel_idx, ]
+
+```
+
+```{r}
+
+set.seed(836)
+
+result <- ldatuning::FindTopicsNumber(
+  DTM,
+  topics = seq(from = 2, to = 20, by = 1),
+  metrics = c("CaoJuan2009",  "Deveaud2014"),
+  method = "Gibbs",
+  control = list(seed = 77),
+  verbose = TRUE
+)
+```
+
+```{r}
+
+FindTopicsNumber_plot(result)
+
+```
+
+
+```{r}
+
+set.seed(836)
+
+# number of topics
+K <- 20
+# set random number generator seed
+set.seed(9161)
+# compute the LDA model, inference via 1000 iterations of Gibbs sampling
+topicModel <- LDA(DTM, K, method="Gibbs", control=list(iter = 500, verbose = 25))
+```
+
+```{r}
+# have a look a some of the results (posterior distributions)
+tmResult <- posterior(topicModel)
+# format of the resulting object
+attributes(tmResult)
+```
+
+```{r}
+
+set.seed(836)
+
+
+nTerms(DTM)              # lengthOfVocab
+
+```
+
+```{r,cache = TRUE}
+
+set.seed(836)
+
+# topics are probability distribtions over the entire vocabulary
+beta <- tmResult$terms   # get beta from results
+dim(beta)                # K distributions over nTerms(DTM) terms
+```
+
+```{r}
+
+set.seed(836)
+
+rowSums(beta) 
+```
+
+```{r}
+
+set.seed(836)
+
+nDocs(DTM)               # size of collection
+
+```
+
+```{r}
+
+set.seed(836)
+
+theta <- tmResult$topics 
+
+dim(theta) 
+
+```
+
+```{r,cache = TRUE}
+
+set.seed(836)
+
+terms(topicModel, 10)
+
+```
+
+
+Here we have actually distinguished a couple of groups that might be useful, 14 is the only one with defense, and 17 is the only one with hunting. 1, 7, 11, involve the word range within their topic. Carry is only found in group 8. This would indicate that the term is the in the top 10 in these groups. These are listed on their own below.
+
+```{r}
+
+set.seed(836)
+
+exampleTermData <- terms(topicModel, 10)
+
+exampleTermData[, c(1,7,8, 11,17)]
+
+```
+
+```{r}
+
+set.seed(836)
+
+top5termsPerTopic <- terms(topicModel, 5)
+
+topicNames <- apply(top5termsPerTopic, 2, paste, collapse=" ")
+
+topicNames
+
+```
+
+```{r}
+
+set.seed(836)
+
+# visualize topics as word cloud
+topicToViz <- 1 # change for your own topic of interest
+topicToViz <- grep(topicNames[1], topicNames)[1] # Or select a topic by a term contained in its name
+
+# select to 40 most probable terms from the topic by sorting the term-topic-probability vector in decreasing order
+top40terms <- sort(tmResult$terms[topicToViz,], decreasing=TRUE)[1:40]
+words <- names(top40terms)
+
+# extract the probabilites of each of the 40 terms
+probabilities <- sort(tmResult$terms[topicToViz,], decreasing=TRUE)[1:40]
+# visualize the terms as wordcloud
+mycolors <- brewer.pal(8, "Dark2")
+
+wordcloud(words, probabilities, random.order = FALSE, color = mycolors)
+
+```
+
+```{r, eval=FALSE}
+
+set.seed(836)
+
+# visualize topics as word cloud
+topicToViz <- 2 # change for your own topic of interest
+topicToViz <- grep(topicNames[2], topicNames)[1] # Or select a topic by a term contained in its name
+
+# select to 40 most probable terms from the topic by sorting the term-topic-probability vector in decreasing order
+top40terms <- sort(tmResult$terms[topicToViz,], decreasing=TRUE)[1:40]
+words <- names(top40terms)
+
+# extract the probabilites of each of the 40 terms
+probabilities <- sort(tmResult$terms[topicToViz,], decreasing=TRUE)[1:40]
+# visualize the terms as wordcloud
+mycolors <- brewer.pal(8, "Dark2")
+
+wordcloud(words, probabilities, random.order = FALSE, color = mycolors)
+```
+
+```{r}
+
+set.seed(928)
+
+samples<-sample.int(2424, 10)
+
+exampleIds <- samples
+
+lapply(processedCorpus_guns[exampleIds], as.character)
+
+```
+
+
+```{r}
+
+set.seed(836)
+
+N <- length(exampleIds)
+
+# get topic proportions form example documents
+topicProportionExamples <- theta[exampleIds,]
+colnames(topicProportionExamples) <- topicNames
+vizDataFrame <- melt(cbind(data.frame(topicProportionExamples), document = factor(1:N)), variable.name = "topic", id.vars = "document")  
+ggplot(data = vizDataFrame, aes(topic, value, fill = document), ylab = "proportion") + 
+  geom_bar(stat="identity") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +  
+  coord_flip() +
+  facet_wrap(~ document, ncol = N)
+```
+
+```{r}
+
+set.seed(836)
+
+topicNames <- apply(lda::top.topic.words(beta, 5, by.score = T), 2, paste, collapse = " ")
+
+```
+
+```{r}
+
+set.seed(836)
+
+# What are the most probable topics in the entire collection?
+topicProportions <- colSums(theta) / nDocs(DTM) 
+# mean probablities over all paragraphs
+
+names(topicProportions) <- topicNames     
+
+# assign the topic names we created before
+
+sort(topicProportions, decreasing = TRUE) 
+
+# show summed proportions in decreased order
+
+```
+
+```{r}
+
+set.seed(836)
+
+soP <- sort(topicProportions, decreasing = TRUE)
+
+paste(round(soP, 5), ":", names(soP))
+
+```
+
+```{r}
+countsOfPrimaryTopics <- rep(0, K)
+names(countsOfPrimaryTopics) <- topicNames
+for (i in 1:nDocs(DTM)) {
+  topicsPerDoc <- theta[i, ] # select topic distribution for document i
+  # get first element position from ordered list
+  primaryTopic <- order(topicsPerDoc, decreasing = TRUE)[1] 
+  countsOfPrimaryTopics[primaryTopic] <- countsOfPrimaryTopics[primaryTopic] + 1
+}
+sort(countsOfPrimaryTopics, decreasing = TRUE)
+```
+
+```{r}
+
+set.seed(836)
+
+so <- sort(countsOfPrimaryTopics, decreasing = TRUE)
+
+paste(so, ":", names(so))
+
+```
+
+```{r}
+
+set.seed(836)
+
+df_for_visualization<-as.data.frame(countsOfPrimaryTopics)
+
+df_for_visualization$group_names <- names(so)
+
+df_for_visualization$group_numbers <- seq(1, 20, 1)
+
+ggplot(df_for_visualization, aes(x=group_names, y=countsOfPrimaryTopics,  
+                                 fill=group_names)) + 
+  geom_bar(stat = "identity" )+  theme_classic() +
+   theme(axis.text.x = element_text(angle = 90, hjust = 1, size=3),legend.key.size = unit(0.3, 'cm'), #change legend key size
+        legend.key.height = unit(0.4, 'cm'), #change legend key height
+        legend.key.width = unit(0.4, 'cm'),) +  
+scale_fill_manual(values = paste0(alphabet(20), "FF"))+ 
+  xlab("Topic Groups") +
+  ylab("Number of Posts in Group") + 
+  guides(fill=guide_legend(title="Topic Groups"))
+?theme
+
+```
+
+### Major Topics Visualization
+
+```{r}
+
+set.seed(836)
+
+df_for_visualization<-as.data.frame(countsOfPrimaryTopics)
+
+df_for_visualization_relevant <- as.data.frame(df_for_visualization[c(1 , 7 , 8 , 11 , 17),])
+
+df_for_visualization_relevant$group_names <- names(so)[c(1,7,8, 11,17)]
+
+df_for_visualization_relevant$group_numbers <- c(1,7,8,11,17)
+
+ggplot(df_for_visualization_relevant, aes(x=group_names, y=`df_for_visualization[c(1, 7, 8, 11, 17), ]`,  fill=group_names)) + 
+  geom_bar(stat = "identity" ) +    
+  scale_fill_manual(values = paste0(alphabet(20), "FF")) +   theme_classic() +
+   theme(axis.text.x = element_text(size = 6))+
+  scale_x_discrete(guide = guide_axis(n.dodge = 2)) + xlab("Topic Groups") +
+  ylab("Number of Posts in Group") + guides(fill=guide_legend(title="Topic Groups"))
+
+```
+
+### Continuing n-grams from office hours
+
+```{r}
+#processedCorpus_guns <- tm_map(corpus, content_transformer(tolower))
+#processedCorpus_guns <- tm_map(processedCorpus_guns, removeWords, english_stopwords)
+
+
+my_words<- vocab_whole_df$term
+
+BigramTokenizer <- function(x)unlist(lapply(ngrams(words(x), 1:2), paste, collapse = " "), use.names = FALSE)
+
+dtm_ngram <- DocumentTermMatrix(processedCorpus_guns, control=list(tokenizer = BigramTokenizer, dictionary = my_words))
+
+# dtm_ngram <- DocumentTermMatrix(model, control=list(tokenize = BigramTokenizer, wordLengths=c(1,Inf))) 
+ 
+inspect(dtm_ngram)
+
+```
+
+```{r}
+
+data_corpus = VCorpus(DataframeSource(textdata))
+
+NLP_tokenizer <- function(x) {
+  unlist(lapply(ngrams(words(x), 1:2), paste, collapse = "_"), use.names = FALSE)
+}
+
+control_list_ngram = list(tokenize = NLP_tokenizer,
+                          removePunctuation = TRUE,
+                          removeNumbers = FALSE, 
+                          stopwords = stopwords("english"), 
+                          tolower = T, 
+                          stemming = F
+                          )
+
+dtm_ngram <- DocumentTermMatrix(data_corpus, control_list_ngram)
+
+removeCommonTerms <- function (x, pct) 
+{
+    stopifnot(inherits(x, c("DocumentTermMatrix", "TermDocumentMatrix")), 
+        is.numeric(pct), pct > 0, pct < 1)
+    m <- if (inherits(x, "DocumentTermMatrix")) 
+        t(x)
+    else x
+    t <- table(m$i) < m$ncol * (pct)
+    termIndex <- as.numeric(names(t[t]))
+    if (inherits(x, "DocumentTermMatrix")) 
+        x[, termIndex]
+    else x[termIndex, ]
+}
+
+dtm_ngram<-removeCommonTerms(dtm_ngram, .2)
+
+
+
+```
+
+```{r}
+
+set.seed(836)
+
+dim(dtm_ngram)
+
+```
+
+```{r}
+
+sel_idx <- slam::row_sums(dtm_ngram) > 0
+dtm_ngram <- dtm_ngram[sel_idx, ]
+
+textdata <- textdata[sel_idx, ]
+
+```
+
+```{r}
+
+set.seed(836)
+
+result <- ldatuning::FindTopicsNumber(
+  dtm_ngram,
+  topics = seq(from = 2, to = 20, by = 1),
+  metrics = c("CaoJuan2009",  "Deveaud2014"),
+  method = "Gibbs",
+  control = list(seed = 77),
+  verbose = TRUE
+)
+```
+
+```{r}
+
+FindTopicsNumber_plot(result)
+
+```
+
+
+### 20 Topics
+
+```{r}
+
+set.seed(836)
+
+# number of topics
+K <- 20
+# set random number generator seed
+set.seed(9161)
+# compute the LDA model, inference via 1000 iterations of Gibbs sampling
+topicModel <- LDA(dtm_ngram, K, method="Gibbs", control=list(iter = 500, verbose = 25))
+
+```
+
+```{r}
+# have a look a some of the results (posterior distributions)
+tmResult <- posterior(topicModel)
+# format of the resulting object
+attributes(tmResult)
+```
+
+```{r}
+
+set.seed(836)
+
+
+nTerms(dtm_ngram)              # lengthOfVocab
+
+```
+
+```{r,cache = TRUE}
+
+set.seed(836)
+
+# topics are probability distribtions over the entire vocabulary
+beta <- tmResult$terms   # get beta from results
+dim(beta)                # K distributions over nTerms(DTM) terms
+```
+
+```{r}
+
+set.seed(836)
+
+rowSums(beta) 
+```
+
+```{r}
+
+set.seed(836)
+
+nDocs(dtm_ngram)               # size of collection
+
+```
+
+```{r}
+
+set.seed(836)
+
+theta <- tmResult$topics 
+
+dim(theta) 
+
+```
+
+```{r,cache = TRUE}
+
+set.seed(836)
+
+terms(topicModel, 10)
+
+```
+
+
+Here we have actually distinguished a couple of groups that might be useful, 14 is the only one with defense, and 17 is the only one with hunting. 1, 7, 11, involve the word range within their topic. Carry is only found in group 8. This would indicate that the term is the in the top 10 in these groups. These are listed on their own below.
+
+```{r}
+
+set.seed(836)
+
+exampleTermData <- terms(topicModel, 10)
+
+exampleTermData[, c(1,7,8, 11,17)]
+
+```
+
+```{r}
+
+set.seed(836)
+
+top5termsPerTopic <- terms(topicModel, 5)
+
+topicNames <- apply(top5termsPerTopic, 2, paste, collapse=" ")
+
+topicNames
+
+```
+
+```{r}
+
+set.seed(836)
+
+# visualize topics as word cloud
+topicToViz <- 7 # change for your own topic of interest
+topicToViz <- grep(topicNames[7], topicNames)[1] # Or select a topic by a term contained in its name
+
+# select to 40 most probable terms from the topic by sorting the term-topic-probability vector in decreasing order
+top40terms <- sort(tmResult$terms[topicToViz,], decreasing=TRUE)[1:40]
+words <- names(top40terms)
+
+# extract the probabilites of each of the 40 terms
+probabilities <- sort(tmResult$terms[topicToViz,], decreasing=TRUE)[1:40]
+# visualize the terms as wordcloud
+mycolors <- brewer.pal(8, "Dark2")
+
+wordcloud(words, probabilities, random.order = TRUE, color = mycolors)
+
+```
+
+```{r}
+
+set.seed(836)
+
+# visualize topics as word cloud
+topicToViz <- 11 # change for your own topic of interest
+topicToViz <- grep(topicNames[11], topicNames)[1] # Or select a topic by a term contained in its name
+
+# select to 40 most probable terms from the topic by sorting the term-topic-probability vector in decreasing order
+top40terms <- sort(tmResult$terms[topicToViz,], decreasing=TRUE)[1:40]
+words <- names(top40terms)
+
+# extract the probabilites of each of the 40 terms
+probabilities <- sort(tmResult$terms[topicToViz,], decreasing=TRUE)[1:40]
+# visualize the terms as wordcloud
+mycolors <- brewer.pal(8, "Dark2")
+
+wordcloud(words, probabilities, random.order = TRUE, color = mycolors)
+```
+
+```{r}
+
+set.seed(928)
+
+samples<-sample.int(2424, 10)
+
+exampleIds <- samples
+
+lapply(processedCorpus_guns[exampleIds], as.character)
+
+```
+
+
+```{r}
+
+set.seed(836)
+
+N <- length(exampleIds)
+
+# get topic proportions form example documents
+topicProportionExamples <- theta[exampleIds,]
+
+colnames(topicProportionExamples)<- topicNames
+
+vizDataFrame <- melt(cbind(data.frame(topicProportionExamples), document = factor(1:N)),variable.name = "topic", id.vars = "document")  
+
+ggplot(data = vizDataFrame, aes(topic, value, fill = document), ylab = "proportion") + 
+  geom_bar(stat="identity") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +  
+  coord_flip() +
+  facet_wrap(~ document, ncol = N)
+```
+
+```{r}
+
+set.seed(836)
+
+topicNames <- apply(lda::top.topic.words(beta, 5, by.score = T), 2, paste, collapse = " ")
+
+```
+
+```{r}
+
+set.seed(836)
+
+# What are the most probable topics in the entire collection?
+topicProportions <- colSums(theta) / nDocs(DTM) 
+# mean probablities over all paragraphs
+
+names(topicProportions) <- topicNames     
+
+# assign the topic names we created before
+
+sort(topicProportions, decreasing = TRUE) 
+
+# show summed proportions in decreased order
+
+```
+
+```{r}
+
+set.seed(836)
+
+soP <- sort(topicProportions, decreasing = TRUE)
+
+paste(round(soP, 5), ":", names(soP))
+
+```
+
+```{r}
+
+countsOfPrimaryTopics <- rep(0, K)
+names(countsOfPrimaryTopics) <- topicNames
+for (i in 1:nDocs(dtm_ngram)) {
+  topicsPerDoc <- theta[i, ] # select topic distribution for document i
+  # get first element position from ordered list
+  primaryTopic <- order(topicsPerDoc, decreasing = TRUE)[1] 
+  countsOfPrimaryTopics[primaryTopic] <- countsOfPrimaryTopics[primaryTopic] + 1
+}
+sort(countsOfPrimaryTopics, decreasing = TRUE)
+```
+
+```{r}
+
+set.seed(836)
+
+so <- sort(countsOfPrimaryTopics, decreasing = TRUE)
+
+paste(so, ":", names(so))
+
+```
+
+```{r}
+
+set.seed(836)
+
+terms(topicModel, 10)
+
+```
+
+
+```{r}
+
+set.seed(836)
+
+df_for_visualization<-as.data.frame(countsOfPrimaryTopics)
+
+df_for_visualization$group_names <- names(so)
+
+df_for_visualization$group_numbers <- seq(1, 20, 1)
+
+ggplot(df_for_visualization, aes(x=group_names, y=countsOfPrimaryTopics,  
+                                 fill=group_names)) + 
+  geom_bar(stat = "identity" )+  theme_classic() +
+   theme(axis.text.x = element_text(angle = 90, hjust = 1, size=3),legend.key.size = unit(0.3, 'cm'), #change legend key size
+        legend.key.height = unit(0.4, 'cm'), #change legend key height
+        legend.key.width = unit(0.4, 'cm'),) +  
+scale_fill_manual(values = paste0(alphabet(20), "FF"))+ 
+  xlab("Topic Groups") +
+  ylab("Number of Posts in Group") + 
+  guides(fill=guide_legend(title="Topic Groups"))
+?theme
+
+```
+
+### Major Topics Visualization
+
+```{r}
+
+set.seed(836)
+
+df_for_visualization<-as.data.frame(countsOfPrimaryTopics)
+
+df_for_visualization_relevant <- as.data.frame(df_for_visualization[c(1 , 7 , 8 , 11 , 17),])
+
+df_for_visualization_relevant$group_names <- names(so)[c(1,7,8, 11,17)]
+
+df_for_visualization_relevant$group_numbers <- c(1,7,8,11,17)
+
+ggplot(df_for_visualization_relevant, aes(x=group_names, y=`df_for_visualization[c(1, 7, 8, 11, 17), ]`,  fill=group_names)) + 
+  geom_bar(stat = "identity" ) +    
+  scale_fill_manual(values = paste0(alphabet(20), "FF")) +   theme_classic() +
+   theme(axis.text.x = element_text(size = 6))+
+  scale_x_discrete(guide = guide_axis(n.dodge = 2)) + xlab("Topic Groups") +
+  ylab("Number of Posts in Group") + guides(fill=guide_legend(title="Topic Groups"))
+
+```
+
+### 10 Topics
+
+```{r}
+
+set.seed(836)
+
+# number of topics
+K <- 10
+# set random number generator seed
+set.seed(9161)
+# compute the LDA model, inference via 1000 iterations of Gibbs sampling
+topicModel <- LDA(dtm_ngram, K, method="Gibbs", control=list(iter = 500, verbose = 25))
+
+```
+
+```{r}
+# have a look a some of the results (posterior distributions)
+tmResult <- posterior(topicModel)
+# format of the resulting object
+attributes(tmResult)
+```
+
+```{r}
+
+set.seed(836)
+
+
+nTerms(dtm_ngram)              # lengthOfVocab
+
+```
+
+```{r,cache = TRUE}
+
+set.seed(836)
+
+# topics are probability distribtions over the entire vocabulary
+beta <- tmResult$terms   # get beta from results
+dim(beta)                # K distributions over nTerms(DTM) terms
+```
+
+```{r}
+
+set.seed(836)
+
+rowSums(beta) 
+```
+
+```{r}
+
+set.seed(836)
+
+nDocs(dtm_ngram)               # size of collection
+
+```
+
+```{r}
+
+set.seed(836)
+
+theta <- tmResult$topics 
+
+dim(theta) 
+
+```
+
+```{r,cache = TRUE}
+
+set.seed(836)
+
+terms(topicModel, 15)
+
+```
+
+```{r}
+
+set.seed(836)
+
+exampleTermData <- terms(topicModel, 20)
+
+exampleTermData[, c(7,8)]
+
+```
+
+```{r}
+
+set.seed(836)
+
+top5termsPerTopic <- terms(topicModel, 5)
+
+topicNames <- apply(top5termsPerTopic, 2, paste, collapse=" ")
+
+topicNames
+
+```
+
+```{r}
+
+set.seed(836)
+
+# visualize topics as word cloud
+topicToViz <- 7 # change for your own topic of interest
+topicToViz <- grep(topicNames[7], topicNames)[1] # Or select a topic by a term contained in its name
+
+# select to 40 most probable terms from the topic by sorting the term-topic-probability vector in decreasing order
+top40terms <- sort(tmResult$terms[topicToViz,], decreasing=TRUE)[1:40]
+words <- names(top40terms)
+
+# extract the probabilites of each of the 40 terms
+probabilities <- sort(tmResult$terms[topicToViz,], decreasing=TRUE)[1:40]
+# visualize the terms as wordcloud
+mycolors <- brewer.pal(8, "Dark2")
+
+wordcloud(words, probabilities, random.order = TRUE, color = mycolors)
+
+```
+
+```{r}
+
+set.seed(836)
+
+# visualize topics as word cloud
+topicToViz <- 8 # change for your own topic of interest
+topicToViz <- grep(topicNames[8], topicNames)[1] # Or select a topic by a term contained in its name
+
+# select to 40 most probable terms from the topic by sorting the term-topic-probability vector in decreasing order
+top40terms <- sort(tmResult$terms[topicToViz,], decreasing=TRUE)[1:40]
+words <- names(top40terms)
+
+# extract the probabilites of each of the 40 terms
+probabilities <- sort(tmResult$terms[topicToViz,], decreasing=TRUE)[1:40]
+# visualize the terms as wordcloud
+mycolors <- brewer.pal(8, "Dark2")
+
+wordcloud(words, probabilities, random.order = TRUE, color = mycolors)
+```
+
+```{r}
+
+set.seed(928)
+
+samples<-sample.int(2424, 10)
+
+exampleIds <- samples
+
+lapply(processedCorpus_guns[exampleIds], as.character)
+
+```
+
+
+```{r}
+
+set.seed(836)
+
+N <- length(exampleIds)
+
+# get topic proportions form example documents
+topicProportionExamples <- theta[exampleIds,]
+colnames(topicProportionExamples) <- topicNames
+vizDataFrame <- melt(cbind(data.frame(topicProportionExamples), document = factor(1:N)), variable.name = "topic", id.vars = "document")  
+ggplot(data = vizDataFrame, aes(topic, value, fill = document), ylab = "proportion") + 
+  geom_bar(stat="identity") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +  
+  coord_flip() +
+  facet_wrap(~ document, ncol = N)
+```
+
+```{r}
+
+set.seed(836)
+
+topicNames <- apply(lda::top.topic.words(beta, 5, by.score = T), 2, paste, collapse = " ")
+
+```
+
+```{r}
+
+set.seed(836)
+
+# What are the most probable topics in the entire collection?
+topicProportions <- colSums(theta) / nDocs(DTM) 
+# mean probablities over all paragraphs
+
+names(topicProportions) <- topicNames     
+
+# assign the topic names we created before
+
+sort(topicProportions, decreasing = TRUE) 
+
+# show summed proportions in decreased order
+
+```
+
+```{r}
+
+set.seed(836)
+
+soP <- sort(topicProportions, decreasing = TRUE)
+
+paste(round(soP, 5), ":", names(soP))
+
+```
+
+```{r}
+
+countsOfPrimaryTopics <- rep(0, K)
+names(countsOfPrimaryTopics) <- topicNames
+for (i in 1:nDocs(dtm_ngram)) {
+  topicsPerDoc <- theta[i, ] # select topic distribution for document i
+  # get first element position from ordered list
+  primaryTopic <- order(topicsPerDoc, decreasing = TRUE)[1] 
+  countsOfPrimaryTopics[primaryTopic] <- countsOfPrimaryTopics[primaryTopic] + 1
+}
+sort(countsOfPrimaryTopics, decreasing = TRUE)
+```
+
+```{r}
+
+set.seed(836)
+
+so <- sort(countsOfPrimaryTopics, decreasing = TRUE)
+
+paste(so, ":", names(so))
+
+```
+
+```{r}
+
+set.seed(836)
+
+terms(topicModel, 10)
+
+```
+
+
+```{r}
+
+set.seed(836)
+
+df_for_visualization<-as.data.frame(countsOfPrimaryTopics)
+
+df_for_visualization$group_names <- names(so)
+
+df_for_visualization$group_numbers <- seq(1, 10, 1)
+
+ggplot(df_for_visualization, aes(x=group_names, y=countsOfPrimaryTopics,  
+                                 fill=group_names)) + 
+  geom_bar(stat = "identity" )+  theme_classic() +
+   theme(axis.text.x = element_text(angle = 90, hjust = 1, size=3),legend.key.size = unit(0.3, 'cm'), #change legend key size
+        legend.key.height = unit(0.4, 'cm'), #change legend key height
+        legend.key.width = unit(0.4, 'cm'),) +  
+scale_fill_manual(values = paste0(alphabet(20), "FF"))+ 
+  xlab("Topic Groups") +
+  ylab("Number of Posts in Group") + 
+  guides(fill=guide_legend(title="Topic Groups"))
+?theme
+
+```
+
+### Major Topics Visualization
+
+```{r}
+
+set.seed(836)
+
+df_for_visualization<-as.data.frame(countsOfPrimaryTopics)
+
+df_for_visualization_relevant <- as.data.frame(df_for_visualization[c(7, 8),])
+
+df_for_visualization_relevant$group_names <- names(so)[c(7,8)]
+
+df_for_visualization_relevant$group_numbers <- c(7,8)
+
+ggplot(df_for_visualization_relevant, aes(x=group_names, y=`df_for_visualization[c(7, 8), ]`,  fill=group_names)) + 
+  geom_bar(stat = "identity" ) +    
+  scale_fill_manual(values = paste0(alphabet(20), "FF")) +   theme_classic() +
+   theme(axis.text.x = element_text(size = 6))+
+  scale_x_discrete(guide = guide_axis(n.dodge = 2)) + xlab("Topic Groups") +
+  ylab("Number of Posts in Group") + guides(fill=guide_legend(title="Topic Groups"))
+
+```
+
+
+### 5 Topics
+
+```{r}
+
+set.seed(836)
+
+# number of topics
+K <- 5
+# set random number generator seed
+set.seed(9161)
+# compute the LDA model, inference via 1000 iterations of Gibbs sampling
+topicModel <- LDA(dtm_ngram, K, method="Gibbs", control=list(iter = 500, verbose = 25))
+
+```
+
+```{r}
+# have a look a some of the results (posterior distributions)
+tmResult <- posterior(topicModel)
+# format of the resulting object
+attributes(tmResult)
+```
+
+```{r}
+
+set.seed(836)
+
+
+nTerms(dtm_ngram)              # lengthOfVocab
+
+```
+
+```{r,cache = TRUE}
+
+set.seed(836)
+
+# topics are probability distribtions over the entire vocabulary
+beta <- tmResult$terms   # get beta from results
+dim(beta)                # K distributions over nTerms(DTM) terms
+```
+
+```{r}
+
+set.seed(836)
+
+rowSums(beta) 
+```
+
+```{r}
+
+set.seed(836)
+
+nDocs(dtm_ngram)               # size of collection
+
+```
+
+```{r}
+
+set.seed(836)
+
+theta <- tmResult$topics 
+
+dim(theta) 
+
+```
+
+```{r,cache = TRUE}
+
+set.seed(836)
+
+terms(topicModel, 20)
+
+```
+
+```{r}
+
+set.seed(836)
+
+exampleTermData <- terms(topicModel, 20)
+
+exampleTermData[, c(2, 3, 4)]
+
+```
+
+```{r}
+
+set.seed(836)
+
+top5termsPerTopic <- terms(topicModel, 5)
+
+topicNames <- apply(top5termsPerTopic, 2, paste, collapse=" ")
+
+topicNames
+
+```
+
+```{r}
+
+set.seed(836)
+
+# visualize topics as word cloud
+topicToViz <- 2 # change for your own topic of interest
+topicToViz <- grep(topicNames[2], topicNames)[1] # Or select a topic by a term contained in its name
+
+# select to 40 most probable terms from the topic by sorting the term-topic-probability vector in decreasing order
+top40terms <- sort(tmResult$terms[topicToViz,], decreasing=TRUE)[1:40]
+words <- names(top40terms)
+
+# extract the probabilites of each of the 40 terms
+probabilities <- sort(tmResult$terms[topicToViz,], decreasing=TRUE)[1:40]
+# visualize the terms as wordcloud
+mycolors <- brewer.pal(8, "Dark2")
+
+wordcloud(words, probabilities, random.order = TRUE, color = mycolors)
+
+```
+
+```{r}
+
+set.seed(836)
+
+# visualize topics as word cloud
+topicToViz <- 3 # change for your own topic of interest
+topicToViz <- grep(topicNames[3], topicNames)[1] # Or select a topic by a term contained in its name
+
+# select to 40 most probable terms from the topic by sorting the term-topic-probability vector in decreasing order
+top40terms <- sort(tmResult$terms[topicToViz,], decreasing=TRUE)[1:40]
+words <- names(top40terms)
+
+# extract the probabilites of each of the 40 terms
+probabilities <- sort(tmResult$terms[topicToViz,], decreasing=TRUE)[1:40]
+# visualize the terms as wordcloud
+mycolors <- brewer.pal(8, "Dark2")
+
+wordcloud(words, probabilities, random.order = TRUE, color = mycolors)
+```
+
+```{r}
+
+set.seed(928)
+
+samples<-sample.int(2424, 10)
+
+exampleIds <- samples
+
+lapply(processedCorpus_guns[exampleIds], as.character)
+
+```
+
+
+```{r}
+
+set.seed(836)
+
+N <- length(exampleIds)
+
+# get topic proportions form example documents
+topicProportionExamples <- theta[exampleIds,]
+colnames(topicProportionExamples) <- topicNames
+vizDataFrame <- melt(cbind(data.frame(topicProportionExamples), document = factor(1:N)), variable.name = "topic", id.vars = "document")  
+ggplot(data = vizDataFrame, aes(topic, value, fill = document), ylab = "proportion") + 
+  geom_bar(stat="identity") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +  
+  coord_flip() +
+  facet_wrap(~ document, ncol = N)
+```
+
+```{r}
+
+set.seed(836)
+
+topicNames <- apply(lda::top.topic.words(beta, 5, by.score = T), 2, paste, collapse = " ")
+
+```
+
+```{r}
+
+set.seed(836)
+
+# What are the most probable topics in the entire collection?
+topicProportions <- colSums(theta) / nDocs(DTM) 
+# mean probablities over all paragraphs
+
+names(topicProportions) <- topicNames     
+
+# assign the topic names we created before
+
+sort(topicProportions, decreasing = TRUE) 
+
+# show summed proportions in decreased order
+
+```
+
+```{r}
+
+set.seed(836)
+
+soP <- sort(topicProportions, decreasing = TRUE)
+
+paste(round(soP, 5), ":", names(soP))
+
+```
+
+```{r}
+
+countsOfPrimaryTopics <- rep(0, K)
+names(countsOfPrimaryTopics) <- topicNames
+for (i in 1:nDocs(dtm_ngram)) {
+  topicsPerDoc <- theta[i, ] # select topic distribution for document i
+  # get first element position from ordered list
+  primaryTopic <- order(topicsPerDoc, decreasing = TRUE)[1] 
+  countsOfPrimaryTopics[primaryTopic] <- countsOfPrimaryTopics[primaryTopic] + 1
+}
+sort(countsOfPrimaryTopics, decreasing = TRUE)
+```
+
+```{r}
+
+set.seed(836)
+
+so <- sort(countsOfPrimaryTopics, decreasing = TRUE)
+
+paste(so, ":", names(so))
+
+```
+
+```{r}
+
+set.seed(836)
+
+terms(topicModel, 10)
+
+```
+
+
+```{r}
+
+set.seed(836)
+
+df_for_visualization<-as.data.frame(countsOfPrimaryTopics)
+
+df_for_visualization$group_names <- names(so)
+
+df_for_visualization$group_numbers <- seq(1, 5, 1)
+
+ggplot(df_for_visualization, aes(x=group_names, y=countsOfPrimaryTopics,  
+                                 fill=group_names)) + 
+  geom_bar(stat = "identity" )+  theme_classic() +
+   theme(axis.text.x = element_text(angle = 90, hjust = 1, size=3),legend.key.size = unit(0.3, 'cm'), #change legend key size
+        legend.key.height = unit(0.4, 'cm'), #change legend key height
+        legend.key.width = unit(0.4, 'cm'),) +  
+scale_fill_manual(values = paste0(alphabet(20), "FF"))+ 
+  xlab("Topic Groups") +
+  ylab("Number of Posts in Group") + 
+  guides(fill=guide_legend(title="Topic Groups"))
+?theme
+
+```
+
+### Major Topics Visualization
+
+```{r}
+
+set.seed(836)
+
+df_for_visualization<-as.data.frame(countsOfPrimaryTopics)
+
+df_for_visualization_relevant <- as.data.frame(df_for_visualization[c(2, 3),])
+
+df_for_visualization_relevant$group_names <- names(so)[c(2,3)]
+
+df_for_visualization_relevant$group_numbers <- c(2,3)
+
+ggplot(df_for_visualization_relevant, aes(x=group_names, y=`df_for_visualization[c(2, 3), ]`,  fill=group_names)) + 
+  geom_bar(stat = "identity" ) +    
+  scale_fill_manual(values = paste0(alphabet(20), "FF")) +   theme_classic() +
+   theme(axis.text.x = element_text(size = 6))+
+  scale_x_discrete(guide = guide_axis(n.dodge = 2)) + xlab("Topic Groups") +
+  ylab("Number of Posts in Group") + guides(fill=guide_legend(title="Topic Groups"))
+
+```
