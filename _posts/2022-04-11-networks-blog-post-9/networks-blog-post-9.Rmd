@@ -908,7 +908,6 @@ set.seed(123)
 
 plot(comm.lab,wars_in_1200s.ig, vertex.size=0.5, edge.size=0.25, edge.arrow.size=.25,  vertex.label.dist=1.5,vertex.label.cex=0.25,asp = 0)
 
-
 ```
 
 #### Walktrap 1200s:
@@ -1629,6 +1628,153 @@ sim.t(g=wars_1100s, trials)
 ```{r}
 
 plot.sim.t(wars_in_1100s_2.stat, trials)
+
+```
+
+
+```{r, eval=FALSE}
+wars_1000s_for_equiv_clust<-as.network(wars_in_1000s_edgelist, matrix.type = "edgelist", directed = TRUE,  hyper = FALSE, loops = FALSE, multiple = FALSE,
+                                       bipartite = FALSE, vertex.attrnames=wars_in_1000s_network%v%"vertex.names")
+
+war_1000s.se_hamming<-equiv.clust(wars_1000s_for_equiv_clust, equiv.fun="sedist", method="hamming", mode="graph")
+
+plot(war_1000s.se_hamming, labels=war_1000s.se_hamming$glabels,  cex=0.3, main="Cluster Dendrogram 1000s Hamming")
+
+```
+
+```{r}
+library(ape)
+library(ggdendro)
+library(sets)
+library(ggplot2)
+library(dendextend)
+
+```
+
+```{r}
+#install.packages("ggdendro")
+
+dd <- dist(scale(wars_1000s), method = "euclidean")
+
+hc <- hclust(dd, method = "complete")
+
+hcd <- as.dendrogram(hc)
+# Default plot
+clus4 = cutree(hc, 4)
+
+plot(as.phylo(hcd), type = "fan", tip.color = clus4,
+     label.offset = 1, cex = 0.5)
+
+```
+```{r}
+#install.packages("ggdendro")
+
+dd <- dist(scale(wars_1100s), method = "euclidean")
+
+hc <- hclust(dd, method = "complete")
+
+hcd <- as.dendrogram(hc)
+# Default plot
+clus4 = cutree(hc, 10)
+
+plot(as.phylo(hcd), type = "fan", tip.color = clus4,
+     label.offset = 1, cex = 0.5)
+
+```
+
+```{r}
+#install.packages("ggdendro")
+
+dd <- dist(scale(wars_1200s), method = "euclidean")
+
+hc <- hclust(dd, method = "complete")
+
+hcd <- as.dendrogram(hc)
+# Default plot
+clus4 = cutree(hc, 3)
+
+plot(as.phylo(hcd), type = "fan", tip.color = clus4,
+     label.offset = 1, cex = 0.3)
+
+```
+
+```{r}
+
+library(factoextra)
+library(NbClust)
+```
+
+```{r}
+
+
+df <- scale(wars_1000s)
+
+df <- na.omit(wars_1000s)
+
+fviz_nbclust(df, kmeans, method = "wss") +geom_vline(xintercept = 4, linetype = 2)+
+  labs(subtitle = "Elbow method")
+
+# Silhouette method
+fviz_nbclust(df, kmeans, method = "silhouette")+
+  labs(subtitle = "Silhouette method")
+
+# Gap statistic
+# nboot = 50 to keep the function speedy. 
+# recommended value: nboot= 500 for your analysis.
+# Use verbose = FALSE to hide computing progression.
+set.seed(123)
+fviz_nbclust(df, kmeans, nstart = 25,  method = "gap_stat", nboot = 50)+
+  labs(subtitle = "Gap statistic method")
+
+```
+
+```{r}
+
+
+df <- scale(wars_1100s)
+
+df <- na.omit(wars_1100s)
+
+fviz_nbclust(df, kmeans, method = "wss") +geom_vline(xintercept = 4, linetype = 2)+
+  labs(subtitle = "Elbow method")
+
+# Silhouette method
+fviz_nbclust(df, kmeans, method = "silhouette")+
+  labs(subtitle = "Silhouette method")
+
+# Gap statistic
+# nboot = 50 to keep the function speedy. 
+# recommended value: nboot= 500 for your analysis.
+# Use verbose = FALSE to hide computing progression.
+set.seed(123)
+fviz_nbclust(df, kmeans, nstart = 25,  method = "gap_stat", nboot = 50)+
+  labs(subtitle = "Gap statistic method")
+
+
+```
+
+```{r}
+
+
+df <- scale(wars_1200s)
+
+df <- na.omit(wars_1200s)
+
+fviz_nbclust(df, kmeans, method = "wss") +geom_vline(xintercept = 4, linetype = 2)+
+  labs(subtitle = "Elbow method")
+
+# Silhouette method
+fviz_nbclust(df, kmeans, method = "silhouette")+
+  labs(subtitle = "Silhouette method")
+
+# Gap statistic
+# nboot = 50 to keep the function speedy. 
+# recommended value: nboot= 500 for your analysis.
+# Use verbose = FALSE to hide computing progression.
+set.seed(123)
+fviz_nbclust(df, kmeans, nstart = 25,  method = "gap_stat", nboot = 50)+
+  labs(subtitle = "Gap statistic method")
+
 
 ```
 
