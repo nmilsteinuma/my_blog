@@ -265,7 +265,7 @@ ggplot(wars_in_1000s_network, aes(x = x, y = y, xend = xend, yend = yend)) +
 
 ```
 ```{r}
-summary(wars_in_1100s_network)
+#summary(wars_in_1100s_network)
 ```
 
 
