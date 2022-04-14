@@ -151,7 +151,7 @@ whole_data_frame_unique$"all_text" <- sapply(whole_data_frame_unique$"all_text",
                                     function(x) { gsub("[\r\n]", "", x)  }) 
 
 whole_data_frame_unique$"all_text" <- sapply(whole_data_frame_unique$"all_text",
-                                    function(x) { gsub("[\031\034\024]", "`", x) })
+                                    function(x) { gsub("[\031\034\035\024]", "`", x) })
 
 ```
 
@@ -181,7 +181,6 @@ whole_data_frame_tokens <- tolower(whole_data_frame_unique$all_text[1:1900])
 whole_data_frame_tokens <- word_tokenizer(whole_data_frame_tokens)
 
 ```
-
 
 ```{r}
 
@@ -583,6 +582,7 @@ library(topicmodels)
 
 ```
 
+### Wokring with Topic Models
 
 ```{r}
 
@@ -604,6 +604,7 @@ corpus <- Corpus(DataframeSource(textdata))
 
 processedCorpus_guns <- tm_map(corpus, content_transformer(tolower))
 processedCorpus_guns <- tm_map(processedCorpus_guns, removeWords, english_stopwords)
+processedCorpus_guns <- tm_map(processedCorpus_guns, removePunctuation)
 
 ```
 
@@ -931,37 +932,12 @@ ggplot(df_for_visualization_relevant, aes(x=group_names, y=`df_for_visualization
 ```{r}
 #processedCorpus_guns <- tm_map(corpus, content_transformer(tolower))
 #processedCorpus_guns <- tm_map(processedCorpus_guns, removeWords, english_stopwords)
+#processedCorpus_guns <- tm_map(processedCorpus_guns, removePunctuation)
 
 
 my_words<- vocab_whole_df$term
 
 BigramTokenizer <- function(x)unlist(lapply(ngrams(words(x), 1:2), paste, collapse = " "), use.names = FALSE)
-
-dtm_ngram <- DocumentTermMatrix(processedCorpus_guns, control=list(tokenizer = BigramTokenizer, dictionary = my_words))
-
-# dtm_ngram <- DocumentTermMatrix(model, control=list(tokenize = BigramTokenizer, wordLengths=c(1,Inf))) 
- 
-inspect(dtm_ngram)
-
-```
-
-```{r}
-
-data_corpus = VCorpus(DataframeSource(textdata))
-
-NLP_tokenizer <- function(x) {
-  unlist(lapply(ngrams(words(x), 1:2), paste, collapse = "_"), use.names = FALSE)
-}
-
-control_list_ngram = list(tokenize = NLP_tokenizer,
-                          removePunctuation = TRUE,
-                          removeNumbers = FALSE, 
-                          stopwords = stopwords("english"), 
-                          tolower = T, 
-                          stemming = F
-                          )
-
-dtm_ngram <- DocumentTermMatrix(data_corpus, control_list_ngram)
 
 removeCommonTerms <- function (x, pct) 
 {
@@ -977,11 +953,19 @@ removeCommonTerms <- function (x, pct)
     else x[termIndex, ]
 }
 
-dtm_ngram<-removeCommonTerms(dtm_ngram, .2)
+dtm_ngram <- DocumentTermMatrix(processedCorpus_guns)
 
+dtm_ngram <- DocumentTermMatrix(processedCorpus_guns, control=list(tokenizer = BigramTokenizer, dictionary = my_words))
+dtm_ngram <- removeCommonTerms(dtm_ngram, .1)
+
+tm::inspect(dtm_ngram)
+
+# dtm_ngram <- DocumentTermMatrix(model, control=list(tokenize = BigramTokenizer, wordLengths=c(1,Inf))) 
 
 
 ```
+
+
 
 ```{r}
 
@@ -1281,7 +1265,6 @@ scale_fill_manual(values = paste0(alphabet(20), "FF"))+
   xlab("Topic Groups") +
   ylab("Number of Posts in Group") + 
   guides(fill=guide_legend(title="Topic Groups"))
-?theme
 
 ```
 
@@ -1793,6 +1776,7 @@ paste(round(soP, 5), ":", names(soP))
 ```
 
 ```{r}
+set.seed(1839)
 
 countsOfPrimaryTopics <- rep(0, K)
 names(countsOfPrimaryTopics) <- topicNames
