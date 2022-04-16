@@ -1,7 +1,7 @@
 ---
 title: "ML homework 3"
 description: |
-  A short description of the post.
+  ISLR DACSS Machine Learning Homework 3.
 author:
   - name: Noah Milstein
     url: {}
@@ -11,11 +11,6 @@ output:
     self_contained: false
 ---
 
-
-
-ISLR Ch. 12, Exercise 9
-
-ISLR Ch. 12, Exercise 10
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -42,11 +37,11 @@ library(markdown)
 
 ## Problem Set 3
 
-### Ch. 6
+### Ch. 6, Exercise 9
 
 **Basis:**  In this exercise, we will predict the number of applications received using the other variables in the College data set. During my original calculations for homework 2 I did the prediction on the graduation rate rather than applications received so I will be modifying my calculations for parts a through e to reflect this and enable me to interpret part g correctly.
 
-#### (a) 
+#### Part (a) 
 
 **Question:** Split the data set into a training set and a test set.
 
@@ -66,7 +61,7 @@ college_test <- College[-train_College_numbers,]
 
 ```
 
-#### (b) 
+#### Part (b) 
 
 **Question:** Fit a linear model using least squares on the training set, and report the test error obtained.
 
@@ -96,7 +91,7 @@ MSE_college_test %>% kable()
 
 ```
 
-#### (c) 
+#### Part (c) 
 
 **Question:** Fit a ridge regression model on the training set, with lambda chosen by cross-validation. Report the test error obtained.
 
@@ -114,8 +109,8 @@ grid <- 10^seq(10, -2, length = 100)
 
 ridge.mod <- glmnet(x_ridge, y_ridge, alpha = 0, lambda = grid)
 
-dim(coef(ridge.mod))
-
+dim(coef(ridge.mod)) %>% kable()
+ 
 ```
 
 **Answer:** Below I then split my data into an 80% 20% split between training and test sets. These values are stored in the train_ridge and test_ridge variables. 
@@ -158,11 +153,10 @@ ridge.pred <- predict(ridge.mod, s = 0, newx = x_ridge[test_ridge, ],
                       y = y_ridge[train_ridge])
 
 predict(ridge.mod, s = 0, exact = T, type = "coefficients", 
-        x = x_ridge[train_ridge, ], y = y_ridge[train_ridge])[1:18, ]
-
+        x = x_ridge[train_ridge, ], y = y_ridge[train_ridge])[1:18, ] %>% kable()
 ```
 
-**Answer continued:** Next after beginning these tests we use cross validation to get the optimal tuning parameters from a number of repetitions using cv.glmnet() in this case it takes our training values and an alpha of zero to indicate it is a ridge and uses a number of values of lambda to determine which minimizes mean squared errors. This is plotted below
+**Answer continued:** Next after beginning these tests we use cross validation to get the optimal tuning parameters from a number of repetitions using cv.glmnet() in this case it takes our training values and an alpha of zero to indicate it is a ridge and uses a number of values of lambda to determine which minimizes mean squared errors. This is plotted below:
 
 ```{r}
 
@@ -182,7 +176,7 @@ set.seed(9292)
 
 bestlam <- cv.out$lambda.min
 
-bestlam
+bestlam %>% kable()
 
 ```
 
@@ -205,11 +199,11 @@ set.seed(9292)
 
 out <- glmnet(x_ridge[train_ridge, ], y_ridge[train_ridge], alpha = 0)
 
-predict(out, type = "coefficients", s = bestlam)[1:18, ]
+predict(out, type = "coefficients", s = bestlam)[1:18, ] %>% kable()
 
 ```
 
-#### (d) 
+#### Part (d) 
 
 **Question:** Fit a lasso model on the training set, with lambda chosen by cross validation. Report the test error obtained, along with the number of non-zero coefficient estimates.
 
@@ -263,12 +257,12 @@ out <- glmnet(x_ridge[train_ridge, ], y_ridge[train_ridge],
 
 lasso.coef <- predict(out, type = "coefficients", s = bestlam)[1:18, ]
 
-lasso.coef
+lasso.coef %>% kable()
 
 
 ```
 
-### (g) 
+### Part (g) 
 
 **Basis:** Comment on the results obtained. How accurately can we predict the number of college applications received? Is there much difference among the test errors resulting from these five approaches?
 
@@ -288,7 +282,7 @@ lasso.coef
 
 pr.out <- prcomp(USArrests, scale = TRUE)
 
-pr.out
+pr.out 
 
 ```
 
@@ -296,13 +290,13 @@ pr.out
 
 ```{r} 
 
-names(pr.out)
+names(pr.out) %>% kable()
 
 ```
 
 ```{r}
 
-dim(pr.out$x)
+dim(pr.out$x) %>% kable()
 
 ```
 
@@ -315,7 +309,9 @@ biplot(pr.out, scale = 0)
 **Answer 3:** We see our 4 sdev, or standard deviations for Murder, Assault, UrbanPop and Rape.
 
 ```{r}
+
 pr.out$sdev %>% kable()
+
 ```
 
 **Answer 4:** First we square our sdevs to acquire our variance.
@@ -324,7 +320,7 @@ pr.out$sdev %>% kable()
 
 pr.var <- pr.out$sdev^2
 
-pr.var
+pr.var %>% kable()
 
 ```
 
@@ -334,11 +330,11 @@ pr.var
 
 pve <- pr.var / sum(pr.var)
 
-pve
+pve %>% kable()
 
 ```
 
-#### (b) 
+#### Part (b) 
 
 **Basis:** By applying Equation 12.10 directly. That is, use the prcomp() function to compute the principal component loadings. Then, use those loadings in Equation 12.10 to obtain the PVE.
 
@@ -368,7 +364,7 @@ sum_squares / sum(sum_squares)
 
 **Basis:** Consider the USArrests data. We will now perform hierarchical clustering on the states.
 
-#### (a) 
+#### Part (a) 
 
 **Basis:** Using hierarchical clustering with complete linkage and Euclidean distance, cluster the states.
 
@@ -390,7 +386,7 @@ plot(hclust(USArrests.dist, method="complete"), xlab = "",
 
 ```
 
-#### (b) 
+#### Part (b) 
 
 **Basis:** Cut the dendrogram at a height that results in three distinct clusters. Which states belong to which clusters?
 
@@ -436,10 +432,10 @@ table_with_3_clusters_r3[table_with_3_clusters_r3 == 1] %>% kable()
 ```{r}
 
 plot(hclust(USArrests.dist, method="complete"), labels = USArrest.labs) 
-abline(h = 100, col = "red")
+abline(h = 105, col = "red")
 ```
 
-#### (c) 
+#### Part (c) 
 
 **Basis:** Hierarchically cluster the states using complete linkage and Euclidean distance, after scaling the variables to have standard deviation one.
 
@@ -484,7 +480,7 @@ labels = USArrests_scaled.labs, main = "Complete Linkage")
 
 **Basis:** In this problem, you will generate simulated data, and then perform PCA and K-means clustering on the data.
 
-#### (a) 
+#### Part (a) 
 
 **Basis:** Generate a simulated data set with 20 observations in each of three classes (i.e. 60 observations total), and 50 variables.
 
@@ -543,7 +539,7 @@ big_df_combined_10$groups[41:60] <- "3"
 ```
 
 
-#### (b) 
+#### Part (b) 
 
 **Basis:** Perform PCA on the 60 observations and plot the first two principal component score vectors. Use a different color to indicate the observations in each of the three classes. If the three classes appear separated in this plot, then continue on to part (c). If not, then return to part (a) and modify the simulation so that there is greater separation between the three classes. Do not continue to part (c) until the three classes show at least some separation in the first two principal component score vectors.
 
@@ -568,7 +564,7 @@ xlab = "P1", ylab = "P2")
 
 ```
 
-#### (c) 
+#### Part (c) 
 
 **Basis:** Perform K-means clustering of the observations with K = 3. How well do the clusters that you obtained in K-means clustering compare to the true class labels?
 
@@ -586,7 +582,7 @@ table(km.clusters, big_df_combined_10$groups)
 
 ```
 
-#### (d) 
+#### Part (d) 
 
 **Basis:** Perform K-means clustering with K = 2. Describe your results. 
 
@@ -620,7 +616,7 @@ table(km.clusters, big_df_combined_10$groups)
 
 ```
 
-#### (f) 
+#### Part (f) 
 
 **Basis:** Now perform K-means clustering with K = 3 on the first two principal component score vectors, rather than on the raw data. That is, perform K-means clustering on the 60 × 2 matrix of which the first column is the first principal component score vector, and the second column is the second principal component score vector. Comment on the results.
 
@@ -641,7 +637,7 @@ table(km.clusters, big_df_combined_10$groups)
 ```
 
 
-#### (g)
+#### Part (g)
 
 **Basis:** Using the scale() function, perform K-means clustering with K = 3 on the data after scaling each variable to have standard deviation one. How do these results compare to those obtained in (b)? Explain.
 
@@ -665,15 +661,16 @@ table(km_g.clusters, big_df_combined_10$groups)
 
 **Question:** Based on reading for this class, what are the main risks of algorithmic models (machine learning) from a fairness and justice perspective? What forms of modeling/learning and/or sorts of data may pose particular risks of harm? What general strategies might be employed to mitigate these risks? Can you think of any methodological advances that might be pursued by computational and statistical researchers in order to help data analysts make "ethically derived" predictions?
 
-**Answer:** Based on the readings for this class there are a great number of potential fairness and justice risks of the use of models in many areas of life. The primary ones are the reinforcement of systems that perpetuate inequality or direct harm to a group through self-reinforcing predictions and punitive or financial outcomes. As O'neal writes the collegiate arms race has inflated prices far beyond inflation while predicted outcomes of policing models ignore white collar crimes and encourage increased policing which leads to more punitive outcomes which have far reaching social and financial consequences. 
+**Answer:** Based on the readings for this class there are a great number of potential fairness and justice risks of the use of models in many areas of life. The primary ones are the reinforcement of systems that perpetuate inequality or direct harm to a group through self-reinforcing predictions and punitive or financial outcomes. As O'neal writes the collegiate arms race has inflated prices far beyond inflation while predicted outcomes of policing models ignore white collar crimes and encourage increased policing which leads to more punitive outcomes which have far reaching social and financial consequences. A number of these risks arise from the fact that machine learning models derive their data from a world that has been created on systems that are inherently unequal or were created in ways that were designed to keep certain groups unequal. The financial system for example, which is the subject of the article "Wells Fargo Rejected Half of Its Black Applicants in Mortgage refinancing Boom" by Shawn Donnan, et. al, sold mortgages to lower income people that were likely to become delinquent which resulted in the 2008 crash. Examples like Wells Fargo accepting less than half of their Black applicants are specific reflections of an incredibly inequitable system. This system will inevitably provide data to nearly all types of businesses which they will make decisions based on, and as a results, those algorithms will be polluted with the inequities within the data that comprises them. In this way the fairness and justice risks are the perpetuation of systems of inequality.
 
-The algorithms that appear to carry the most risk are predictive algorithms in the financial and social spaces. Predicting issues such as recidivism and crime are inevitable going to reinforce the structure in the world they are meant to predict and since algorithms are stagnant they cannot evolve to do anything but reflect what they are engineered to do.
+The algorithms that appear to carry the most risk are predictive algorithms in the financial and social spaces. Predicting issues such as recidivism and crime are inevitable going to reinforce systems that created the inequities that lead to higher crime. The structure of social society that results in data makes it impossible to separate algorithms from the assumptions and history of the society they predict and reflect. As a result mitigation of risk is difficult in modeling as algorithms are inherently reductive and based on the past. Because of this there are areas that they simply should not be used in, or that the results of the algorithms should be subject to far more questioning. 
 
-Mitigation of risk is difficult in modeling as algorithms are inherently reductive and based on the past, as a result there are areas that they simply should not be used in, perhaps the methodological advance could be 
+I do not think there is a way to make an "ethically derived" prediction in a number of spaces. The assumptions and purposes of certain industries renders them incapable of creating ethical algorithms. For example the motives of the housing industry and financial industry will likely never be ethical, nor consumer good. Methodological advance could improve opaque nature of certain algorithms which can be "black boxes" whose predictions and algorithms can be nearly impossible to explain due to the complexity and inherent mathematical structure that they comprise. In addition modeling should be subject to a much higher degree of oversight and structural regulation, though this is unlikely to happen because proving inequities in algorithms that are complex enough is nearly impossible.
 
-In earlier chapters, while no acknowledging fault fault, the author explains the widespread harm caused by predictive algorithms in finance that assisted in creating the 2008 housing bubble. When the bubble burst the burden of the fallout was felt by poor and middle class households who were given sub prime loan and subsequently foreclosed, lost their savings and credit. As O'neal points out these issues are due to the opaque nature in being often non-interpretable due to complexity and inherent mathematical structure. In addition the scale by which certain algorithms such as recidivism and policing.
+## Project Update
 
-(Project update) Data Exploration: Use appropriate methods to explore the data you plan to use for your project. (It's okay if you change your mind and use a different data set later; this exercise may help you decide.) Include some form of visualization(s) and indications of the unit of analysis, the levels of measurements (e.g.: "9 categorical features–7 dichotomous and 2 with more than two categories– and 14 numerical/quantitative features, for a total of 23), univariate statistics helping characterize the distribution of the features and of the outcome variable (label) you wish to predict if you will be conducting supervised learning for the project. Convey something about relationships among features (predictors). If you are going to use these for prediction, identify any preprocessing you may need to do and options available for cleaning up/transforming data and/or dimension reduction. (Submit with your group or with explanation of why you must work alone.)
+#### My Machine Learning Analysis so Far and Plans Moving Forward.
+
 
 ```{r, echo=FALSE}
 library(readxl)
@@ -691,6 +688,7 @@ library(knitr)
 library(GGally)
 library(aRtsy)
 ```
+
 ```{r setup, include=FALSE}
 
 wars_in_1000s <- read_excel("~/Desktop/Spring 2022/Networks/wars_in_1000s.xlsx")
@@ -717,7 +715,7 @@ wars_in_1200s$"In"<- sapply(wars_in_1200s$"In",
                             
 ```
 
-## Putting Network into Necessary Formats
+#### Putting Network into Necessary Formats
 
 ```{r, echo=FALSE}
 
@@ -747,7 +745,9 @@ wars_in_1200s_network <- asNetwork(wars_in_1200s.ig)
 
 ```
 
-## Adding Attributes
+#### Adding Attributes
+
+**Explanation:** My Project is an exploration of data sets involving conflicts between the year 1000 and 1200, I do a great deal of general network analysis that is not included here, including some hierarchical clustering. My primary research question is what network attributes and node attributes are most influential in state continuity. I plan to eventually add more node attributes but for the moment I have just a handful, those being state religion, centrality measures, and degree measures.
 
 ```{r,echo=FALSE}
 

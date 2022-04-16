@@ -1545,7 +1545,6 @@ scale_fill_manual(values = paste0(alphabet(20), "FF"))+
   xlab("Topic Groups") +
   ylab("Number of Posts in Group") + 
   guides(fill=guide_legend(title="Topic Groups"))
-?theme
 
 ```
 

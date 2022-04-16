@@ -89,7 +89,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--radix_placeholder_meta_tags-->
 <title>Noah Milstein DACSS Blog: ML homework 3</title>
 
-<meta property="description" itemprop="description" content="A short description of the post."/>
+<meta property="description" itemprop="description" content="ISLR DACSS Machine Learning Homework 3."/>
 
 
 <!--  https://schema.org/Article -->
@@ -100,20 +100,20 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
 <meta property="og:title" content="Noah Milstein DACSS Blog: ML homework 3"/>
 <meta property="og:type" content="article"/>
-<meta property="og:description" content="A short description of the post."/>
+<meta property="og:description" content="ISLR DACSS Machine Learning Homework 3."/>
 <meta property="og:locale" content="en_US"/>
 <meta property="og:site_name" content="Noah Milstein DACSS Blog"/>
 
 <!--  https://dev.twitter.com/cards/types/summary -->
 <meta property="twitter:card" content="summary"/>
 <meta property="twitter:title" content="Noah Milstein DACSS Blog: ML homework 3"/>
-<meta property="twitter:description" content="A short description of the post."/>
+<meta property="twitter:description" content="ISLR DACSS Machine Learning Homework 3."/>
 
 <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
 <script type="text/json" id="radix-rmarkdown-metadata">
-{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output"]}},"value":[{"type":"character","attributes":{},"value":["ML homework 3"]},{"type":"character","attributes":{},"value":["A short description of the post."]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url"]}},"value":[{"type":"character","attributes":{},"value":["Noah Milstein"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":[]}},"value":[]}]}]},{"type":"character","attributes":{},"value":["2022-04-03"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained"]}},"value":[{"type":"logical","attributes":{},"value":[false]}]}]}]}
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output"]}},"value":[{"type":"character","attributes":{},"value":["ML homework 3"]},{"type":"character","attributes":{},"value":["ISLR DACSS Machine Learning Homework 3."]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url"]}},"value":[{"type":"character","attributes":{},"value":["Noah Milstein"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":[]}},"value":[]}]}]},{"type":"character","attributes":{},"value":["2022-04-03"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained"]}},"value":[{"type":"logical","attributes":{},"value":[false]}]}]}]}
 </script>
 <!--/radix_placeholder_rmarkdown_metadata-->
   
@@ -2066,7 +2066,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"ML homework 3","description":"A short description of the post.","authors":[{"author":"Noah Milstein","authorURL":{},"affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2022-04-03T00:00:00.000-04:00","citationText":"Milstein, 2022"}
+{"title":"ML homework 3","description":"ISLR DACSS Machine Learning Homework 3.","authors":[{"author":"Noah Milstein","authorURL":{},"affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2022-04-03T00:00:00.000-04:00","citationText":"Milstein, 2022"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2092,7 +2092,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <h1>ML homework 3</h1>
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
-<p><p>A short description of the post.</p></p>
+<p><p>ISLR DACSS Machine Learning Homework 3.</p></p>
 </div>
 
 <div class="d-byline">
@@ -2102,8 +2102,6 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 
 <div class="d-article">
-<p>ISLR Ch. 12, Exercise 9</p>
-<p>ISLR Ch. 12, Exercise 10</p>
 <div class="layout-chunk" data-layout="l-body">
 
 </div>
@@ -2330,7 +2328,7 @@ we use cross validation to get the optimal tuning parameters from a
 number of repetitions using cv.glmnet() in this case it takes our
 training values and an alpha of zero to indicate it is a ridge and uses
 a number of values of lambda to determine which minimizes mean squared
-errors. This is plotted below</p>
+errors. This is plotted below:</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>9292</span><span class='op'>)</span>
@@ -2953,7 +2951,7 @@ line at a level which creates 3 groups.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/hclust.html'>hclust</a></span><span class='op'>(</span><span class='va'>USArrests.dist</span>, method<span class='op'>=</span><span class='st'>"complete"</span><span class='op'>)</span>, labels <span class='op'>=</span> <span class='va'>USArrest.labs</span><span class='op'>)</span> 
-<span class='fu'><a href='https://rdrr.io/r/graphics/abline.html'>abline</a></span><span class='op'>(</span>h <span class='op'>=</span> <span class='fl'>100</span>, col <span class='op'>=</span> <span class='st'>"red"</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/abline.html'>abline</a></span><span class='op'>(</span>h <span class='op'>=</span> <span class='fl'>105</span>, col <span class='op'>=</span> <span class='st'>"red"</span><span class='op'>)</span>
 </code></pre>
 </div>
 <p><img src="ml-homework-3_files/figure-html5/unnamed-chunk-27-1.png" width="624" /></p>
@@ -3272,32 +3270,48 @@ O’neal writes the collegiate arms race has inflated prices far beyond
 inflation while predicted outcomes of policing models ignore white
 collar crimes and encourage increased policing which leads to more
 punitive outcomes which have far reaching social and financial
-consequences.</p>
+consequences. A number of these risks arise from the fact that machine
+learning models derive their data from a world that has been created on
+systems that are inherently unequal or were created in ways that were
+designed to keep certain groups unequal. The financial system for
+example, which is the subject of the article “Wells Fargo Rejected Half
+of Its Black Applicants in Mortgage refinancing Boom” by Shawn Donnan,
+et. al, sold mortgages to lower income people that were likely to become
+delinquent which resulted in the 2008 crash. Examples like Wells Fargo
+accepting less than half of their Black applicants are specific
+reflections of an incredibly inequitable system. This system will
+inevitably provide data to nearly all types of businesses which they
+will make decisions based on, and as a results, those algorithms will be
+polluted with the inequities within the data that comprises them. In
+this way the fairness and justice risks are the perpetuation of systems
+of inequality.</p>
 <p>The algorithms that appear to carry the most risk are predictive
 algorithms in the financial and social spaces. Predicting issues such as
-recidivism and crime are inevitable going to reinforce the structure in
-the world they are meant to predict and since algorithms are stagnant
-they cannot evolve to do anything but reflect what they are engineered
-to do.</p>
-<p>Mitigation of risk is difficult in modeling as algorithms are
-inherently reductive and based on the past, as a result there are areas
-that they simply should not be used in, perhaps the methodological
-advance could be</p>
-<p>In earlier chapters, while no acknowledging fault fault, the author
-explains the widespread harm caused by predictive algorithms in finance
-that assisted in creating the 2008 housing bubble. When the bubble burst
-the burden of the fallout was felt by poor and middle class households
-who were given sub prime loan and subsequently foreclosed, lost their
-savings and credit. As O’neal points out these issues are due to the
-opaque nature in being often non-interpretable due to complexity and
-inherent mathematical structure. In addition the scale by which certain
-algorithms such as recidivism and policing.</p>
-<p>(Project update) Data Exploration: Use appropriate methods to explore
-the data you plan to use for your project. (It’s okay if you change your
-mind and use a different data set later; this exercise may help you
-decide.) Include some form of visualization(s) and indications of the
-unit of analysis, the levels of measurements (e.g.: “9 categorical
-features–7 dichotomous and 2 with more than two categories– and 14
+recidivism and crime are inevitable going to reinforce systems that
+created the inequities that lead to higher crime. The structure of
+social society that results in data makes it impossible to separate
+algorithms from the assumptions and history of the society they predict
+and reflect. As a result mitigation of risk is difficult in modeling as
+algorithms are inherently reductive and based on the past. Because of
+this there are areas that they simply should not be used in, or that the
+results of the algorithms should be subject to far more questioning.</p>
+<p>I do not think there is a way to make an “ethically derived”
+prediction in a number of spaces. The assumptions and purposes of
+certain industries renders them incapable of creating ethical
+algorithms. For example the motives of the housing industry and
+financial industry will likely never be ethical, nor consumer good.
+Methodological advance could improve opaque nature of certain algorithms
+which can be “black boxes” whose predictions and algorithms can be
+nearly impossible to explain due to the complexity and inherent
+mathematical structure that they comprise. In addition modeling should
+be subject to a much higher degree of oversight and structural
+regulation, though this is unlikely to happen because proving inequities
+in algorithms that are complex enough is nearly impossible.</p>
+<p>Advances</p>
+<h3 id="project-update">Project Update</h3>
+<p>Include some form of visualization(s) and indications of the unit of
+analysis, the levels of measurements (e.g.: “9 categorical features–7
+dichotomous and 2 with more than two categories– and 14
 numerical/quantitative features, for a total of 23), univariate
 statistics helping characterize the distribution of the features and of
 the outcome variable (label) you wish to predict if you will be
@@ -3307,15 +3321,26 @@ for prediction, identify any preprocessing you may need to do and
 options available for cleaning up/transforming data and/or dimension
 reduction. (Submit with your group or with explanation of why you must
 work alone.)</p>
+<h4
+id="my-machine-learning-analysis-so-far-and-plans-moving-forward.">My
+Machine Learning Analysis so Far and Plans Moving Forward.</h4>
 <div class="layout-chunk" data-layout="l-body">
 
 </div>
-<h2 id="putting-network-into-necessary-formats">Putting Network into
-Necessary Formats</h2>
+<h4 id="putting-network-into-necessary-formats">Putting Network into
+Necessary Formats</h4>
 <div class="layout-chunk" data-layout="l-body">
 
 </div>
-<h2 id="adding-attributes">Adding Attributes</h2>
+<h4 id="adding-attributes">Adding Attributes</h4>
+<p><strong>Explanation:</strong> My Project is an exploration of data
+sets involving conflicts between the year 1000 and 1200, I do a great
+deal of general network analysis that is not included here, including
+some hierarchical clustering. My primary research question is what
+network attributes and node attributes are most influential in state
+continuity. I plan to eventually add more node attributes but for the
+moment I have just a handful, those being state religion, centrality
+measures, and degree measures.</p>
 <div class="layout-chunk" data-layout="l-body">
 
 </div>

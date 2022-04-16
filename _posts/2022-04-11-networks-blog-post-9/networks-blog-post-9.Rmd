@@ -30,7 +30,6 @@ library(aRtsy)
 
 # Loading the Networks
 
-
 ```{r setup, include=FALSE}
 
 wars_in_1000s <- read_excel("~/Desktop/Spring 2022/Networks/wars_in_1000s.xlsx")
@@ -256,13 +255,12 @@ wars_in_1200s.nodes.stat_2<-wars_in_1200s.nodes.stat %>%
 ```{r, echo=FALSE, warning=FALSE}
 
 set.seed(777)
-ggplot(wars_in_1000s_network, aes(x = x, y = y, xend = xend, yend = yend)) +
+plot_1100s_network<-ggplot(wars_in_1000s_network, aes(x = x, y = y, xend = xend, yend = yend)) +
   geom_edges(color = "grey25", alpha = 0.25, arrow = arrow(length = unit(2, "pt"), type = "closed"))+
   geom_nodes(color = "blue", alpha = 0.3, size = 2) +
   geom_nodetext(aes( label = vertex.names ), size=1)+
     ggtitle("Networks of Wars in the 1000s") +
   theme_blank()
-
 ```
 ```{r}
 #summary(wars_in_1100s_network)
@@ -334,8 +332,11 @@ total_1200s <- merge(aspects_of_1200s_states, wars_in_1200s.nodes.stat_2, by="na
 
 ```{r}
 
-total_1000s_brokerag_reg<-total_1000s
+total_1000s_brokerag_reg <- scale(total_1000s[,2:25])
+total_1000s_brokerag_reg <- as.data.frame(total_1000s_brokerag_reg)
 
+
+total_1000s_brokerag_reg$name <- total_1000s$name
 total_1000s_brokerag_reg$win_rate <- (total_1000s_brokerag_reg$outdegree/total_1000s_brokerag_reg$totdegree)
 
 total_1000s_brokerag_reg$loss_rate <- (total_1000s_brokerag_reg$indegree/total_1000s_brokerag_reg$totdegree)
@@ -355,7 +356,8 @@ First_1000s_regression
 
 set.seed(292)
 
-total_1000s_for_regression <- total_1000s[,-c(1, 20:25)]
+total_1000s_for_regression <- scale(total_1000s[,-c(1, 20:25)])
+total_1000s_for_regression <- as.data.frame(total_1000s_for_regression)
 
 total_1000s_for_regression$win_rate <- (total_1000s_for_regression$outdegree/total_1000s_for_regression$totdegree)
 
@@ -655,7 +657,7 @@ biplot(pr.out, scale = 0)
 
 set.seed(172)
 
-ggbiplot(pr.out, labels =  total_1000s_for_PCA$name, labels.size  =1.5) + 
+ggbiplot(pr.out, labels =  total_1000s$name, labels.size  =1.5) + 
   labs(title="Principal Components 1000s")+ theme_minimal()
 
 ```
@@ -761,13 +763,54 @@ plot(wars_in_1100s.wt, wars_in_1100s.ig, vertex.size=0.5, edge.size=0.25, edge.a
 
 ```{r}
 
+total_1100s_brokerag_reg<-scale(total_1100s[,2:24])
+
+total_1100s_brokerag_reg <- as.data.frame(total_1100s_brokerag_reg[,c(-8)])
+
+```
+
+```{r}
+total_1100s_brokerag_reg$win_rate <- (total_1100s_brokerag_reg$outdegree/total_1100s_brokerag_reg$totdegree)
+```
+
+```{r}
+total_1100s_brokerag_reg$loss_rate <- (total_1100s_brokerag_reg$indegree/total_1100s_brokerag_reg$totdegree)
+```
+
+```{r}
+
+total_1100s_brokerag_reg_binom <- total_1100s_brokerag_reg %>% 
+  mutate(more_win_or_loss = case_when(
+  win_rate < 0.5 ~ 0,
+    win_rate >= 0.5 ~ 1))
+
+```
+
+```{r}
+total_1100s_brokerag_reg_binom
+
+total_1100s_for_PCA <- total_1100s_brokerag_reg_binom[,-c(16:23)]
+
+apply(total_1100s_for_PCA[-1], 2, mean)
+
+```
+
+```{r}
+
+apply(total_1100s_for_PCA[-1], 2, var)
+
+```
+
+```{r}
+
 names(total_1200s)
 
 ```
 
 ```{r}
 
-total_1200s_brokerag_reg<-total_1200s
+total_1200s_brokerag_reg <- scale(total_1200s[,2:24])
+total_1200s_brokerag_reg <- as.data.frame(total_1200s_brokerag_reg)
 
 ```
 
@@ -788,8 +831,8 @@ total_1200s_brokerag_reg_binom <- total_1200s_brokerag_reg %>% mutate(more_win_o
 ```
 
 ```{r}
-
-total_1200s_for_PCA <- total_1200s_brokerag_reg_binom[-c(20:27)]
+View(total_1100s_brokerag_reg_binom)
+total_1200s_for_PCA <- total_1200s_brokerag_reg_binom[-c(7,9, 18:25)]
 
 
 apply(total_1200s_for_PCA[-1], 2, mean)
@@ -850,8 +893,7 @@ biplot(pr.out_2, scale = 0)
 ```{r}
 
 set.seed(8192)
-
-ggbiplot(pr.out_2, labels =  total_1200s_for_PCA$name, labels.size  =1.5) + labs(title="Principal Components 1200s")+
+ggbiplot(pr.out_2, labels =  total_1200s$name, labels.size  =1.5) + labs(title="Principal Components 1200s")+
   theme_minimal()
 
 ```
@@ -951,7 +993,9 @@ names(total_1100s)
 
 ```{r}
 
-total_1100s_brokerag_reg<-total_1100s
+total_1100s_brokerag_reg<-scale(total_1100s[,2:24])
+
+total_1100s_brokerag_reg <- as.data.frame(total_1100s_brokerag_reg[,c(-8)])
 
 ```
 
@@ -965,7 +1009,8 @@ total_1100s_brokerag_reg$loss_rate <- (total_1100s_brokerag_reg$indegree/total_1
 
 ```{r}
 
-total_1100s_brokerag_reg_binom <- total_1100s_brokerag_reg %>% mutate(more_win_or_loss = case_when(
+total_1100s_brokerag_reg_binom <- total_1100s_brokerag_reg %>% 
+  mutate(more_win_or_loss = case_when(
   win_rate < 0.5 ~ 0,
     win_rate >= 0.5 ~ 1))
 
@@ -973,8 +1018,8 @@ total_1100s_brokerag_reg_binom <- total_1100s_brokerag_reg %>% mutate(more_win_o
 
 ```{r}
 
-total_1100s_for_PCA <- total_1100s_brokerag_reg_binom[-c(20:27)]
 
+total_1100s_for_PCA <- total_1100s_brokerag_reg_binom[,-c(16:23)]
 
 apply(total_1100s_for_PCA[-1], 2, mean)
 
@@ -986,13 +1031,7 @@ apply(total_1100s_for_PCA[-1], 2, var)
 
 ```
 
-```{r}
 
-# I cannot scale variables with 
-
-total_1100s_for_PCA<-total_1100s_for_PCA[-c(8,10)]
-
-```
 
 ```{r}
 
@@ -1035,7 +1074,7 @@ biplot(pr.out_2, scale = 0)
 
 set.seed(8192)
 
-ggbiplot(pr.out_2, labels =  total_1100s_for_PCA$name, labels.size  =1.5) + labs(title="Principal Components 1100s")+
+ggbiplot(pr.out_2, labels =  total_1100s_brokerag_reg_binom$name, labels.size  =1.5) + labs(title="Principal Components 1100s")+
   theme_minimal()
 
 ```
@@ -1435,7 +1474,9 @@ sim.t<-function(g, trials){
 ```{r}
 
 plot.sim.t<-function(g,trials){
-  temp<-data.frame(net.stat=c("gtrans","cent.deg","cent.bet"), x=c(gtrans(g),centralization(g, FUN=degree, cmode="indegree"), centralization(g, FUN=betweenness)))
+  temp<-data.frame(net.stat=c("gtrans","cent.deg","cent.bet"), 
+    x=c(gtrans(g),centralization(g, FUN=degree, cmode="indegree"), 
+        centralization(g, FUN=betweenness)))
   trials[c(3:5)]%>%
     gather(key="net.stat",value = "estimate")%>%
     ggplot(aes(estimate)) +
@@ -1648,11 +1689,20 @@ library(ggdendro)
 library(sets)
 library(ggplot2)
 library(dendextend)
+library(RColorBrewer)
 
 ```
 
 ```{r}
-#install.packages("ggdendro")
+
+set.seed(29999)
+
+n <- 39
+
+qual_col_pals = brewer.pal.info[brewer.pal.info$category == 'qual',]
+col_vector = unlist(mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals)))
+# pie(rep(1,n), col=sample(col_vector, n))
+
 
 dd <- dist(scale(wars_1000s), method = "euclidean")
 
@@ -1660,12 +1710,12 @@ hc <- hclust(dd, method = "complete")
 
 hcd <- as.dendrogram(hc)
 # Default plot
-clus4 = cutree(hc, 4)
+clus4 = cutree(hcd, 39)
 
-plot(as.phylo(hcd), type = "fan", tip.color = clus4,
-     label.offset = 1, cex = 0.5)
-
+plot(as.phylo(hcd), type = "radial", tip.color = col_vector[clus4],
+     label.offset = 0, cex = 0.2)
 ```
+
 ```{r}
 #install.packages("ggdendro")
 
