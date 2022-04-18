@@ -1845,6 +1845,8 @@ library(plotrix)
 
 ```{r}
 
+#pdf("rplot.pdf") 
+
 aspects_of_1000s_for_map <- read_excel("~/Desktop/Spring 2022/Networks/aspects_of_1000s_for_map.xlsx")
 
 cl <- colors(distinct = TRUE)
@@ -1872,6 +1874,8 @@ edges_2<-edges[, -(1:2)]
 
 apply(edges[, -(1:2)], 1, function(x) curvedarrow(to=x[3:4], from=x[1:2], lcol=x[5], curve=.1, arr.pos = 1, lwd=.2, arr.lwd=0.01, 
 arr.width=0.1, arr.length=0.1))
+
+#dev.off() 
 
 ```
 
