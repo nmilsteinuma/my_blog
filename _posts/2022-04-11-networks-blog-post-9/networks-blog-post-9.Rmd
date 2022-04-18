@@ -831,7 +831,6 @@ total_1200s_brokerag_reg_binom <- total_1200s_brokerag_reg %>% mutate(more_win_o
 ```
 
 ```{r}
-View(total_1100s_brokerag_reg_binom)
 total_1200s_for_PCA <- total_1200s_brokerag_reg_binom[-c(7,9, 18:25)]
 
 
@@ -1018,8 +1017,7 @@ total_1100s_brokerag_reg_binom <- total_1100s_brokerag_reg %>%
 
 ```{r}
 
-
-total_1100s_for_PCA <- total_1100s_brokerag_reg_binom[,-c(16:23)]
+total_1100s_for_PCA <- total_1100s_brokerag_reg_binom[,-c(16:24)]
 
 apply(total_1100s_for_PCA[-1], 2, mean)
 
@@ -1035,7 +1033,7 @@ apply(total_1100s_for_PCA[-1], 2, var)
 
 ```{r}
 
-pr.out_2 <- prcomp(total_1100s_for_PCA[-c(1,7)], scale = TRUE)
+pr.out_2 <- prcomp(total_1100s_for_PCA[-c(6,8)], scale = TRUE)
 
 ```
 
@@ -1674,6 +1672,7 @@ plot.sim.t(wars_in_1100s_2.stat, trials)
 
 
 ```{r, eval=FALSE}
+
 wars_1000s_for_equiv_clust<-as.network(wars_in_1000s_edgelist, matrix.type = "edgelist", directed = TRUE,  hyper = FALSE, loops = FALSE, multiple = FALSE,
                                        bipartite = FALSE, vertex.attrnames=wars_in_1000s_network%v%"vertex.names")
 
@@ -1825,6 +1824,54 @@ set.seed(123)
 fviz_nbclust(df, kmeans, nstart = 25,  method = "gap_stat", nboot = 50)+
   labs(subtitle = "Gap statistic method")
 
+
+```
+
+```{r}
+#install.packages('maps')
+#install.packages('geosphere')
+#install.packages("diagram")
+#install.packages("plotrix")
+
+```
+
+```{r}
+library('maps')
+library('geosphere')
+library(diagram)
+library(plotrix)
+```
+
+
+```{r}
+
+aspects_of_1000s_for_map <- read_excel("~/Desktop/Spring 2022/Networks/aspects_of_1000s_for_map.xlsx")
+
+cl <- colors(distinct = TRUE)
+
+set.seed(15887) # to set random generator seed
+
+mycols2 <- sample(cl, 112)
+
+palette(mycols2)
+
+map('world', fill = TRUE, xlim = c(-50, 160), ylim = c(-15, 80), col = "white", mar = rep(0, 4), resolution = 10 ,   myborder = 0.001) 
+
+nodes <- transform(aspects_of_1000s_for_map, countries = as.factor(aspects_of_1000s_for_map$name))
+
+with(nodes, points(long, lat, col=countries, pch=19, cex=0.5)) 
+set.seed(1)
+
+edges <- subset(data.frame(from = wars_in_1000s$`In-list`, to = wars_in_1000s$`Out-list`, stringsAsFactors = F), from != to)
+
+edges <- merge(merge(edges, nodes[, c("name", "long", "lat")], by.x = "from", by.y = "name"), nodes[, c("name", "long", "lat")], by.x = "to", by.y = "name")
+
+edges$col <- as.integer(nodes$countries[match(edges$from, nodes$name)])
+
+edges_2<-edges[, -(1:2)]
+
+apply(edges[, -(1:2)], 1, function(x) curvedarrow(to=x[3:4], from=x[1:2], lcol=x[5], curve=.1, arr.pos = 1, lwd=.2, arr.lwd=0.01, 
+arr.width=0.1, arr.length=0.1))
 
 ```
 
