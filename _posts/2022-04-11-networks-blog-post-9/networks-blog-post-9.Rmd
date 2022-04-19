@@ -271,6 +271,8 @@ plot_1100s_network<-ggplot(wars_in_1000s_network, aes(x = x, y = y, xend = xend,
 
 ```{r, echo=FALSE, warning=FALSE}
 
+#pdf("ggplot_wars_network_1100.pdf") 
+
 set.seed(777)
 ggplot(wars_in_1100s_network, aes(x = x, y = y, xend = xend, yend = yend)) +
   geom_edges(color = "grey25", alpha = 0.25, arrow = arrow(length = unit(2, "pt"), type = "closed"))+
@@ -284,6 +286,9 @@ ggplot(wars_in_1100s_network, aes(x = x, y = y, xend = xend, yend = yend)) +
 ### 1200s GGplot
 
 ```{r, echo=FALSE, warning=FALSE}
+
+pdf("ggplot_wars_network_1200.pdf") 
+
 set.seed(777)
 ggplot(wars_in_1200s_network, aes(x = x, y = y, xend = xend, yend = yend)) +
   geom_edges(color = "grey25", alpha = 0.25, arrow = arrow(length = unit(2, "pt"), type = "closed"))+
@@ -566,10 +571,11 @@ comm.lab<-label.propagation.community(wars_in_1000s.ig)
 ```
 
 ```{r, echo=FALSE, warning=FALSE}
+pdf("comm_clust_1000s.pdf") 
 
 set.seed(123)
 
-plot(comm.lab,wars_in_1000s.ig, vertex.size=0.5, edge.size=0.25, edge.arrow.size=.25,  vertex.label.dist=1.5,vertex.label.cex=0.25,asp = 0)
+plot(comm.lab,wars_in_1000s.ig, vertex.size=0.5, edge.size=0.25, edge.arrow.size=.25,  vertex.label.dist=1.5,vertex.label.cex=0.25,asp = 0, main="Community Labels 1000s Conflicts")
 
 
 ```
@@ -938,6 +944,7 @@ The first community cluster below is done using label propagation. This results 
 ```{r}
 set.seed(23)
 comm.lab<-label.propagation.community(wars_in_1200s.ig)
+?label.propagation.community
 #Inspect clustering object
 # igraph::groups(comm.lab)
 
@@ -1710,9 +1717,10 @@ hc <- hclust(dd, method = "complete")
 hcd <- as.dendrogram(hc)
 # Default plot
 clus4 = cutree(hcd, 39)
+?plot
 
-plot(as.phylo(hcd), type = "radial", tip.color = col_vector[clus4],
-     label.offset = 0, cex = 0.2)
+plot(as.phylo(hcd),type = "phylogram", use.edge.length = TRUE, tip.color = col_vector[clus4],edge.width = 0.5, label.offset = 0, cex = 0.2)
+
 ```
 
 ```{r}
@@ -1746,6 +1754,26 @@ plot(as.phylo(hcd), type = "fan", tip.color = clus4,
      label.offset = 1, cex = 0.3)
 
 ```
+
+```{r}
+
+pdf("h_clust_plot.pdf") 
+
+dd <- dist(scale(wars_1000s), method = "euclidean")
+
+hc <- hclust(dd, method = "complete")
+
+dend <- hc %>% as.dendrogram() %>%
+   set("branches_k_color", k=39) %>% 
+  set("branches_lwd", 1)  %>%     
+  set("labels_cex", c(.3,0.3)) 
+
+# plot the dend in usual "base" plotting engine:
+plot(dend,col="white", type="rectangle", frame.plot = FALSE, center	=FALSE, xlab="Belligerents", ylab="Distance (Euclidean)", main="Complete, Euclidean Distance Dendrogram" , cex=0.5,   horiz = FALSE)
+
+
+```
+
 
 ```{r}
 

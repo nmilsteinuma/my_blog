@@ -1360,7 +1360,7 @@ dim(theta)
 
 set.seed(836)
 
-terms(topicModel, 15)
+terms(topicModel, 10)
 
 ```
 

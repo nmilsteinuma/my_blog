@@ -1,0 +1,333 @@
+---
+title: "Text as Data Poster Work"
+description: |
+  A short description of the post.
+author:
+  - name: Noah Milstein
+    url: {}
+date: 2022-04-18
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+```{r, echo=FALSE}
+library(rmarkdown)
+library(RedditExtractoR)
+library(jsonlite)
+library(tidyverse)
+library(stringr)
+library(dplyr)
+library(httr)
+library(tm)
+library(corpus)
+library(quanteda)
+library(textclean)
+library(knitr)
+library(lubridate)
+library(cleanNLP)
+library(quanteda.textstats)
+library(quanteda.textplots)
+library(SnowballC)
+library(wordcloud)
+library(RColorBrewer)
+library(stopwords)
+library(tidyverse)
+library(rvest)
+library(tidytext)
+library(text2vec)
+library(preText)
+library(ggplot2)
+library(pals)
+library(reshape2)
+library(lda)
+library(ldatuning)
+# install klippy for copy-to-clipboard button in code chunks
+remotes::install_github("rlesur/klippy")
+
+```
+
+
+```{r}
+set.seed(836)
+# First I use a fucntion to load an RData file as R has no default 
+
+loadRData <- function(fileName){
+#loads an RData file, and returns it
+    load(fileName)
+    get(ls()[ls() != "fileName"])
+}
+
+# My first data frame comprises new posts as of march 26 2022 which are taken 
+# from the 15th-26th of march primarily. 
+
+new_guns_urls <- loadRData("/Users/noahmilstein/Desktop/Spring 2022/Textasdata/text_as_data_work/New_reddit_posts_3_26.RData")
+
+# Next I extract the 4 columns that I will need, title, date, comments
+# and non-title text
+
+new_guns_urls_df<-new_guns_urls[,c("title", "date_utc", "comments", "text")]
+
+# Next I load the top posts of all time on the thread which go back to 2017 
+# With observations to march 2022 when it was scraped.
+
+top_guns_urls <- loadRData("/Users/noahmilstein/Desktop/Spring 2022/Textasdata/text_as_data_work/top_guns_urls.RData")
+
+top_guns_urls_df<-top_guns_urls[,c("title", "date_utc", "comments",  "text")]
+
+#hot_guns_urls <- find_thread_urls(subreddit="guns", sort_by="hot")
+# save(hot_guns_urls, file="hot_guns_urls.RData")
+
+# Next "hot" posts are loaded which are also primarily from march 2022
+
+hot_guns_urls<-
+  loadRData("/Users/noahmilstein/Desktop/my_blog/_posts/2022-03-29-tad-post-4/hot_guns_urls.RData")
+
+hot_guns_urls_df<-hot_guns_urls[,c("title", "date_utc", "comments", "text")]
+#hot_guns_urls_df
+
+```
+
+```{r}
+
+set.seed(836)
+
+#First I add rownames from 1 to 844 to the hot guns data frame
+
+rownames(hot_guns_urls_df) <- seq(1, 844, 1)
+
+#Next I add rownames from 1 to 980 to the new guns data frame
+
+rownames(new_guns_urls_df) <- seq(1, 980, 1)
+
+#Next I add the two row named data framed together by row.
+
+hg_and_ng<-rbind(hot_guns_urls_df, new_guns_urls_df)
+
+#After this I add rownames from 1 to 996 to the top guns data frame
+
+rownames(top_guns_urls_df) <- seq(1, 996, 1)
+
+# Finally I bind together the new and hot guns combined data frame with the 
+# top guns data frame by row
+
+whole_data_frame <- rbind(hg_and_ng, top_guns_urls_df)
+
+```
+
+Since all of the posts come from the same sub Reddit I have to ensure that all posts are unique as to avoid bias towards any particular set of words. This is because top posts, hot posts, and recent posts could all include the same post if it were to qualify for any of the categories by the reddit algorithm.
+
+```{r}
+
+set.seed(836)
+
+# First I remove all non-unique rows from the data frame
+
+whole_data_frame_unique <- unique(whole_data_frame)
+
+# Next I add together the title and text of each reddit post to 
+# ensure I am using all of the linguistic data in each post.
+
+whole_data_frame_unique$all_text<-
+  paste(whole_data_frame_unique$title, whole_data_frame_unique$text)
+
+# Next I remove all line breaks from the posts to ensure aesthetic 
+# specifications such as /r and /n are not included in the corpus
+
+whole_data_frame_unique$"all_text" <- sapply(whole_data_frame_unique$"all_text",
+                                    function(x) { gsub("[\r\n]", "", x)  }) 
+
+whole_data_frame_unique$"all_text" <- sapply(whole_data_frame_unique$"all_text",
+                                    function(x) { gsub("[\031\034\035\024]", "`", x) })
+
+```
+
+Next I must convert the character vector of dates into an actual date object using the as.Date() function.
+
+```{r,cache = TRUE}
+
+set.seed(836)
+
+# As can be seen below I replace the previous date_utc column which was not 
+# a date object with date_utc as a date object.
+
+whole_data_frame_unique$date_utc <- as.Date(whole_data_frame_unique$date_utc)
+
+```
+
+```{r}
+library(stm)
+```
+
+```{r}
+
+set.seed(836)
+
+myDfm <- dfm(whole_data_frame_unique$all_text,
+  tolower=TRUE,
+  remove = stopwords('en'), 
+  remove_punct = TRUE
+  )
+
+dim(myDfm)
+
+```
+
+```{r}
+
+library(topicmodels)
+
+```
+
+```{r}
+
+set.seed(836)
+
+
+# load stopwords
+english_stopwords <- readLines("https://slcladal.github.io/resources/stopwords_en.txt", encoding = "UTF-8")
+
+# create corpus object
+textdata <- data.frame(doc_id=row.names(whole_data_frame_unique),
+                       text=whole_data_frame_unique$all_text)
+corpus <- Corpus(DataframeSource(textdata))
+
+
+
+
+# Preprocessing chain
+
+processedCorpus_guns <- tm_map(corpus, content_transformer(tolower))
+
+processedCorpus_guns <- tm_map(processedCorpus_guns, removeWords, english_stopwords)
+
+processedCorpus_guns <- tm_map(processedCorpus_guns, removePunctuation)
+
+```
+
+```{r}
+
+set.seed(836)
+
+minimumFrequency <- 5
+
+my_words<- vocab_whole_df$term
+
+BigramTokenizer <- function(x)unlist(lapply(ngrams(words(x), 1:2), paste, collapse = " "), use.names = FALSE)
+
+DTM <- DocumentTermMatrix(processedCorpus_guns, control = list(bounds = list(global = c(minimumFrequency, Inf))))
+
+DTM <- removeCommonTerms(DTM, .1)
+
+
+
+```
+
+```{r}
+
+set.seed(836)
+
+dim(DTM)
+
+```
+
+```{r}
+
+sel_idx <- slam::row_sums(DTM) > 0
+DTM <- DTM[sel_idx, ]
+
+textdata <- textdata[sel_idx, ]
+
+```
+
+```{r}
+
+set.seed(836)
+
+result <- ldatuning::FindTopicsNumber(
+  DTM,
+  topics = seq(from = 2, to = 20, by = 1),
+  metrics = c("CaoJuan2009",  "Deveaud2014"),
+  method = "Gibbs",
+  control = list(seed = 77),
+  verbose = TRUE
+)
+
+```
+
+```{r}
+
+
+FindTopicsNumber_plot(result)
+
+```
+
+```{r}
+
+set.seed(836)
+
+# number of topics
+K <- 6
+# set random number generator seed
+set.seed(9161)
+# compute the LDA model, inference via 1000 iterations of Gibbs sampling
+topicModel <- LDA(DTM, K, method="Gibbs", control=list(iter = 500, verbose = 25))
+```
+
+```{r}
+# have a look a some of the results (posterior distributions)
+tmResult <- posterior(topicModel)
+# format of the resulting object
+attributes(tmResult)
+```
+
+```{r}
+
+set.seed(836)
+
+
+nTerms(DTM)              # lengthOfVocab
+
+```
+
+```{r,cache = TRUE}
+
+set.seed(836)
+
+# topics are probability distribtions over the entire vocabulary
+beta <- tmResult$terms   # get beta from results
+dim(beta)                # K distributions over nTerms(DTM) terms
+```
+
+```{r}
+
+set.seed(836)
+
+rowSums(beta) 
+```
+
+```{r}
+
+set.seed(836)
+
+nDocs(DTM)               # size of collection
+
+```
+
+```{r}
+
+set.seed(836)
+
+theta <- tmResult$topics 
+
+dim(theta) 
+
+```
+
+```{r,cache = TRUE}
+
+set.seed(836)
+
+terms(topicModel, 10)
+
+```
