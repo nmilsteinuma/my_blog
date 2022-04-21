@@ -1757,7 +1757,7 @@ plot(as.phylo(hcd), type = "fan", tip.color = clus4,
 
 ```{r}
 
-pdf("h_clust_plot.pdf") 
+#pdf("h_clust_plot.pdf") 
 
 dd <- dist(scale(wars_1000s), method = "euclidean")
 
