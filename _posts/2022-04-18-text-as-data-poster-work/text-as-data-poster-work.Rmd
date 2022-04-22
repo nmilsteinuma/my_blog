@@ -1,7 +1,7 @@
 ---
 title: "Text as Data Poster Work"
 description: |
-  A short description of the post.
+  Work on corpus, document-term-matrix and visualizations for my Text-as-Data Poster.
 author:
   - name: Noah Milstein
     url: {}
@@ -215,16 +215,13 @@ library(tokenizers)
 
 set.seed(836)
 
-my_words<- vocab_whole_df$term
-
 NLP_tokenizer <- function(x) {
   unlist(lapply(ngrams(words(x), 1:2), paste, collapse = "_"), use.names = FALSE)
 }
 
 DTM <- DocumentTermMatrix(
   processedCorpus_guns, 
-  control = list(tokenize = NLP_tokenizer ,
-  bounds = list(global = c(minimumFrequency, Inf))))
+  control = list(tokenize = NLP_tokenizer))
 
 removeCommonTerms <- function (x, pct) 
 {
@@ -494,6 +491,17 @@ pie(rep(1,n), col=sample(col_vector, n))
 ```
 
 ```{r}
+set.seed(1234)
+
+n <- 4
+qual_col_pals = brewer.pal.info[brewer.pal.info$category == 'qual',]
+
+col_vector_2 = unlist(mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals)))
+
+pie(rep(1,n), col=sample(col_vector_2, n))
+```
+
+```{r}
 
 set.seed(1234)
 
@@ -518,16 +526,6 @@ scale_fill_manual(values = sample(col_vector_2, 10))+
 
 ```
 
-```{r}
-set.seed(1234)
-
-n <- 4
-qual_col_pals = brewer.pal.info[brewer.pal.info$category == 'qual',]
-
-col_vector_2 = unlist(mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals)))
-
-pie(rep(1,n), col=sample(col_vector_2, n))
-```
 
 ```{r}
 set.seed(1234)
