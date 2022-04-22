@@ -495,7 +495,7 @@ pie(rep(1,n), col=sample(col_vector, n))
 
 ```{r}
 
-set.seed(836)
+set.seed(1234)
 
 df_for_visualization<-as.data.frame(countsOfPrimaryTopics)
 names(so)<-c("Concealed Carry", "Purchase Advice", "Hunting","Range and Recreation", "Firearm Accessories", "Experience and Review", "Pistol Review", "Rifle Review", "Loading Issues",  "Home Defense")
@@ -510,15 +510,27 @@ ggplot(df_for_visualization, aes(x=group_names, y=countsOfPrimaryTopics,
    theme(axis.text.x = element_text(angle = 90, hjust = 1, size=3),legend.key.size = unit(0.3, 'cm'), #change legend key size
         legend.key.height = unit(0.4, 'cm'), #change legend key height
         legend.key.width = unit(0.4, 'cm'),) +  
-scale_fill_manual(values = col_vector)+ 
+scale_fill_manual(values = sample(col_vector_2, 10))+ 
   xlab("Topic Groups") +
   ylab("Number of Posts in Group") + 
   guides(fill=guide_legend(title="Topic Groups"))  +
   coord_polar()+ theme_void()
 
 ```
+
 ```{r}
-set.seed(836)
+set.seed(1234)
+
+n <- 4
+qual_col_pals = brewer.pal.info[brewer.pal.info$category == 'qual',]
+
+col_vector_2 = unlist(mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals)))
+
+pie(rep(1,n), col=sample(col_vector_2, n))
+```
+
+```{r}
+set.seed(1234)
 
 df_for_visualization<-as.data.frame(countsOfPrimaryTopics)
 
@@ -534,10 +546,9 @@ df_for_visualization_relevant$frequency <- df_for_visualization_relevant$`df_for
 
 df_for_visualization_relevant$proportion<-df_for_visualization_relevant$frequency/sum(df_for_visualization_relevant$frequency)
 
-
 ggplot(df_for_visualization_relevant, aes(x=group_names, y=proportion,  fill=group_names)) + 
   geom_bar(stat = "identity" ) +    
-  scale_fill_manual(values =col_vector) +   theme_classic() +
+  scale_fill_manual(values = sample(col_vector_2, 4)) + 
    theme(axis.text.x = element_text(size = 6))+
   scale_x_discrete(guide = guide_axis(n.dodge = 2)) + xlab("Topic Groups") +
   ylab("Number of Posts in Group") + guides(fill=guide_legend(title="Topic Groups"))+
@@ -553,6 +564,8 @@ terms(topicModel, 10)
 
 ```{r}
 
+set.seed(1234)
+
 topic_proportion_per_decade <- aggregate(theta, by = list(decade = textdata$date), mean)
 
 names(topic_proportion_per_decade)[names(topic_proportion_per_decade)==c("decade", "1", "2", "3","4","5","6","7","8","9","10")]<- c("day", "Concealed Carry", "Purchase Advice", "Hunting","Range and Recreation", "Firearm Accessories", "Experience and Review", "Pistol Review", "Rifle Review", "Loading Issues",  "Home Defense")
@@ -566,7 +579,7 @@ vizDataFrame <- melt(topic_proportion_per_decade, id.vars = "day")
 # plot topic proportions per decade as bar plot
 ggplot(vizDataFrame, aes(x=day, y=value, fill=variable)) + 
   geom_bar(stat = "identity") + ylab("proportion") + 
-  scale_fill_manual(values = col_vector, name = "day") + 
+  scale_fill_manual(values = sample(col_vector_2, 10), name = "day") + 
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
   theme_minimal()
 ```
