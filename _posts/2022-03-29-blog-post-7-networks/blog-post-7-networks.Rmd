@@ -516,6 +516,7 @@ blk_mod<-blockmodel(wars_1000s_for_equiv_clust, war_1000s.se_hamming, k=5)
 #assign block membership to vertex attribute
 wars_1000s_for_equiv_clust%v%"role" <- blk_mod$block.membership[match(wars_1000s_for_equiv_clust%v%"vertex.names", blk_mod$glabels)]
 #plot network using "role" to color nodes: statnet
+
 GGally::ggnet2(wars_1000s_for_equiv_clust,
                node.color="role", 
                node.size=degree(wars_1000s_for_equiv_clust, gmode="graph"),

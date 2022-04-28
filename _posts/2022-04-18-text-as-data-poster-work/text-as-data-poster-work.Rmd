@@ -355,7 +355,7 @@ dim(theta)
 
 set.seed(836)
 
-terms(topicModel, 10)
+terms(topicModel, 10) %>% kable()
 
 ```
 
@@ -471,7 +471,6 @@ for (i in 1:nDocs(DTM)) {
   countsOfPrimaryTopics[primaryTopic] <- countsOfPrimaryTopics[primaryTopic] + 1
 }
 sort(countsOfPrimaryTopics, decreasing = TRUE)
-
 ```
 
 ```{r}
@@ -532,18 +531,20 @@ set.seed(1234)
 
 df_for_visualization<-as.data.frame(countsOfPrimaryTopics)
 
-df_for_visualization_relevant <- as.data.frame(df_for_visualization[c(1 ,4, 8,9),])
+df_for_visualization_relevant <- as.data.frame(df_for_visualization[c(1 ,3, 4,10),])
 
 df_for_visualization_relevant$group_names <- names(so)[c(1 ,3, 4,10)]
 
 df_for_visualization_relevant$group_names <-c("Concealed Carry", "Hunting", "Range and Recreation", "Home Defense")
 
-df_for_visualization_relevant$group_numbers <- c(1 ,4, 8,9)
+df_for_visualization_relevant$group_numbers <- c(1 ,3, 4,10)
 
-df_for_visualization_relevant$frequency <- df_for_visualization_relevant$`df_for_visualization[c(1, 4, 8, 9), ]`
+df_for_visualization_relevant$frequency <- df_for_visualization_relevant$`df_for_visualization[c(1, 3, 4, 10), ]`
 
-df_for_visualization_relevant$proportion<-df_for_visualization_relevant$frequency/sum(df_for_visualization_relevant$frequency)
+df_for_visualization_relevant$proportion <- df_for_visualization_relevant$frequency/sum(df_for_visualization_relevant$frequency)
 
+
+sum(df_for_visualization_relevant$frequency)
 ggplot(df_for_visualization_relevant, aes(x=group_names, y=proportion,  fill=group_names)) + 
   geom_bar(stat = "identity" ) +    
   scale_fill_manual(values = sample(col_vector_2, 4)) + 
@@ -552,7 +553,7 @@ ggplot(df_for_visualization_relevant, aes(x=group_names, y=proportion,  fill=gro
   ylab("Number of Posts in Group") + guides(fill=guide_legend(title="Topic Groups"))+
   coord_polar()+
   theme_void()
-
+df_for_visualization_relevant
 ```
 ```{r}
 
