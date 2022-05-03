@@ -117,7 +117,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["text-as-data-poster-work_files/anchor-4.2.2/anchor.min.js","text-as-data-poster-work_files/bowser-1.9.3/bowser.min.js","text-as-data-poster-work_files/distill-2.2.21/template.v2.js","text-as-data-poster-work_files/figure-html5/unnamed-chunk-15-1.png","text-as-data-poster-work_files/figure-html5/unnamed-chunk-25-1.png","text-as-data-poster-work_files/figure-html5/unnamed-chunk-26-1.png","text-as-data-poster-work_files/figure-html5/unnamed-chunk-27-1.png","text-as-data-poster-work_files/figure-html5/unnamed-chunk-28-1.png","text-as-data-poster-work_files/figure-html5/unnamed-chunk-33-1.png","text-as-data-poster-work_files/figure-html5/unnamed-chunk-34-1.png","text-as-data-poster-work_files/figure-html5/unnamed-chunk-35-1.png","text-as-data-poster-work_files/figure-html5/unnamed-chunk-36-1.png","text-as-data-poster-work_files/figure-html5/unnamed-chunk-38-1.png","text-as-data-poster-work_files/figure-html5/unnamed-chunk-39-1.png","text-as-data-poster-work_files/header-attrs-2.13/header-attrs.js","text-as-data-poster-work_files/jquery-3.6.0/jquery-3.6.0.js","text-as-data-poster-work_files/jquery-3.6.0/jquery-3.6.0.min.js","text-as-data-poster-work_files/jquery-3.6.0/jquery-3.6.0.min.map","text-as-data-poster-work_files/popper-2.6.0/popper.min.js","text-as-data-poster-work_files/tippy-6.2.7/tippy-bundle.umd.min.js","text-as-data-poster-work_files/tippy-6.2.7/tippy-light-border.css","text-as-data-poster-work_files/tippy-6.2.7/tippy.css","text-as-data-poster-work_files/tippy-6.2.7/tippy.umd.min.js","text-as-data-poster-work_files/webcomponents-2.0.0/webcomponents.js"]}
+  {"type":"character","attributes":{},"value":["text-as-data-poster-work_files/anchor-4.2.2/anchor.min.js","text-as-data-poster-work_files/bowser-1.9.3/bowser.min.js","text-as-data-poster-work_files/distill-2.2.21/template.v2.js","text-as-data-poster-work_files/figure-html5/unnamed-chunk-15-1.png","text-as-data-poster-work_files/figure-html5/unnamed-chunk-25-1.png","text-as-data-poster-work_files/figure-html5/unnamed-chunk-26-1.png","text-as-data-poster-work_files/figure-html5/unnamed-chunk-27-1.png","text-as-data-poster-work_files/figure-html5/unnamed-chunk-28-1.png","text-as-data-poster-work_files/figure-html5/unnamed-chunk-33-1.png","text-as-data-poster-work_files/figure-html5/unnamed-chunk-34-1.png","text-as-data-poster-work_files/figure-html5/unnamed-chunk-35-1.png","text-as-data-poster-work_files/figure-html5/unnamed-chunk-36-1.png","text-as-data-poster-work_files/figure-html5/unnamed-chunk-37-1.png","text-as-data-poster-work_files/figure-html5/unnamed-chunk-38-1.png","text-as-data-poster-work_files/figure-html5/unnamed-chunk-39-1.png","text-as-data-poster-work_files/header-attrs-2.13/header-attrs.js","text-as-data-poster-work_files/jquery-3.6.0/jquery-3.6.0.js","text-as-data-poster-work_files/jquery-3.6.0/jquery-3.6.0.min.js","text-as-data-poster-work_files/jquery-3.6.0/jquery-3.6.0.min.map","text-as-data-poster-work_files/popper-2.6.0/popper.min.js","text-as-data-poster-work_files/tippy-6.2.7/tippy-bundle.umd.min.js","text-as-data-poster-work_files/tippy-6.2.7/tippy-light-border.css","text-as-data-poster-work_files/tippy-6.2.7/tippy.css","text-as-data-poster-work_files/tippy-6.2.7/tippy.umd.min.js","text-as-data-poster-work_files/webcomponents-2.0.0/webcomponents.js"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
   <!--/radix_placeholder_navigation_in_header-->
@@ -1745,21 +1745,38 @@ Analysis</h3>
 </code></pre>
 </div>
 </div>
-<h4 id="n-grams-and-the-removal-of-common-terms">N-Grams and the Removal
-of Common Terms</h4>
+<h4 id="n-grams-and-the-removal-of-common-terms-pre-processing">N-Grams
+and the Removal of Common Terms (Pre-Processing)</h4>
+<p><strong>Basis:</strong> In the code below I do my pre-processing
+steps.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>836</span><span class='op'>)</span>
 
+<span class='co'># First I define a minumum frequency at which terms must occur. Through trial</span>
+<span class='co'># and error 5 appeared to work pretty well.</span>
+
 <span class='va'>minimumFrequency</span> <span class='op'>&lt;-</span> <span class='fl'>5</span>
+
+<span class='co'># Next I add the function NLP_tokenizer() which was acquiried from an internet </span>
+<span class='co'># resource. This creates 1-grams, or single words, and 2-grams. 3-Grams I</span>
+<span class='co'># found to be less comprehensible.</span>
+
 <span class='va'>NLP_tokenizer</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='op'>{</span>
-  <span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>lapply</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/NLP/man/ngrams.html'>ngrams</a></span><span class='op'>(</span><span class='fu'><a href='https://stringr.tidyverse.org/reference/stringr-data.html'>words</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span><span class='op'>)</span>, <span class='va'>paste</span>, collapse <span class='op'>=</span> <span class='st'>"_"</span><span class='op'>)</span>, use.names <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+  <span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>lapply</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/NLP/man/ngrams.html'>ngrams</a></span><span class='op'>(</span><span class='fu'><a href='https://stringr.tidyverse.org/reference/stringr-data.html'>words</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span><span class='op'>)</span>, <span class='va'>paste</span>, collapse <span class='op'>=</span> <span class='st'>"_"</span><span class='op'>)</span>, 
+         use.names <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 <span class='op'>}</span>
+
+<span class='co'># Next I apply this minimum frequency and tokenization to my document-term</span>
+<span class='co'># matrxi</span>
 
 <span class='va'>DTM</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/tm/man/matrix.html'>DocumentTermMatrix</a></span><span class='op'>(</span>
   <span class='va'>processedCorpus_guns</span>, 
   control <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>tokenize <span class='op'>=</span> <span class='va'>NLP_tokenizer</span> ,
   bounds <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>global <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>minimumFrequency</span>, <span class='cn'>Inf</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+
+<span class='co'># Finally I add the function for excessively common terms. Using 0.8 or words</span>
+<span class='co'># That appear in 80% of documents led to the most comprehensible results.</span>
 
 <span class='va'>removeCommonTerms</span> <span class='op'>&lt;-</span> <span class='kw'>function</span> <span class='op'>(</span><span class='va'>x</span>, <span class='va'>pct</span><span class='op'>)</span> 
 <span class='op'>{</span>
@@ -1775,6 +1792,7 @@ of Common Terms</h4>
     <span class='kw'>else</span> <span class='va'>x</span><span class='op'>[</span><span class='va'>termIndex</span>, <span class='op'>]</span>
 <span class='op'>}</span>
 
+<span class='co'># I then apply this to my document term matrix.</span>
 
 <span class='va'>DTM</span> <span class='op'>&lt;-</span> <span class='fu'>removeCommonTerms</span><span class='op'>(</span><span class='va'>DTM</span>, <span class='fl'>0.8</span><span class='op'>)</span>
 </code></pre>
@@ -1782,7 +1800,7 @@ of Common Terms</h4>
 </div>
 <h4 id="dtm-dimension">DTM Dimension</h4>
 <p><strong>Basis:</strong> looking at the dimensions of the DTM we see
-it is 2711 x 40081</p>
+it is 2711 x 1516 which has greatly reduced dimensionalty.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>836</span><span class='op'>)</span>
@@ -1792,6 +1810,11 @@ it is 2711 x 40081</p>
 </div>
 <pre><code>[1] 2711 1516</code></pre>
 </div>
+<h4 id="dtm-controlling-for-empty-rows">DTM Controlling for Empty
+rows</h4>
+<p><strong>Basis:</strong> Next I look to make see that the rowsums for
+the matrix are not zero. This is the case so no rows must be removed but
+the code would remove rows from DTM if necessary.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>836</span><span class='op'>)</span>
@@ -1803,6 +1826,12 @@ it is 2711 x 40081</p>
 </code></pre>
 </div>
 </div>
+<h4 id="finding-topic-numbers">Finding Topic Numbers</h4>
+<p><strong>Basis:</strong> Using the function ldatuning and
+FindTopicsNumber I use a number of metric scores to attempt to see what
+number of topics leads to the best performance. Using CaoJuan2009 and
+Deveaud2014 and gibbs as a method we see what number of topics we seek
+to use to minimize and maximize each metric.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>836</span><span class='op'>)</span>
@@ -1810,7 +1839,7 @@ it is 2711 x 40081</p>
 <span class='va'>result</span> <span class='op'>&lt;-</span> <span class='fu'>ldatuning</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/ldatuning/man/FindTopicsNumber.html'>FindTopicsNumber</a></span><span class='op'>(</span>
   <span class='va'>DTM</span>,
   topics <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from <span class='op'>=</span> <span class='fl'>2</span>, to <span class='op'>=</span> <span class='fl'>20</span>, by <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>,
-  metrics <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"CaoJuan2009"</span>,  <span class='st'>"Deveaud2014"</span><span class='op'>)</span>,
+  metrics <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='st'>"CaoJuan2009"</span>, <span class='st'>"Deveaud2014"</span><span class='op'>)</span>,
   method <span class='op'>=</span> <span class='st'>"Gibbs"</span>,
   control <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>seed <span class='op'>=</span> <span class='fl'>77</span><span class='op'>)</span>,
   verbose <span class='op'>=</span> <span class='cn'>TRUE</span>
@@ -1822,6 +1851,12 @@ calculate metrics:
   CaoJuan2009... done.
   Deveaud2014... done.</code></pre>
 </div>
+<h4 id="finding-topic-numbers-results">Finding Topic Numbers
+(Results)</h4>
+<p><strong>Basis:</strong> Using a plot and these metrics that 14 does a
+good job minimizing CaoJuan but is far from the maximum for Deveaud. As
+a result a just tried a handful of different numbers of topcis and
+determined that 10 worked well for my purposes.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>836</span><span class='op'>)</span>
@@ -1832,6 +1867,9 @@ calculate metrics:
 </div>
 <p><img src="text-as-data-poster-work_files/figure-html5/unnamed-chunk-15-1.png" width="624" /></p>
 </div>
+<h3 id="creating-the-lda">Creating the LDA</h3>
+<p><strong>Basis:</strong> to create my LDA, or Latent Dirilecht
+Allocation for my topics I use the code below.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>836</span><span class='op'>)</span>
@@ -1841,7 +1879,8 @@ calculate metrics:
 <span class='co'># set random number generator seed</span>
 
 <span class='co'># compute the LDA model, inference via 1000 iterations of Gibbs sampling</span>
-<span class='va'>topicModel</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/topicmodels/man/lda.html'>LDA</a></span><span class='op'>(</span><span class='va'>DTM</span>, <span class='va'>K</span>, method<span class='op'>=</span><span class='st'>"Gibbs"</span>, control<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>iter <span class='op'>=</span> <span class='fl'>500</span>, verbose <span class='op'>=</span> <span class='fl'>25</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>topicModel</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/topicmodels/man/lda.html'>LDA</a></span><span class='op'>(</span><span class='va'>DTM</span>, <span class='va'>K</span>, method<span class='op'>=</span><span class='st'>"Gibbs"</span>, 
+                  control<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>iter <span class='op'>=</span> <span class='fl'>500</span>, verbose <span class='op'>=</span> <span class='fl'>25</span><span class='op'>)</span><span class='op'>)</span>
 </code></pre>
 </div>
 <pre><code>K = 10; V = 1516; M = 2529
@@ -1932,6 +1971,10 @@ Gibbs sampling completed!</code></pre>
 </div>
 <pre><code>[1] 2529   10</code></pre>
 </div>
+<h4 id="topic-lda-results.">Topic LDA results.</h4>
+<p><strong>Basis:</strong> First I look at my topics below, to me these
+had a great deal of coherence and resulted in topics that had carry,
+range, defense, and hunting in separate categories.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>836</span><span class='op'>)</span>
@@ -2090,6 +2133,10 @@ Gibbs sampling completed!</code></pre>
 </tbody>
 </table>
 </div>
+<h4 id="topic-lda-visualizations">Topic LDA Visualizations</h4>
+<p><strong>Basis:</strong> After a great deal of investigation that led
+to the results above I chose to visualize my 4 topics of interest in a
+word cloud to confirm their relevance into their top 40 terms.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>836</span><span class='op'>)</span>
@@ -2100,7 +2147,8 @@ Gibbs sampling completed!</code></pre>
 </code></pre>
 </div>
 </div>
-<p>The 4 topics of interest are 10, 4, 3, 1</p>
+<p><strong>Basis Continued:</strong> The 4 topics of interest are 10, 4,
+3, 1 and each of these is graphed in a word cloud below.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='co'># visualize topics as word cloud</span>
@@ -2108,7 +2156,8 @@ Gibbs sampling completed!</code></pre>
 <span class='va'>topicToViz</span> <span class='op'>&lt;-</span> <span class='fl'>1</span> <span class='co'># change for your own topic of interest</span>
 <span class='va'>topicToViz</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grep</a></span><span class='op'>(</span><span class='va'>topicNames</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span> , <span class='va'>topicNames</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span>
 <span class='co'># Or select a topic by a term contained in its name</span>
-<span class='co'># select to 40 most probable terms from the topic by sorting the term-topic-probability vector in decreasing order</span>
+<span class='co'># select to 40 most probable terms from the topic by </span>
+<span class='co'>#sorting the term-topic-probability vector in decreasing order</span>
 <span class='va'>top40terms</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sort.html'>sort</a></span><span class='op'>(</span><span class='va'>tmResult</span><span class='op'>$</span><span class='va'>terms</span><span class='op'>[</span><span class='va'>topicToViz</span>,<span class='op'>]</span>, decreasing<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>40</span><span class='op'>]</span>
 <span class='va'>words</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>top40terms</span><span class='op'>)</span>
 <span class='co'># extract the probabilites of each of the 40 terms</span>
@@ -2122,16 +2171,12 @@ Gibbs sampling completed!</code></pre>
 </div>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='co'># visualize topics as word cloud</span>
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>topicToViz</span> <span class='op'>&lt;-</span> <span class='fl'>3</span> 
+<span class='va'>topicToViz</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grep</a></span><span class='op'>(</span><span class='va'>topicNames</span><span class='op'>[</span><span class='fl'>3</span><span class='op'>]</span> , <span class='va'>topicNames</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span> 
 
-<span class='va'>topicToViz</span> <span class='op'>&lt;-</span> <span class='fl'>3</span> <span class='co'># change for your own topic of interest</span>
-<span class='va'>topicToViz</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grep</a></span><span class='op'>(</span><span class='va'>topicNames</span><span class='op'>[</span><span class='fl'>3</span><span class='op'>]</span> , <span class='va'>topicNames</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span> <span class='co'># Or select a topic by a term contained in its name</span>
-<span class='co'># select to 40 most probable terms from the topic by sorting the term-topic-probability vector in decreasing order</span>
 <span class='va'>top40terms</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sort.html'>sort</a></span><span class='op'>(</span><span class='va'>tmResult</span><span class='op'>$</span><span class='va'>terms</span><span class='op'>[</span><span class='va'>topicToViz</span>,<span class='op'>]</span>, decreasing<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>40</span><span class='op'>]</span>
 <span class='va'>words</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>top40terms</span><span class='op'>)</span>
-<span class='co'># extract the probabilites of each of the 40 terms</span>
 <span class='va'>probabilities</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sort.html'>sort</a></span><span class='op'>(</span><span class='va'>tmResult</span><span class='op'>$</span><span class='va'>terms</span><span class='op'>[</span><span class='va'>topicToViz</span>,<span class='op'>]</span>, decreasing<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>40</span><span class='op'>]</span>
-<span class='co'># visualize the terms as wordcloud</span>
 <span class='va'>mycolors</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/RColorBrewer/man/ColorBrewer.html'>brewer.pal</a></span><span class='op'>(</span><span class='fl'>8</span>, <span class='st'>"Dark2"</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/pkg/quanteda.textplots/man/wordcloud.html'>wordcloud</a></span><span class='op'>(</span><span class='va'>words</span>, <span class='va'>probabilities</span>, random.order <span class='op'>=</span> <span class='cn'>FALSE</span>, color <span class='op'>=</span> <span class='va'>mycolors</span><span class='op'>)</span>
 </code></pre>
@@ -2142,14 +2187,11 @@ Gibbs sampling completed!</code></pre>
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='co'># visualize topics as word cloud</span>
 
-<span class='va'>topicToViz</span> <span class='op'>&lt;-</span> <span class='fl'>4</span> <span class='co'># change for your own topic of interest</span>
-<span class='va'>topicToViz</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grep</a></span><span class='op'>(</span><span class='va'>topicNames</span><span class='op'>[</span><span class='fl'>4</span><span class='op'>]</span>, <span class='va'>topicNames</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span> <span class='co'># Or select a topic by a term contained in its name</span>
-<span class='co'># select to 40 most probable terms from the topic by sorting the term-topic-probability vector in decreasing order</span>
+<span class='va'>topicToViz</span> <span class='op'>&lt;-</span> <span class='fl'>4</span> 
+<span class='va'>topicToViz</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grep</a></span><span class='op'>(</span><span class='va'>topicNames</span><span class='op'>[</span><span class='fl'>4</span><span class='op'>]</span>, <span class='va'>topicNames</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span> 
 <span class='va'>top40terms</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sort.html'>sort</a></span><span class='op'>(</span><span class='va'>tmResult</span><span class='op'>$</span><span class='va'>terms</span><span class='op'>[</span><span class='va'>topicToViz</span>,<span class='op'>]</span>, decreasing<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>40</span><span class='op'>]</span>
 <span class='va'>words</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>top40terms</span><span class='op'>)</span>
-<span class='co'># extract the probabilites of each of the 40 terms</span>
 <span class='va'>probabilities</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sort.html'>sort</a></span><span class='op'>(</span><span class='va'>tmResult</span><span class='op'>$</span><span class='va'>terms</span><span class='op'>[</span><span class='va'>topicToViz</span>,<span class='op'>]</span>, decreasing<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>40</span><span class='op'>]</span>
-<span class='co'># visualize the terms as wordcloud</span>
 <span class='va'>mycolors</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/RColorBrewer/man/ColorBrewer.html'>brewer.pal</a></span><span class='op'>(</span><span class='fl'>8</span>, <span class='st'>"Dark2"</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/pkg/quanteda.textplots/man/wordcloud.html'>wordcloud</a></span><span class='op'>(</span><span class='va'>words</span>, <span class='va'>probabilities</span>, random.order <span class='op'>=</span> <span class='cn'>FALSE</span>, color <span class='op'>=</span> <span class='va'>mycolors</span><span class='op'>)</span>
 </code></pre>
@@ -2158,28 +2200,30 @@ Gibbs sampling completed!</code></pre>
 </div>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='co'># visualize topics as word cloud</span>
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>topicToViz</span> <span class='op'>&lt;-</span> <span class='fl'>10</span> 
+<span class='va'>topicToViz</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grep</a></span><span class='op'>(</span><span class='va'>topicNames</span><span class='op'>[</span><span class='fl'>10</span><span class='op'>]</span>, <span class='va'>topicNames</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span> 
 
-<span class='va'>topicToViz</span> <span class='op'>&lt;-</span> <span class='fl'>10</span> <span class='co'># change for your own topic of interest</span>
-<span class='va'>topicToViz</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grep</a></span><span class='op'>(</span><span class='va'>topicNames</span><span class='op'>[</span><span class='fl'>10</span><span class='op'>]</span>, <span class='va'>topicNames</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span> <span class='co'># Or select a topic by a term contained in its name</span>
-<span class='co'># select to 40 most probable terms from the topic by sorting the term-topic-probability vector in decreasing order</span>
 <span class='va'>top40terms</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sort.html'>sort</a></span><span class='op'>(</span><span class='va'>tmResult</span><span class='op'>$</span><span class='va'>terms</span><span class='op'>[</span><span class='va'>topicToViz</span>,<span class='op'>]</span>, decreasing<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>40</span><span class='op'>]</span>
 <span class='va'>words</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>top40terms</span><span class='op'>)</span>
-<span class='co'># extract the probabilites of each of the 40 terms</span>
 <span class='va'>probabilities</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sort.html'>sort</a></span><span class='op'>(</span><span class='va'>tmResult</span><span class='op'>$</span><span class='va'>terms</span><span class='op'>[</span><span class='va'>topicToViz</span>,<span class='op'>]</span>, decreasing<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>40</span><span class='op'>]</span>
-<span class='co'># visualize the terms as wordcloud</span>
 <span class='va'>mycolors</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/RColorBrewer/man/ColorBrewer.html'>brewer.pal</a></span><span class='op'>(</span><span class='fl'>8</span>, <span class='st'>"Dark2"</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/pkg/quanteda.textplots/man/wordcloud.html'>wordcloud</a></span><span class='op'>(</span><span class='va'>words</span>, <span class='va'>probabilities</span>, random.order <span class='op'>=</span> <span class='cn'>TRUE</span>, color <span class='op'>=</span> <span class='va'>mycolors</span><span class='op'>)</span>
 </code></pre>
 </div>
 <p><img src="text-as-data-poster-work_files/figure-html5/unnamed-chunk-28-1.png" width="624" /></p>
 </div>
+<h4 id="topic-lda-visualizations-and-proportions">Topic LDA
+Visualizations and Proportions</h4>
+<p><strong>Basis:</strong> In order to better understand the results of
+my topic model beyond the inclusion of the top 40 words, I look to the
+beta and theta attributes to look at the top topic words in each group
+and the resulting proportions.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>836</span><span class='op'>)</span>
 
-<span class='va'>topicNames</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/apply.html'>apply</a></span><span class='op'>(</span><span class='fu'>lda</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/lda/man/top.topic.words.html'>top.topic.words</a></span><span class='op'>(</span><span class='va'>beta</span>, <span class='fl'>5</span>, by.score <span class='op'>=</span> <span class='cn'>T</span><span class='op'>)</span>, <span class='fl'>2</span>, <span class='va'>paste</span>, collapse <span class='op'>=</span> <span class='st'>" "</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>836</span><span class='op'>)</span>
+<span class='va'>topicNames</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/apply.html'>apply</a></span><span class='op'>(</span><span class='fu'>lda</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/lda/man/top.topic.words.html'>top.topic.words</a></span><span class='op'>(</span><span class='va'>beta</span>, <span class='fl'>5</span>, by.score <span class='op'>=</span> <span class='cn'>T</span><span class='op'>)</span>, 
+                    <span class='fl'>2</span>, <span class='va'>paste</span>, collapse <span class='op'>=</span> <span class='st'>" "</span><span class='op'>)</span>
 
 <span class='co'># What are the most probable topics in the entire collection?</span>
 <span class='va'>topicProportions</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/colSums.html'>colSums</a></span><span class='op'>(</span><span class='va'>theta</span><span class='op'>)</span> <span class='op'>/</span> <span class='fu'><a href='https://rdrr.io/pkg/tm/man/Docs.html'>nDocs</a></span><span class='op'>(</span><span class='va'>DTM</span><span class='op'>)</span> 
@@ -2191,6 +2235,9 @@ Gibbs sampling completed!</code></pre>
 </code></pre>
 </div>
 </div>
+<p><strong>Basis:</strong> These proortions give some sense, but due to
+the number of documents they are regarding the small changes in percents
+can be significant.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>836</span><span class='op'>)</span>
@@ -2211,6 +2258,8 @@ Gibbs sampling completed!</code></pre>
  [9] &quot;0.0994 : glock amp love trigger grip&quot;      
 [10] &quot;0.0993 : rifle range shot day shoot&quot;       </code></pre>
 </div>
+<p><strong>Basis:</strong> As a result I look for the counts of the
+dosuments themselves.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='va'>countsOfPrimaryTopics</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='va'>K</span><span class='op'>)</span>
@@ -2235,6 +2284,7 @@ Gibbs sampling completed!</code></pre>
        gun today mag firearm feel    shooting rifle range ammo guns 
                               158                               137 </code></pre>
 </div>
+<p><strong>Basis:</strong></p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>836</span><span class='op'>)</span>
@@ -2255,12 +2305,18 @@ Gibbs sampling completed!</code></pre>
  [9] &quot;158 : gun today mag firearm feel&quot;       
 [10] &quot;137 : shooting rifle range ammo guns&quot;   </code></pre>
 </div>
+<h4 id="proportional-visualizations">Proportional Visualizations</h4>
+<p><strong>Basis:</strong> I then look to visualize my topics as
+proportions in a more creative way that better represets their
+proportion in the documents rather than by the proportions of words
+earlier.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>291</span><span class='op'>)</span>
 <span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>10</span>
 <span class='va'>qual_col_pals</span> <span class='op'>=</span> <span class='va'>brewer.pal.info</span><span class='op'>[</span><span class='va'>brewer.pal.info</span><span class='op'>$</span><span class='va'>category</span> <span class='op'>==</span> <span class='st'>'qual'</span>,<span class='op'>]</span>
-<span class='va'>col_vector</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/mapply.html'>mapply</a></span><span class='op'>(</span><span class='va'>brewer.pal</span>, <span class='va'>qual_col_pals</span><span class='op'>$</span><span class='va'>maxcolors</span>, <span class='fu'><a href='https://tibble.tidyverse.org/reference/rownames.html'>rownames</a></span><span class='op'>(</span><span class='va'>qual_col_pals</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>col_vector</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/mapply.html'>mapply</a></span><span class='op'>(</span><span class='va'>brewer.pal</span>, <span class='va'>qual_col_pals</span><span class='op'>$</span><span class='va'>maxcolors</span>,
+                           <span class='fu'><a href='https://tibble.tidyverse.org/reference/rownames.html'>rownames</a></span><span class='op'>(</span><span class='va'>qual_col_pals</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/graphics/pie.html'>pie</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='va'>n</span><span class='op'>)</span>, col<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='va'>col_vector</span>, <span class='va'>n</span><span class='op'>)</span><span class='op'>)</span>
 </code></pre>
 </div>
@@ -2273,19 +2329,27 @@ Gibbs sampling completed!</code></pre>
 <span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>4</span>
 <span class='va'>qual_col_pals</span> <span class='op'>=</span> <span class='va'>brewer.pal.info</span><span class='op'>[</span><span class='va'>brewer.pal.info</span><span class='op'>$</span><span class='va'>category</span> <span class='op'>==</span> <span class='st'>'qual'</span>,<span class='op'>]</span>
 
-<span class='va'>col_vector_2</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/mapply.html'>mapply</a></span><span class='op'>(</span><span class='va'>brewer.pal</span>, <span class='va'>qual_col_pals</span><span class='op'>$</span><span class='va'>maxcolors</span>, <span class='fu'><a href='https://tibble.tidyverse.org/reference/rownames.html'>rownames</a></span><span class='op'>(</span><span class='va'>qual_col_pals</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>col_vector_2</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/mapply.html'>mapply</a></span><span class='op'>(</span><span class='va'>brewer.pal</span>, <span class='va'>qual_col_pals</span><span class='op'>$</span><span class='va'>maxcolors</span>, 
+                             <span class='fu'><a href='https://tibble.tidyverse.org/reference/rownames.html'>rownames</a></span><span class='op'>(</span><span class='va'>qual_col_pals</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='fu'><a href='https://rdrr.io/r/graphics/pie.html'>pie</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='va'>n</span><span class='op'>)</span>, col<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='va'>col_vector_2</span>, <span class='va'>n</span><span class='op'>)</span><span class='op'>)</span>
 </code></pre>
 </div>
 <p><img src="text-as-data-poster-work_files/figure-html5/unnamed-chunk-34-1.png" width="624" /></p>
 </div>
+<p><strong>Basis:</strong> I then create a ggplot graph of the
+proportions of topics using polar coordiantes to better illustrate their
+differences.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>1234</span><span class='op'>)</span>
 
 <span class='va'>df_for_visualization</span><span class='op'>&lt;-</span><span class='fu'><a href='https://rdrr.io/r/base/as.data.frame.html'>as.data.frame</a></span><span class='op'>(</span><span class='va'>countsOfPrimaryTopics</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>so</span><span class='op'>)</span><span class='op'>&lt;-</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Concealed Carry"</span>, <span class='st'>"Purchase Advice"</span>, <span class='st'>"Hunting"</span>,<span class='st'>"Range and Recreation"</span>, <span class='st'>"Firearm Accessories"</span>, <span class='st'>"Experience and Review"</span>, <span class='st'>"Pistol Review"</span>, <span class='st'>"Rifle Review"</span>, <span class='st'>"Loading Issues"</span>,  <span class='st'>"Home Defense"</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>so</span><span class='op'>)</span><span class='op'>&lt;-</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Concealed Carry"</span>, <span class='st'>"Purchase Advice"</span>, <span class='st'>"Hunting"</span>,
+<span class='st'>"Range and Recreation"</span>, <span class='st'>"
+             Firearm Accessories"</span>, 
+<span class='st'>"Experience and Review"</span>, <span class='st'>"Pistol Review"</span>, <span class='st'>"Rifle Review"</span>, <span class='st'>"Loading Issues"</span>,  
+             <span class='st'>"Home Defense"</span><span class='op'>)</span>
 
 <span class='va'>df_for_visualization</span><span class='op'>$</span><span class='va'>group_names</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>so</span><span class='op'>)</span>
 
@@ -2294,7 +2358,8 @@ Gibbs sampling completed!</code></pre>
 <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>df_for_visualization</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='va'>group_names</span>, y<span class='op'>=</span><span class='va'>countsOfPrimaryTopics</span>,  
                                  fill<span class='op'>=</span><span class='va'>group_names</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> 
   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_bar.html'>geom_bar</a></span><span class='op'>(</span>stat <span class='op'>=</span> <span class='st'>"identity"</span> <span class='op'>)</span><span class='op'>+</span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_classic</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span>
-   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/theme.html'>theme</a></span><span class='op'>(</span>axis.text.x <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_text</a></span><span class='op'>(</span>angle <span class='op'>=</span> <span class='fl'>90</span>, hjust <span class='op'>=</span> <span class='fl'>1</span>, size<span class='op'>=</span><span class='fl'>3</span><span class='op'>)</span>,legend.key.size <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/grid/unit.html'>unit</a></span><span class='op'>(</span><span class='fl'>0.3</span>, <span class='st'>'cm'</span><span class='op'>)</span>, <span class='co'>#change legend key size</span>
+   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/theme.html'>theme</a></span><span class='op'>(</span>axis.text.x <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_text</a></span><span class='op'>(</span>angle <span class='op'>=</span> <span class='fl'>90</span>, hjust <span class='op'>=</span> <span class='fl'>1</span>, size<span class='op'>=</span><span class='fl'>3</span><span class='op'>)</span>,
+         legend.key.size <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/grid/unit.html'>unit</a></span><span class='op'>(</span><span class='fl'>0.3</span>, <span class='st'>'cm'</span><span class='op'>)</span>, <span class='co'>#change legend key size</span>
         legend.key.height <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/grid/unit.html'>unit</a></span><span class='op'>(</span><span class='fl'>0.4</span>, <span class='st'>'cm'</span><span class='op'>)</span>, <span class='co'>#change legend key height</span>
         legend.key.width <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/grid/unit.html'>unit</a></span><span class='op'>(</span><span class='fl'>0.4</span>, <span class='st'>'cm'</span><span class='op'>)</span>,<span class='op'>)</span> <span class='op'>+</span>  
 <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/scale_manual.html'>scale_fill_manual</a></span><span class='op'>(</span>values <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='va'>col_vector_2</span>, <span class='fl'>10</span><span class='op'>)</span><span class='op'>)</span><span class='op'>+</span> 
@@ -2306,23 +2371,30 @@ Gibbs sampling completed!</code></pre>
 </div>
 <p><img src="text-as-data-poster-work_files/figure-html5/unnamed-chunk-35-1.png" width="624" /></p>
 </div>
+<p><strong>Basis:</strong> I then do the same, but just for my 4 topics
+of interest</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>1234</span><span class='op'>)</span>
 
 <span class='va'>df_for_visualization</span><span class='op'>&lt;-</span><span class='fu'><a href='https://rdrr.io/r/base/as.data.frame.html'>as.data.frame</a></span><span class='op'>(</span><span class='va'>countsOfPrimaryTopics</span><span class='op'>)</span>
 
-<span class='va'>df_for_visualization_relevant</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.data.frame.html'>as.data.frame</a></span><span class='op'>(</span><span class='va'>df_for_visualization</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span> ,<span class='fl'>3</span>, <span class='fl'>4</span>,<span class='fl'>10</span><span class='op'>)</span>,<span class='op'>]</span><span class='op'>)</span>
+<span class='va'>df_for_visualization_relevant</span> <span class='op'>&lt;-</span> 
+  <span class='fu'><a href='https://rdrr.io/r/base/as.data.frame.html'>as.data.frame</a></span><span class='op'>(</span><span class='va'>df_for_visualization</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span> ,<span class='fl'>3</span>, <span class='fl'>4</span>,<span class='fl'>10</span><span class='op'>)</span>,<span class='op'>]</span><span class='op'>)</span>
 
 <span class='va'>df_for_visualization_relevant</span><span class='op'>$</span><span class='va'>group_names</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>so</span><span class='op'>)</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span> ,<span class='fl'>3</span>, <span class='fl'>4</span>,<span class='fl'>10</span><span class='op'>)</span><span class='op'>]</span>
 
-<span class='va'>df_for_visualization_relevant</span><span class='op'>$</span><span class='va'>group_names</span> <span class='op'>&lt;-</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Concealed Carry"</span>, <span class='st'>"Hunting"</span>, <span class='st'>"Range and Recreation"</span>, <span class='st'>"Home Defense"</span><span class='op'>)</span>
+<span class='va'>df_for_visualization_relevant</span><span class='op'>$</span><span class='va'>group_names</span> <span class='op'>&lt;-</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Concealed Carry"</span>, 
+                      <span class='st'>"Hunting"</span>, <span class='st'>"Range and Recreation"</span>, <span class='st'>"Home Defense"</span><span class='op'>)</span>
 
 <span class='va'>df_for_visualization_relevant</span><span class='op'>$</span><span class='va'>group_numbers</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span> ,<span class='fl'>3</span>, <span class='fl'>4</span>,<span class='fl'>10</span><span class='op'>)</span>
 
-<span class='va'>df_for_visualization_relevant</span><span class='op'>$</span><span class='va'>frequency</span> <span class='op'>&lt;-</span> <span class='va'>df_for_visualization_relevant</span><span class='op'>$</span><span class='va'>`df_for_visualization[c(1, 3, 4, 10), ]`</span>
+<span class='va'>df_for_visualization_relevant</span><span class='op'>$</span><span class='va'>frequency</span> <span class='op'>&lt;-</span> 
+  <span class='va'>df_for_visualization_relevant</span><span class='op'>$</span><span class='va'>`df_for_visualization[c(1, 3, 4, 10), ]`</span>
 
-<span class='va'>df_for_visualization_relevant</span><span class='op'>$</span><span class='va'>proportion</span> <span class='op'>&lt;-</span> <span class='va'>df_for_visualization_relevant</span><span class='op'>$</span><span class='va'>frequency</span><span class='op'>/</span><span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>df_for_visualization_relevant</span><span class='op'>$</span><span class='va'>frequency</span><span class='op'>)</span>
+<span class='va'>df_for_visualization_relevant</span><span class='op'>$</span><span class='va'>proportion</span> <span class='op'>&lt;-</span> 
+  <span class='va'>df_for_visualization_relevant</span><span class='op'>$</span><span class='va'>frequency</span><span class='op'>/</span>
+  <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>df_for_visualization_relevant</span><span class='op'>$</span><span class='va'>frequency</span><span class='op'>)</span>
 
 
 <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>df_for_visualization_relevant</span><span class='op'>$</span><span class='va'>frequency</span><span class='op'>)</span>
@@ -2330,70 +2402,42 @@ Gibbs sampling completed!</code></pre>
 </div>
 <pre><code>[1] 1139</code></pre>
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>df_for_visualization_relevant</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='va'>group_names</span>, y<span class='op'>=</span><span class='va'>proportion</span>,  fill<span class='op'>=</span><span class='va'>group_names</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> 
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>df_for_visualization_relevant</span>, 
+       <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='va'>group_names</span>, y<span class='op'>=</span><span class='va'>proportion</span>,  fill<span class='op'>=</span><span class='va'>group_names</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> 
   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_bar.html'>geom_bar</a></span><span class='op'>(</span>stat <span class='op'>=</span> <span class='st'>"identity"</span> <span class='op'>)</span> <span class='op'>+</span>    
   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/scale_manual.html'>scale_fill_manual</a></span><span class='op'>(</span>values <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='va'>col_vector_2</span>, <span class='fl'>4</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> 
    <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/theme.html'>theme</a></span><span class='op'>(</span>axis.text.x <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_text</a></span><span class='op'>(</span>size <span class='op'>=</span> <span class='fl'>6</span><span class='op'>)</span><span class='op'>)</span><span class='op'>+</span>
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/scale_discrete.html'>scale_x_discrete</a></span><span class='op'>(</span>guide <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/guide_axis.html'>guide_axis</a></span><span class='op'>(</span>n.dodge <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>xlab</a></span><span class='op'>(</span><span class='st'>"Topic Groups"</span><span class='op'>)</span> <span class='op'>+</span>
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>ylab</a></span><span class='op'>(</span><span class='st'>"Number of Posts in Group"</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/guides.html'>guides</a></span><span class='op'>(</span>fill<span class='op'>=</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/guide_legend.html'>guide_legend</a></span><span class='op'>(</span>title<span class='op'>=</span><span class='st'>"Topic Groups"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>+</span>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/scale_discrete.html'>scale_x_discrete</a></span><span class='op'>(</span>guide <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/guide_axis.html'>guide_axis</a></span><span class='op'>(</span>n.dodge <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> 
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>xlab</a></span><span class='op'>(</span><span class='st'>"Topic Groups"</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>ylab</a></span><span class='op'>(</span><span class='st'>"Number of Posts in Group"</span><span class='op'>)</span> <span class='op'>+</span> 
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/guides.html'>guides</a></span><span class='op'>(</span>fill<span class='op'>=</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/guide_legend.html'>guide_legend</a></span><span class='op'>(</span>title<span class='op'>=</span><span class='st'>"Topic Groups"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>+</span>
   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/coord_polar.html'>coord_polar</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>+</span>
   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_void</a></span><span class='op'>(</span><span class='op'>)</span>
 </code></pre>
 </div>
-<img src="text-as-data-poster-work_files/figure-html5/unnamed-chunk-36-1.png" width="624" />
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>df_for_visualization_relevant</span>
-</code></pre>
+<p><img src="text-as-data-poster-work_files/figure-html5/unnamed-chunk-36-1.png" width="624" /></p>
 </div>
-<pre><code>  df_for_visualization[c(1, 3, 4, 10), ]          group_names
-1                                    389      Concealed Carry
-2                                    349              Hunting
-3                                    264 Range and Recreation
-4                                    137         Home Defense
-  group_numbers frequency proportion
-1             1       389  0.3415277
-2             3       349  0.3064091
-3             4       264  0.2317823
-4            10       137  0.1202809</code></pre>
-</div>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/stats/terms.html'>terms</a></span><span class='op'>(</span><span class='va'>topicModel</span>, <span class='fl'>10</span><span class='op'>)</span>
-</code></pre>
-</div>
-<pre><code>      Topic 1   Topic 2    Topic 3     Topic 4    Topic 5  
- [1,] &quot;pistol&quot;  &quot;good&quot;     &quot;rifle&quot;     &quot;range&quot;    &quot;found&quot;  
- [2,] &quot;carry&quot;   &quot;question&quot; &quot;ruger&quot;     &quot;ammo&quot;     &quot;red&quot;    
- [3,] &quot;buy&quot;     &quot;find&quot;     &quot;pretty&quot;    &quot;time&quot;     &quot;sight&quot;  
- [4,] &quot;people&quot;  &quot;guns&quot;     &quot;long&quot;      &quot;shooting&quot; &quot;sights&quot; 
- [5,] &quot;state&quot;   &quot;day&quot;      &quot;bolt&quot;      &quot;shoot&quot;    &quot;build&quot;  
- [6,] &quot;thing&quot;   &quot;9mm&quot;      &quot;hunting&quot;   &quot;today&quot;    &quot;site&quot;   
- [7,] &quot;make&quot;    &quot;full&quot;     &quot;action&quot;    &quot;shot&quot;     &quot;dot&quot;    
- [8,] &quot;time&quot;    &quot;worth&quot;    &quot;scope&quot;     &quot;bought&quot;   &quot;1911&quot;   
- [9,] &quot;handgun&quot; &quot;holster&quot;  &quot;remington&quot; &quot;years&quot;    &quot;optic&quot;  
-[10,] &quot;license&quot; &quot;sig&quot;      &quot;idea&quot;      &quot;guys&quot;     &quot;red_dot&quot;
-      Topic 6      Topic 7     Topic 8     Topic 9    Topic 10      
- [1,] &quot;gun&quot;        &quot;glock&quot;     &quot;barrel&quot;    &quot;back&quot;     &quot;gun&quot;         
- [2,] &quot;safe&quot;       &quot;amp&quot;       &quot;bought&quot;    &quot;round&quot;    &quot;guns&quot;        
- [3,] &quot;post&quot;       &quot;love&quot;      &quot;lower&quot;     &quot;rounds&quot;   &quot;home&quot;        
- [4,] &quot;feel&quot;       &quot;trigger&quot;   &quot;recently&quot;  &quot;slide&quot;    &quot;defense&quot;     
- [5,] &quot;dad&quot;        &quot;great&quot;     &quot;rifles&quot;    &quot;mag&quot;      &quot;firearm&quot;     
- [6,] &quot;don&quot;        &quot;model&quot;     &quot;made&quot;      &quot;put&quot;      &quot;firearms&quot;    
- [7,] &quot;picked&quot;     &quot;grip&quot;      &quot;steel&quot;     &quot;ar15&quot;     &quot;home_defense&quot;
- [8,] &quot;ago&quot;        &quot;wondering&quot; &quot;stock&quot;     &quot;issue&quot;    &quot;purchase&quot;    
- [9,] &quot;kit&quot;        &quot;make&quot;      &quot;wondering&quot; &quot;magazine&quot; &quot;check&quot;       
-[10,] &quot;experience&quot; &quot;work&quot;      &quot;carbine&quot;   &quot;issues&quot;   &quot;buying&quot;      </code></pre>
-</div>
+<p><strong>Basis:</strong> Finally I use my date_utc variable metadata
+to see how the proportion of these topics has changed over time.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>1234</span><span class='op'>)</span>
 
-<span class='va'>topic_proportion_per_decade</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/aggregate.html'>aggregate</a></span><span class='op'>(</span><span class='va'>theta</span>, by <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>decade <span class='op'>=</span> <span class='va'>textdata</span><span class='op'>$</span><span class='va'>date</span><span class='op'>)</span>, <span class='va'>mean</span><span class='op'>)</span>
+<span class='va'>topic_proportion_per_decade</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/aggregate.html'>aggregate</a></span><span class='op'>(</span><span class='va'>theta</span>, by <span class='op'>=</span> 
+                                           <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>decade <span class='op'>=</span> <span class='va'>textdata</span><span class='op'>$</span><span class='va'>date</span><span class='op'>)</span>, <span class='va'>mean</span><span class='op'>)</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>topic_proportion_per_decade</span><span class='op'>)</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>topic_proportion_per_decade</span><span class='op'>)</span><span class='op'>==</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"decade"</span>, <span class='st'>"1"</span>, <span class='st'>"2"</span>, <span class='st'>"3"</span>,<span class='st'>"4"</span>,<span class='st'>"5"</span>,<span class='st'>"6"</span>,<span class='st'>"7"</span>,<span class='st'>"8"</span>,<span class='st'>"9"</span>,<span class='st'>"10"</span><span class='op'>)</span><span class='op'>]</span><span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"day"</span>, <span class='st'>"Concealed Carry"</span>, <span class='st'>"Purchase Advice"</span>, <span class='st'>"Hunting"</span>,<span class='st'>"Range and Recreation"</span>, <span class='st'>"Firearm Accessories"</span>, <span class='st'>"Experience and Review"</span>, <span class='st'>"Pistol Review"</span>, <span class='st'>"Rifle Review"</span>, <span class='st'>"Loading Issues"</span>,  <span class='st'>"Home Defense"</span><span class='op'>)</span>
-                                     <span class='co'>#c("decade", "pistol carry buy state people","good question find guns 9mm","rifle ruger pretty bolt long", "range ammo time shooting shoot", "red sight found sights dot", "gun safe post feel dad", "glock amp love trigger great","barrel bought lower steel recently", "back round slide mag rounds","gun home guns defense firearm")] &lt;- c("day", "Concealed Carry", "Purchase Advice", "Hunting","Range and Recreation", "Firearm Accessories", "Experience and Review", "Pistol Review", "Rifle Review", "Loading Issues",  "Home Defense")</span>
+<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>topic_proportion_per_decade</span><span class='op'>)</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>topic_proportion_per_decade</span><span class='op'>)</span>
+<span class='op'>==</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"decade"</span>, <span class='st'>"1"</span>, <span class='st'>"2"</span>, <span class='st'>"3"</span>,<span class='st'>"4"</span>,<span class='st'>"5"</span>,<span class='st'>"6"</span>,<span class='st'>"7"</span>,<span class='st'>"8"</span>,<span class='st'>"9"</span>,<span class='st'>"10"</span><span class='op'>)</span><span class='op'>]</span><span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"day"</span>, 
+<span class='st'>"Concealed Carry"</span>, <span class='st'>"Purchase Advice"</span>, <span class='st'>"Hunting"</span>,
+<span class='st'>"Range and Recreation"</span>, <span class='st'>"Firearm Accessories"</span>, 
+<span class='st'>"Experience and Review"</span>, <span class='st'>"Pistol Review"</span>, <span class='st'>"Rifle Review"</span>, 
+<span class='st'>"Loading Issues"</span>,  <span class='st'>"Home Defense"</span><span class='op'>)</span>
+                            <span class='co'>#c("decade", "pistol carry buy state people","good question find guns 9mm","rifle ruger pretty bolt long", "range ammo time shooting shoot", "red sight found sights dot", "gun safe post feel dad", "glock amp love trigger great","barrel bought lower steel recently", "back round slide mag rounds","gun home guns defense firearm")] &lt;- c("day", "Concealed Carry", "Purchase Advice", "Hunting","Range and Recreation", "Firearm Accessories", "Experience and Review", "Pistol Review", "Rifle Review", "Loading Issues",  "Home Defense")</span>
  
-<span class='va'>topicNames</span> <span class='op'>&lt;-</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Concealed Carry"</span>, <span class='st'>"Purchase Advice"</span>, <span class='st'>"Hunting"</span>,<span class='st'>"Range and Recreation"</span>, <span class='st'>"Firearm Accessories"</span>, <span class='st'>"Experience and Review"</span>, <span class='st'>"Pistol Review"</span>, <span class='st'>"Rifle Review"</span>, <span class='st'>"Loading Issues"</span>,  <span class='st'>"Home Defense"</span><span class='op'>)</span>
+<span class='va'>topicNames</span> <span class='op'>&lt;-</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Concealed Carry"</span>, <span class='st'>"Purchase Advice"</span>, <span class='st'>"Hunting"</span>,<span class='st'>"
+               Range and Recreation"</span>, <span class='st'>"Firearm Accessories"</span>, 
+               <span class='st'>"Experience and Review"</span>, <span class='st'>"Pistol Review"</span>, 
+               <span class='st'>"Rifle Review"</span>, <span class='st'>"Loading Issues"</span>,  <span class='st'>"Home Defense"</span><span class='op'>)</span>
 
 <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>topic_proportion_per_decade</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>2</span><span class='op'>:</span><span class='op'>(</span><span class='va'>K</span><span class='op'>+</span><span class='fl'>1</span><span class='op'>)</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='va'>topicNames</span>
 <span class='co'># reshape data frame</span>
@@ -2406,8 +2450,11 @@ Gibbs sampling completed!</code></pre>
   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_minimal</a></span><span class='op'>(</span><span class='op'>)</span>
 </code></pre>
 </div>
-<p><img src="text-as-data-poster-work_files/figure-html5/unnamed-chunk-38-1.png" width="624" /></p>
+<p><img src="text-as-data-poster-work_files/figure-html5/unnamed-chunk-37-1.png" width="624" /></p>
 </div>
+<p><strong>Basis:</strong> Finally, I show the proportion of dates that
+each of the posts comes from to give the readers of my poster some sense
+of the recency bias in the data.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='va'>dat2</span> <span class='op'>&lt;-</span> <span class='va'>whole_data_frame_unique</span> <span class='op'><a href='https://stringr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> 
@@ -2420,9 +2467,9 @@ Gibbs sampling completed!</code></pre>
   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_bar.html'>geom_col</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_minimal</a></span><span class='op'>(</span><span class='op'>)</span>
 </code></pre>
 </div>
-<p><img src="text-as-data-poster-work_files/figure-html5/unnamed-chunk-39-1.png" width="624" /></p>
+<p><img src="text-as-data-poster-work_files/figure-html5/unnamed-chunk-38-1.png" width="624" /></p>
 </div>
-<div class="sourceCode" id="cb17"><pre
+<div class="sourceCode" id="cb15"><pre
 class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
