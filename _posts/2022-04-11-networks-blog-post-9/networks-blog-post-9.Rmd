@@ -1907,3 +1907,7 @@ arr.width=0.1, arr.length=0.1))
 
 ```
 
+```{r}
+wars_in_1000s_network 
+```
+

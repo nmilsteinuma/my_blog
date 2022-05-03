@@ -1483,9 +1483,57 @@ Text-as-Data Poster.</p></p>
 </div>
 
 <div class="d-article">
+<h2 id="overview">Overview</h2>
+<p><strong>Explanation:</strong> In this post I go through my final
+visualizations for my text-as-data poster. These Include my final steps
+of analysis that are consistent with what is seen on my submitted
+poster.</p>
+<h3 id="loading-required-packages">Loading Required Packages</h3>
+<p><strong>Basis:</strong> Firstly I load quite a few packages, both
+those I need for the final paper, and a number of packages that I used
+in coming up with my research design. I specifically us the tm package
+for topic modeling with LDA or latent Dirichlet allocation.</p>
 <div class="layout-chunk" data-layout="l-body">
-
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/rstudio/rmarkdown'>rmarkdown</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>RedditExtractoR</span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://arxiv.org/abs/1403.2805'>jsonlite</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tidyverse.tidyverse.org'>tidyverse</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://stringr.tidyverse.org'>stringr</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://httr.r-lib.org/'>httr</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://tm.r-forge.r-project.org/'>tm</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://leslie-huang.github.io/r-corpus/'>corpus</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://quanteda.io'>quanteda</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/trinker/textclean'>textclean</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://yihui.org/knitr/'>knitr</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://lubridate.tidyverse.org'>lubridate</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://statsmaths.github.io/cleanNLP/'>cleanNLP</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://quanteda.io'>quanteda.textstats</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>quanteda.textplots</span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/nalimilan/R.TeMiS'>SnowballC</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://blog.fellstat.com/?cat=11'>wordcloud</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>RColorBrewer</span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/quanteda/stopwords'>stopwords</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tidyverse.tidyverse.org'>tidyverse</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://rvest.tidyverse.org/'>rvest</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/juliasilge/tidytext'>tidytext</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://text2vec.org'>text2vec</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>preText</span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://ggplot2.tidyverse.org'>ggplot2</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://kwstat.github.io/pals/'>pals</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/hadley/reshape'>reshape2</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>lda</span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/nikita-moor/ldatuning'>ldatuning</a></span><span class='op'>)</span>
+<span class='co'># install klippy for copy-to-clipboard button in code chunks</span>
+<span class='fu'>remotes</span><span class='fu'>::</span><span class='fu'><a href='https://remotes.r-lib.org/reference/install_github.html'>install_github</a></span><span class='op'>(</span><span class='st'>"rlesur/klippy"</span><span class='op'>)</span>
+</code></pre>
 </div>
+</div>
+<h3 id="loading-and-scraping-data">Loading and Scraping Data</h3>
+<p><strong>Basis:</strong> First I load my Rdata in using a custom
+function. Though I don’t have the code running for api purposes the
+RedditExtractoR code I used is included.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>836</span><span class='op'>)</span>
@@ -1500,6 +1548,9 @@ Text-as-Data Poster.</p></p>
 <span class='co'># My first data frame comprises new posts as of march 26 2022 which are taken </span>
 <span class='co'># from the 15th-26th of march primarily. </span>
 
+<span class='co'># new_guns_urls &lt;- find_thread_urls(subreddit="guns", sort_by="new")</span>
+
+
 <span class='va'>new_guns_urls</span> <span class='op'>&lt;-</span> <span class='fu'>loadRData</span><span class='op'>(</span><span class='st'>"/Users/noahmilstein/Desktop/Spring 2022/Textasdata/text_as_data_work/New_reddit_posts_3_26.RData"</span><span class='op'>)</span>
 
 <span class='co'># Next I extract the 4 columns that I will need, title, date, comments</span>
@@ -1512,12 +1563,16 @@ Text-as-Data Poster.</p></p>
 
 <span class='va'>top_guns_urls</span> <span class='op'>&lt;-</span> <span class='fu'>loadRData</span><span class='op'>(</span><span class='st'>"/Users/noahmilstein/Desktop/Spring 2022/Textasdata/text_as_data_work/top_guns_urls.RData"</span><span class='op'>)</span>
 
+<span class='co'># top_guns_urls &lt;- find_thread_urls(subreddit="guns", sort_by="top")</span>
+
 <span class='va'>top_guns_urls_df</span><span class='op'>&lt;-</span><span class='va'>top_guns_urls</span><span class='op'>[</span>,<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"title"</span>, <span class='st'>"date_utc"</span>, <span class='st'>"comments"</span>,  <span class='st'>"text"</span><span class='op'>)</span><span class='op'>]</span>
 
 <span class='co'>#hot_guns_urls &lt;- find_thread_urls(subreddit="guns", sort_by="hot")</span>
 <span class='co'># save(hot_guns_urls, file="hot_guns_urls.RData")</span>
 
 <span class='co'># Next "hot" posts are loaded which are also primarily from march 2022</span>
+
+<span class='co'># hot_guns_urls &lt;- find_thread_urls(subreddit="guns", sort_by="got")</span>
 
 <span class='va'>hot_guns_urls</span><span class='op'>&lt;-</span>
   <span class='fu'>loadRData</span><span class='op'>(</span><span class='st'>"/Users/noahmilstein/Desktop/my_blog/_posts/2022-03-29-tad-post-4/hot_guns_urls.RData"</span><span class='op'>)</span>
@@ -1527,17 +1582,21 @@ Text-as-Data Poster.</p></p>
 </code></pre>
 </div>
 </div>
+<h3 id="initial-data-cleaning">Initial Data Cleaning</h3>
+<p><strong>Basis:</strong> Explanation for each step is included in the
+code below and mostly entails adding row numbers then combining all 3
+data frames for new, top, and hot posts together.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>836</span><span class='op'>)</span>
 
 <span class='co'>#First I add rownames from 1 to 844 to the hot guns data frame</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>hot_guns_urls_df</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>844</span>, <span class='fl'>1</span><span class='op'>)</span>
+<span class='fu'><a href='https://tibble.tidyverse.org/reference/rownames.html'>rownames</a></span><span class='op'>(</span><span class='va'>hot_guns_urls_df</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>844</span>, <span class='fl'>1</span><span class='op'>)</span>
 
 <span class='co'>#Next I add rownames from 1 to 980 to the new guns data frame</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>new_guns_urls_df</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>980</span>, <span class='fl'>1</span><span class='op'>)</span>
+<span class='fu'><a href='https://tibble.tidyverse.org/reference/rownames.html'>rownames</a></span><span class='op'>(</span><span class='va'>new_guns_urls_df</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>980</span>, <span class='fl'>1</span><span class='op'>)</span>
 
 <span class='co'>#Next I add the two row named data framed together by row.</span>
 
@@ -1545,7 +1604,7 @@ Text-as-Data Poster.</p></p>
 
 <span class='co'>#After this I add rownames from 1 to 996 to the top guns data frame</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>top_guns_urls_df</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>996</span>, <span class='fl'>1</span><span class='op'>)</span>
+<span class='fu'><a href='https://tibble.tidyverse.org/reference/rownames.html'>rownames</a></span><span class='op'>(</span><span class='va'>top_guns_urls_df</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>996</span>, <span class='fl'>1</span><span class='op'>)</span>
 
 <span class='co'># Finally I bind together the new and hot guns combined data frame with the </span>
 <span class='co'># top guns data frame by row</span>
@@ -1554,11 +1613,12 @@ Text-as-Data Poster.</p></p>
 </code></pre>
 </div>
 </div>
-<p>Since all of the posts come from the same sub Reddit I have to ensure
-that all posts are unique as to avoid bias towards any particular set of
-words. This is because top posts, hot posts, and recent posts could all
-include the same post if it were to qualify for any of the categories by
-the reddit algorithm.</p>
+<h4 id="data-cleaning-continued">Data Cleaning Continued</h4>
+<p><strong>Basis:</strong> Since all of the posts come from the same
+sub-Reddit I have to ensure that all posts are unique as to avoid bias
+towards any particular set of words. This is because top posts, hot
+posts, and recent posts could all include the same post if it were to
+qualify for any of the categories by the reddit algorithm.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>836</span><span class='op'>)</span>
@@ -1584,8 +1644,10 @@ the reddit algorithm.</p>
 </code></pre>
 </div>
 </div>
-<p>Next I must convert the character vector of dates into an actual date
-object using the as.Date() function.</p>
+<h4 id="converting-charater-dates-to-dates-utc">Converting Charater
+Dates to Dates UTC</h4>
+<p><strong>Basis:</strong> Next I must convert the character vector of
+dates into an actual date object using the as.Date() function.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>836</span><span class='op'>)</span>
@@ -1597,19 +1659,23 @@ object using the as.Date() function.</p>
 </code></pre>
 </div>
 </div>
+<h3 id="initial-topic-modeling">Initial Topic Modeling</h3>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://www.structuraltopicmodel.com/'>stm</a></span><span class='op'>)</span>
+<pre class="sourceCode r"><code class="sourceCode r"><span class='co'>#first I load the stm package though I will not use it much here.</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://www.structuraltopicmodel.com/'>stm</a></span><span class='op'>)</span>
 </code></pre>
 </div>
 </div>
+<h4 id="creating-a-document-feature-matrix-test.">Creating a Document
+Feature Matrix Test.</h4>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>836</span><span class='op'>)</span>
 
-<span class='va'>myDfm</span> <span class='op'>&lt;-</span> <span class='fu'>dfm</span><span class='op'>(</span><span class='va'>whole_data_frame_unique</span><span class='op'>$</span><span class='va'>all_text</span>,
+<span class='va'>myDfm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://quanteda.io/reference/dfm.html'>dfm</a></span><span class='op'>(</span><span class='va'>whole_data_frame_unique</span><span class='op'>$</span><span class='va'>all_text</span>,
   tolower<span class='op'>=</span><span class='cn'>TRUE</span>,
-  remove <span class='op'>=</span> <span class='fu'>stopwords</span><span class='op'>(</span><span class='st'>'en'</span><span class='op'>)</span>, 
+  remove <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/tm/man/stopwords.html'>stopwords</a></span><span class='op'>(</span><span class='st'>'en'</span><span class='op'>)</span>, 
   remove_punct <span class='op'>=</span> <span class='cn'>TRUE</span>
   <span class='op'>)</span>
 
@@ -1618,9 +1684,14 @@ object using the as.Date() function.</p>
 </div>
 <pre><code>[1] 2711 9365</code></pre>
 </div>
+<h2 id="topic-modeling-for-the-project">Topic Modeling for the
+Project</h2>
+<p><strong>Basis:</strong> In this project I primarily create my topic
+modeling using tm() and topicmodels() which I begin in this section.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>topicmodels</span><span class='op'>)</span>
+<pre class="sourceCode r"><code class="sourceCode r"><span class='co'>#First I load the topicmodels package </span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>topicmodels</span><span class='op'>)</span>
 </code></pre>
 </div>
 </div>
@@ -1628,43 +1699,67 @@ object using the as.Date() function.</p>
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>836</span><span class='op'>)</span>
 
+<span class='co'># First I load </span>
 
-<span class='co'># load stopwords</span>
-<span class='va'>english_stopwords</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readLines.html'>readLines</a></span><span class='op'>(</span><span class='st'>"https://slcladal.github.io/resources/stopwords_en.txt"</span>, encoding <span class='op'>=</span> <span class='st'>"UTF-8"</span><span class='op'>)</span>
+<span class='co'># loading stopwords I found via an internet resource that appeared comprehensive</span>
 
-<span class='co'># create corpus object</span>
+<span class='va'>english_stopwords</span> <span class='op'>&lt;-</span> 
+  <span class='fu'><a href='https://rdrr.io/r/base/readLines.html'>readLines</a></span><span class='op'>(</span><span class='st'>"https://slcladal.github.io/resources/stopwords_en.txt"</span>, 
+            encoding <span class='op'>=</span> <span class='st'>"UTF-8"</span><span class='op'>)</span>
+
+<span class='co'># create a data frame with my dataframe and date metadata</span>
+
 <span class='va'>textdata</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>doc_id<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/row.names.html'>row.names</a></span><span class='op'>(</span><span class='va'>whole_data_frame_unique</span><span class='op'>)</span>,
-                       text<span class='op'>=</span><span class='va'>whole_data_frame_unique</span><span class='op'>$</span><span class='va'>all_text</span>, date<span class='op'>=</span><span class='va'>whole_data_frame_unique</span><span class='op'>$</span><span class='va'>date_utc</span><span class='op'>)</span>
+                       text<span class='op'>=</span><span class='va'>whole_data_frame_unique</span><span class='op'>$</span><span class='va'>all_text</span>, 
+                       date<span class='op'>=</span><span class='va'>whole_data_frame_unique</span><span class='op'>$</span><span class='va'>date_utc</span><span class='op'>)</span>
 
-<span class='va'>corpus</span> <span class='op'>&lt;-</span> <span class='fu'>VCorpus</span><span class='op'>(</span><span class='fu'>DataframeSource</span><span class='op'>(</span><span class='va'>textdata</span><span class='op'>)</span><span class='op'>)</span>
+<span class='co'># create a corpus using that dataframe</span>
+
+<span class='va'>corpus</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/tm/man/VCorpus.html'>VCorpus</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/tm/man/DataframeSource.html'>DataframeSource</a></span><span class='op'>(</span><span class='va'>textdata</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># Preprocessing chain</span>
 
-<span class='va'>processedCorpus_guns</span> <span class='op'>&lt;-</span> <span class='fu'>tm_map</span><span class='op'>(</span><span class='va'>corpus</span>, <span class='fu'>content_transformer</span><span class='op'>(</span><span class='va'>tolower</span><span class='op'>)</span><span class='op'>)</span>
+<span class='co'># First I transform my corpus to lowercase.</span>
 
-<span class='va'>processedCorpus_guns</span> <span class='op'>&lt;-</span> <span class='fu'>tm_map</span><span class='op'>(</span><span class='va'>processedCorpus_guns</span>, <span class='va'>removeWords</span>, <span class='va'>english_stopwords</span><span class='op'>)</span>
+<span class='va'>processedCorpus_guns</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/tm/man/tm_map.html'>tm_map</a></span><span class='op'>(</span><span class='va'>corpus</span>, <span class='fu'><a href='https://rdrr.io/pkg/tm/man/content_transformer.html'>content_transformer</a></span><span class='op'>(</span><span class='va'>tolower</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='va'>processedCorpus_guns</span> <span class='op'>&lt;-</span> <span class='fu'>tm_map</span><span class='op'>(</span><span class='va'>processedCorpus_guns</span>, <span class='va'>removePunctuation</span><span class='op'>)</span>
+<span class='co'># Next I remove the stopwords that I loaded above.</span>
+
+<span class='va'>processedCorpus_guns</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/tm/man/tm_map.html'>tm_map</a></span><span class='op'>(</span><span class='va'>processedCorpus_guns</span>, <span class='va'>removeWords</span>, 
+                               <span class='va'>english_stopwords</span><span class='op'>)</span>
+
+<span class='co'># Finally I remove punctuation.</span>
+
+<span class='va'>processedCorpus_guns</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/tm/man/tm_map.html'>tm_map</a></span><span class='op'>(</span><span class='va'>processedCorpus_guns</span>, <span class='va'>removePunctuation</span><span class='op'>)</span>
+
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>836</span><span class='op'>)</span>
 </code></pre>
 </div>
 </div>
+<h3 id="tokenization-and-continued-analysis">Tokenization and Continued
+Analysis</h3>
+<p><strong>Basis:</strong> First I load the package tokenizers.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://lincolnmullen.com/software/tokenizers/'>tokenizers</a></span><span class='op'>)</span>
 </code></pre>
 </div>
 </div>
+<h4 id="n-grams-and-the-removal-of-common-terms">N-Grams and the Removal
+of Common Terms</h4>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>836</span><span class='op'>)</span>
 
+<span class='va'>minimumFrequency</span> <span class='op'>&lt;-</span> <span class='fl'>5</span>
 <span class='va'>NLP_tokenizer</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='op'>{</span>
-  <span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>lapply</a></span><span class='op'>(</span><span class='fu'>ngrams</span><span class='op'>(</span><span class='fu'>words</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span><span class='op'>)</span>, <span class='va'>paste</span>, collapse <span class='op'>=</span> <span class='st'>"_"</span><span class='op'>)</span>, use.names <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+  <span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>lapply</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/NLP/man/ngrams.html'>ngrams</a></span><span class='op'>(</span><span class='fu'><a href='https://stringr.tidyverse.org/reference/stringr-data.html'>words</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span><span class='op'>)</span>, <span class='va'>paste</span>, collapse <span class='op'>=</span> <span class='st'>"_"</span><span class='op'>)</span>, use.names <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 <span class='op'>}</span>
 
-<span class='va'>DTM</span> <span class='op'>&lt;-</span> <span class='fu'>DocumentTermMatrix</span><span class='op'>(</span>
+<span class='va'>DTM</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/tm/man/matrix.html'>DocumentTermMatrix</a></span><span class='op'>(</span>
   <span class='va'>processedCorpus_guns</span>, 
-  control <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>tokenize <span class='op'>=</span> <span class='va'>NLP_tokenizer</span><span class='op'>)</span><span class='op'>)</span>
+  control <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>tokenize <span class='op'>=</span> <span class='va'>NLP_tokenizer</span> ,
+  bounds <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>global <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>minimumFrequency</span>, <span class='cn'>Inf</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='va'>removeCommonTerms</span> <span class='op'>&lt;-</span> <span class='kw'>function</span> <span class='op'>(</span><span class='va'>x</span>, <span class='va'>pct</span><span class='op'>)</span> 
 <span class='op'>{</span>
@@ -1685,6 +1780,9 @@ object using the as.Date() function.</p>
 </code></pre>
 </div>
 </div>
+<h4 id="dtm-dimension">DTM Dimension</h4>
+<p><strong>Basis:</strong> looking at the dimensions of the DTM we see
+it is 2711 x 40081</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>836</span><span class='op'>)</span>
@@ -1692,7 +1790,7 @@ object using the as.Date() function.</p>
 <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span><span class='op'>(</span><span class='va'>DTM</span><span class='op'>)</span>
 </code></pre>
 </div>
-<pre><code>[1]  2711 40081</code></pre>
+<pre><code>[1] 2711 1516</code></pre>
 </div>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
@@ -1729,7 +1827,7 @@ calculate metrics:
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>836</span><span class='op'>)</span>
 
 
-<span class='fu'>FindTopicsNumber_plot</span><span class='op'>(</span><span class='va'>result</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/pkg/ldatuning/man/FindTopicsNumber_plot.html'>FindTopicsNumber_plot</a></span><span class='op'>(</span><span class='va'>result</span><span class='op'>)</span>
 </code></pre>
 </div>
 <p><img src="text-as-data-poster-work_files/figure-html5/unnamed-chunk-15-1.png" width="624" /></p>
@@ -1746,7 +1844,7 @@ calculate metrics:
 <span class='va'>topicModel</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/topicmodels/man/lda.html'>LDA</a></span><span class='op'>(</span><span class='va'>DTM</span>, <span class='va'>K</span>, method<span class='op'>=</span><span class='st'>"Gibbs"</span>, control<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>iter <span class='op'>=</span> <span class='fl'>500</span>, verbose <span class='op'>=</span> <span class='fl'>25</span><span class='op'>)</span><span class='op'>)</span>
 </code></pre>
 </div>
-<pre><code>K = 10; V = 40081; M = 2690
+<pre><code>K = 10; V = 1516; M = 2529
 Sampling 500 iterations!
 Iteration 25 ...
 Iteration 50 ...
@@ -1788,10 +1886,10 @@ Gibbs sampling completed!</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>836</span><span class='op'>)</span>
 
 
-<span class='fu'>nTerms</span><span class='op'>(</span><span class='va'>DTM</span><span class='op'>)</span>              <span class='co'># lengthOfVocab</span>
+<span class='fu'><a href='https://rdrr.io/pkg/tm/man/Docs.html'>nTerms</a></span><span class='op'>(</span><span class='va'>DTM</span><span class='op'>)</span>              <span class='co'># lengthOfVocab</span>
 </code></pre>
 </div>
-<pre><code>[1] 40081</code></pre>
+<pre><code>[1] 1516</code></pre>
 </div>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
@@ -1818,10 +1916,10 @@ Gibbs sampling completed!</code></pre>
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>836</span><span class='op'>)</span>
 
-<span class='fu'>nDocs</span><span class='op'>(</span><span class='va'>DTM</span><span class='op'>)</span>               <span class='co'># size of collection</span>
+<span class='fu'><a href='https://rdrr.io/pkg/tm/man/Docs.html'>nDocs</a></span><span class='op'>(</span><span class='va'>DTM</span><span class='op'>)</span>               <span class='co'># size of collection</span>
 </code></pre>
 </div>
-<pre><code>[1] 2690</code></pre>
+<pre><code>[1] 2529</code></pre>
 </div>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
@@ -1832,7 +1930,7 @@ Gibbs sampling completed!</code></pre>
 <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span><span class='op'>(</span><span class='va'>theta</span><span class='op'>)</span> 
 </code></pre>
 </div>
-<pre><code>[1] 2690   10</code></pre>
+<pre><code>[1] 2529   10</code></pre>
 </div>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
@@ -2016,8 +2114,8 @@ Gibbs sampling completed!</code></pre>
 <span class='co'># extract the probabilites of each of the 40 terms</span>
 <span class='va'>probabilities</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sort.html'>sort</a></span><span class='op'>(</span><span class='va'>tmResult</span><span class='op'>$</span><span class='va'>terms</span><span class='op'>[</span><span class='va'>topicToViz</span>,<span class='op'>]</span>, decreasing<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>40</span><span class='op'>]</span>
 <span class='co'># visualize the terms as wordcloud</span>
-<span class='va'>mycolors</span> <span class='op'>&lt;-</span> <span class='fu'>brewer.pal</span><span class='op'>(</span><span class='fl'>8</span>, <span class='st'>"Dark2"</span><span class='op'>)</span>
-<span class='fu'>wordcloud</span><span class='op'>(</span><span class='va'>words</span>, <span class='va'>probabilities</span>, random.order <span class='op'>=</span> <span class='cn'>FALSE</span>, color <span class='op'>=</span> <span class='va'>mycolors</span><span class='op'>)</span>
+<span class='va'>mycolors</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/RColorBrewer/man/ColorBrewer.html'>brewer.pal</a></span><span class='op'>(</span><span class='fl'>8</span>, <span class='st'>"Dark2"</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/pkg/quanteda.textplots/man/wordcloud.html'>wordcloud</a></span><span class='op'>(</span><span class='va'>words</span>, <span class='va'>probabilities</span>, random.order <span class='op'>=</span> <span class='cn'>FALSE</span>, color <span class='op'>=</span> <span class='va'>mycolors</span><span class='op'>)</span>
 </code></pre>
 </div>
 <p><img src="text-as-data-poster-work_files/figure-html5/unnamed-chunk-25-1.png" width="624" /></p>
@@ -2034,8 +2132,8 @@ Gibbs sampling completed!</code></pre>
 <span class='co'># extract the probabilites of each of the 40 terms</span>
 <span class='va'>probabilities</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sort.html'>sort</a></span><span class='op'>(</span><span class='va'>tmResult</span><span class='op'>$</span><span class='va'>terms</span><span class='op'>[</span><span class='va'>topicToViz</span>,<span class='op'>]</span>, decreasing<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>40</span><span class='op'>]</span>
 <span class='co'># visualize the terms as wordcloud</span>
-<span class='va'>mycolors</span> <span class='op'>&lt;-</span> <span class='fu'>brewer.pal</span><span class='op'>(</span><span class='fl'>8</span>, <span class='st'>"Dark2"</span><span class='op'>)</span>
-<span class='fu'>wordcloud</span><span class='op'>(</span><span class='va'>words</span>, <span class='va'>probabilities</span>, random.order <span class='op'>=</span> <span class='cn'>FALSE</span>, color <span class='op'>=</span> <span class='va'>mycolors</span><span class='op'>)</span>
+<span class='va'>mycolors</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/RColorBrewer/man/ColorBrewer.html'>brewer.pal</a></span><span class='op'>(</span><span class='fl'>8</span>, <span class='st'>"Dark2"</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/pkg/quanteda.textplots/man/wordcloud.html'>wordcloud</a></span><span class='op'>(</span><span class='va'>words</span>, <span class='va'>probabilities</span>, random.order <span class='op'>=</span> <span class='cn'>FALSE</span>, color <span class='op'>=</span> <span class='va'>mycolors</span><span class='op'>)</span>
 </code></pre>
 </div>
 <p><img src="text-as-data-poster-work_files/figure-html5/unnamed-chunk-26-1.png" width="624" /></p>
@@ -2052,8 +2150,8 @@ Gibbs sampling completed!</code></pre>
 <span class='co'># extract the probabilites of each of the 40 terms</span>
 <span class='va'>probabilities</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sort.html'>sort</a></span><span class='op'>(</span><span class='va'>tmResult</span><span class='op'>$</span><span class='va'>terms</span><span class='op'>[</span><span class='va'>topicToViz</span>,<span class='op'>]</span>, decreasing<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>40</span><span class='op'>]</span>
 <span class='co'># visualize the terms as wordcloud</span>
-<span class='va'>mycolors</span> <span class='op'>&lt;-</span> <span class='fu'>brewer.pal</span><span class='op'>(</span><span class='fl'>8</span>, <span class='st'>"Dark2"</span><span class='op'>)</span>
-<span class='fu'>wordcloud</span><span class='op'>(</span><span class='va'>words</span>, <span class='va'>probabilities</span>, random.order <span class='op'>=</span> <span class='cn'>FALSE</span>, color <span class='op'>=</span> <span class='va'>mycolors</span><span class='op'>)</span>
+<span class='va'>mycolors</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/RColorBrewer/man/ColorBrewer.html'>brewer.pal</a></span><span class='op'>(</span><span class='fl'>8</span>, <span class='st'>"Dark2"</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/pkg/quanteda.textplots/man/wordcloud.html'>wordcloud</a></span><span class='op'>(</span><span class='va'>words</span>, <span class='va'>probabilities</span>, random.order <span class='op'>=</span> <span class='cn'>FALSE</span>, color <span class='op'>=</span> <span class='va'>mycolors</span><span class='op'>)</span>
 </code></pre>
 </div>
 <p><img src="text-as-data-poster-work_files/figure-html5/unnamed-chunk-27-1.png" width="624" /></p>
@@ -2070,8 +2168,8 @@ Gibbs sampling completed!</code></pre>
 <span class='co'># extract the probabilites of each of the 40 terms</span>
 <span class='va'>probabilities</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sort.html'>sort</a></span><span class='op'>(</span><span class='va'>tmResult</span><span class='op'>$</span><span class='va'>terms</span><span class='op'>[</span><span class='va'>topicToViz</span>,<span class='op'>]</span>, decreasing<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>40</span><span class='op'>]</span>
 <span class='co'># visualize the terms as wordcloud</span>
-<span class='va'>mycolors</span> <span class='op'>&lt;-</span> <span class='fu'>brewer.pal</span><span class='op'>(</span><span class='fl'>8</span>, <span class='st'>"Dark2"</span><span class='op'>)</span>
-<span class='fu'>wordcloud</span><span class='op'>(</span><span class='va'>words</span>, <span class='va'>probabilities</span>, random.order <span class='op'>=</span> <span class='cn'>TRUE</span>, color <span class='op'>=</span> <span class='va'>mycolors</span><span class='op'>)</span>
+<span class='va'>mycolors</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/RColorBrewer/man/ColorBrewer.html'>brewer.pal</a></span><span class='op'>(</span><span class='fl'>8</span>, <span class='st'>"Dark2"</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/pkg/quanteda.textplots/man/wordcloud.html'>wordcloud</a></span><span class='op'>(</span><span class='va'>words</span>, <span class='va'>probabilities</span>, random.order <span class='op'>=</span> <span class='cn'>TRUE</span>, color <span class='op'>=</span> <span class='va'>mycolors</span><span class='op'>)</span>
 </code></pre>
 </div>
 <p><img src="text-as-data-poster-work_files/figure-html5/unnamed-chunk-28-1.png" width="624" /></p>
@@ -2084,7 +2182,7 @@ Gibbs sampling completed!</code></pre>
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>836</span><span class='op'>)</span>
 
 <span class='co'># What are the most probable topics in the entire collection?</span>
-<span class='va'>topicProportions</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/colSums.html'>colSums</a></span><span class='op'>(</span><span class='va'>theta</span><span class='op'>)</span> <span class='op'>/</span> <span class='fu'>nDocs</span><span class='op'>(</span><span class='va'>DTM</span><span class='op'>)</span> 
+<span class='va'>topicProportions</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/colSums.html'>colSums</a></span><span class='op'>(</span><span class='va'>theta</span><span class='op'>)</span> <span class='op'>/</span> <span class='fu'><a href='https://rdrr.io/pkg/tm/man/Docs.html'>nDocs</a></span><span class='op'>(</span><span class='va'>DTM</span><span class='op'>)</span> 
 <span class='co'># mean probablities over all paragraphs</span>
 
 <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>topicProportions</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='va'>topicNames</span>     
@@ -2102,22 +2200,22 @@ Gibbs sampling completed!</code></pre>
 <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Round.html'>round</a></span><span class='op'>(</span><span class='va'>soP</span>, <span class='fl'>5</span><span class='op'>)</span>, <span class='st'>":"</span>, <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>soP</span><span class='op'>)</span><span class='op'>)</span>
 </code></pre>
 </div>
-<pre><code> [1] &quot;0.10166 : shooting rifle range ammo guns&quot;   
- [2] &quot;0.10143 : barrel question stock build parts&quot;
- [3] &quot;0.10091 : gun guns buy defense shotgun&quot;     
- [4] &quot;0.10076 : back round slide rounds put&quot;      
- [5] &quot;0.10074 : sights holster sig left 1911&quot;     
- [6] &quot;0.10058 : gun today mag firearm feel&quot;       
- [7] &quot;0.10038 : rifle range shot day shoot&quot;       
- [8] &quot;0.09926 : glock amp love trigger grip&quot;      
- [9] &quot;0.09815 : ruger found scam site guys&quot;       
-[10] &quot;0.09612 : pistol state license don permit&quot;  </code></pre>
+<pre><code> [1] &quot;0.10071 : gun today mag firearm feel&quot;      
+ [2] &quot;0.1004 : ruger found scam site guys&quot;       
+ [3] &quot;0.1004 : barrel question stock build parts&quot;
+ [4] &quot;0.10029 : pistol state license don permit&quot; 
+ [5] &quot;0.09992 : shooting rifle range ammo guns&quot;  
+ [6] &quot;0.09988 : back round slide rounds put&quot;     
+ [7] &quot;0.09986 : gun guns buy defense shotgun&quot;    
+ [8] &quot;0.09984 : sights holster sig left 1911&quot;    
+ [9] &quot;0.0994 : glock amp love trigger grip&quot;      
+[10] &quot;0.0993 : rifle range shot day shoot&quot;       </code></pre>
 </div>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='va'>countsOfPrimaryTopics</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='va'>K</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>countsOfPrimaryTopics</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='va'>topicNames</span>
-<span class='kw'>for</span> <span class='op'>(</span><span class='va'>i</span> <span class='kw'>in</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'>nDocs</span><span class='op'>(</span><span class='va'>DTM</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='kw'>for</span> <span class='op'>(</span><span class='va'>i</span> <span class='kw'>in</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/pkg/tm/man/Docs.html'>nDocs</a></span><span class='op'>(</span><span class='va'>DTM</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
   <span class='va'>topicsPerDoc</span> <span class='op'>&lt;-</span> <span class='va'>theta</span><span class='op'>[</span><span class='va'>i</span>, <span class='op'>]</span> <span class='co'># select topic distribution for document i</span>
   <span class='co'># get first element position from ordered list</span>
   <span class='va'>primaryTopic</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/order.html'>order</a></span><span class='op'>(</span><span class='va'>topicsPerDoc</span>, decreasing <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span> 
@@ -2127,15 +2225,15 @@ Gibbs sampling completed!</code></pre>
 </code></pre>
 </div>
 <pre><code>       rifle range shot day shoot barrel question stock build parts 
-                              429                               416 
+                              389                               373 
      sights holster sig left 1911        ruger found scam site guys 
-                              333                               238 
-      glock amp love trigger grip      gun guns buy defense shotgun 
-                              238                               236 
-   shooting rifle range ammo guns       back round slide rounds put 
-                              225                               206 
-       gun today mag firearm feel   pistol state license don permit 
-                              203                               166 </code></pre>
+                              349                               264 
+     gun guns buy defense shotgun       glock amp love trigger grip 
+                              238                               235 
+  pistol state license don permit       back round slide rounds put 
+                              221                               165 
+       gun today mag firearm feel    shooting rifle range ammo guns 
+                              158                               137 </code></pre>
 </div>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
@@ -2146,23 +2244,23 @@ Gibbs sampling completed!</code></pre>
 <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste</a></span><span class='op'>(</span><span class='va'>so</span>, <span class='st'>":"</span>, <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>so</span><span class='op'>)</span><span class='op'>)</span>
 </code></pre>
 </div>
-<pre><code> [1] &quot;429 : rifle range shot day shoot&quot;       
- [2] &quot;416 : barrel question stock build parts&quot;
- [3] &quot;333 : sights holster sig left 1911&quot;     
- [4] &quot;238 : ruger found scam site guys&quot;       
- [5] &quot;238 : glock amp love trigger grip&quot;      
- [6] &quot;236 : gun guns buy defense shotgun&quot;     
- [7] &quot;225 : shooting rifle range ammo guns&quot;   
- [8] &quot;206 : back round slide rounds put&quot;      
- [9] &quot;203 : gun today mag firearm feel&quot;       
-[10] &quot;166 : pistol state license don permit&quot;  </code></pre>
+<pre><code> [1] &quot;389 : rifle range shot day shoot&quot;       
+ [2] &quot;373 : barrel question stock build parts&quot;
+ [3] &quot;349 : sights holster sig left 1911&quot;     
+ [4] &quot;264 : ruger found scam site guys&quot;       
+ [5] &quot;238 : gun guns buy defense shotgun&quot;     
+ [6] &quot;235 : glock amp love trigger grip&quot;      
+ [7] &quot;221 : pistol state license don permit&quot;  
+ [8] &quot;165 : back round slide rounds put&quot;      
+ [9] &quot;158 : gun today mag firearm feel&quot;       
+[10] &quot;137 : shooting rifle range ammo guns&quot;   </code></pre>
 </div>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>291</span><span class='op'>)</span>
 <span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>10</span>
 <span class='va'>qual_col_pals</span> <span class='op'>=</span> <span class='va'>brewer.pal.info</span><span class='op'>[</span><span class='va'>brewer.pal.info</span><span class='op'>$</span><span class='va'>category</span> <span class='op'>==</span> <span class='st'>'qual'</span>,<span class='op'>]</span>
-<span class='va'>col_vector</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/mapply.html'>mapply</a></span><span class='op'>(</span><span class='va'>brewer.pal</span>, <span class='va'>qual_col_pals</span><span class='op'>$</span><span class='va'>maxcolors</span>, <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>qual_col_pals</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>col_vector</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/mapply.html'>mapply</a></span><span class='op'>(</span><span class='va'>brewer.pal</span>, <span class='va'>qual_col_pals</span><span class='op'>$</span><span class='va'>maxcolors</span>, <span class='fu'><a href='https://tibble.tidyverse.org/reference/rownames.html'>rownames</a></span><span class='op'>(</span><span class='va'>qual_col_pals</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/graphics/pie.html'>pie</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='va'>n</span><span class='op'>)</span>, col<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='va'>col_vector</span>, <span class='va'>n</span><span class='op'>)</span><span class='op'>)</span>
 </code></pre>
 </div>
@@ -2175,7 +2273,7 @@ Gibbs sampling completed!</code></pre>
 <span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>4</span>
 <span class='va'>qual_col_pals</span> <span class='op'>=</span> <span class='va'>brewer.pal.info</span><span class='op'>[</span><span class='va'>brewer.pal.info</span><span class='op'>$</span><span class='va'>category</span> <span class='op'>==</span> <span class='st'>'qual'</span>,<span class='op'>]</span>
 
-<span class='va'>col_vector_2</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/mapply.html'>mapply</a></span><span class='op'>(</span><span class='va'>brewer.pal</span>, <span class='va'>qual_col_pals</span><span class='op'>$</span><span class='va'>maxcolors</span>, <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>qual_col_pals</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>col_vector_2</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/mapply.html'>mapply</a></span><span class='op'>(</span><span class='va'>brewer.pal</span>, <span class='va'>qual_col_pals</span><span class='op'>$</span><span class='va'>maxcolors</span>, <span class='fu'><a href='https://tibble.tidyverse.org/reference/rownames.html'>rownames</a></span><span class='op'>(</span><span class='va'>qual_col_pals</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='fu'><a href='https://rdrr.io/r/graphics/pie.html'>pie</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='va'>n</span><span class='op'>)</span>, col<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='va'>col_vector_2</span>, <span class='va'>n</span><span class='op'>)</span><span class='op'>)</span>
 </code></pre>
@@ -2193,17 +2291,17 @@ Gibbs sampling completed!</code></pre>
 
 <span class='va'>df_for_visualization</span><span class='op'>$</span><span class='va'>group_numbers</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>10</span>, <span class='fl'>1</span><span class='op'>)</span>
 
-<span class='fu'>ggplot</span><span class='op'>(</span><span class='va'>df_for_visualization</span>, <span class='fu'>aes</span><span class='op'>(</span>x<span class='op'>=</span><span class='va'>group_names</span>, y<span class='op'>=</span><span class='va'>countsOfPrimaryTopics</span>,  
+<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>df_for_visualization</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='va'>group_names</span>, y<span class='op'>=</span><span class='va'>countsOfPrimaryTopics</span>,  
                                  fill<span class='op'>=</span><span class='va'>group_names</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> 
-  <span class='fu'>geom_bar</span><span class='op'>(</span>stat <span class='op'>=</span> <span class='st'>"identity"</span> <span class='op'>)</span><span class='op'>+</span>  <span class='fu'>theme_classic</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span>
-   <span class='fu'>theme</span><span class='op'>(</span>axis.text.x <span class='op'>=</span> <span class='fu'>element_text</span><span class='op'>(</span>angle <span class='op'>=</span> <span class='fl'>90</span>, hjust <span class='op'>=</span> <span class='fl'>1</span>, size<span class='op'>=</span><span class='fl'>3</span><span class='op'>)</span>,legend.key.size <span class='op'>=</span> <span class='fu'>unit</span><span class='op'>(</span><span class='fl'>0.3</span>, <span class='st'>'cm'</span><span class='op'>)</span>, <span class='co'>#change legend key size</span>
-        legend.key.height <span class='op'>=</span> <span class='fu'>unit</span><span class='op'>(</span><span class='fl'>0.4</span>, <span class='st'>'cm'</span><span class='op'>)</span>, <span class='co'>#change legend key height</span>
-        legend.key.width <span class='op'>=</span> <span class='fu'>unit</span><span class='op'>(</span><span class='fl'>0.4</span>, <span class='st'>'cm'</span><span class='op'>)</span>,<span class='op'>)</span> <span class='op'>+</span>  
-<span class='fu'>scale_fill_manual</span><span class='op'>(</span>values <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='va'>col_vector_2</span>, <span class='fl'>10</span><span class='op'>)</span><span class='op'>)</span><span class='op'>+</span> 
-  <span class='fu'>xlab</span><span class='op'>(</span><span class='st'>"Topic Groups"</span><span class='op'>)</span> <span class='op'>+</span>
-  <span class='fu'>ylab</span><span class='op'>(</span><span class='st'>"Number of Posts in Group"</span><span class='op'>)</span> <span class='op'>+</span> 
-  <span class='fu'>guides</span><span class='op'>(</span>fill<span class='op'>=</span><span class='fu'>guide_legend</span><span class='op'>(</span>title<span class='op'>=</span><span class='st'>"Topic Groups"</span><span class='op'>)</span><span class='op'>)</span>  <span class='op'>+</span>
-  <span class='fu'>coord_polar</span><span class='op'>(</span><span class='op'>)</span><span class='op'>+</span> <span class='fu'>theme_void</span><span class='op'>(</span><span class='op'>)</span>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_bar.html'>geom_bar</a></span><span class='op'>(</span>stat <span class='op'>=</span> <span class='st'>"identity"</span> <span class='op'>)</span><span class='op'>+</span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_classic</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span>
+   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/theme.html'>theme</a></span><span class='op'>(</span>axis.text.x <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_text</a></span><span class='op'>(</span>angle <span class='op'>=</span> <span class='fl'>90</span>, hjust <span class='op'>=</span> <span class='fl'>1</span>, size<span class='op'>=</span><span class='fl'>3</span><span class='op'>)</span>,legend.key.size <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/grid/unit.html'>unit</a></span><span class='op'>(</span><span class='fl'>0.3</span>, <span class='st'>'cm'</span><span class='op'>)</span>, <span class='co'>#change legend key size</span>
+        legend.key.height <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/grid/unit.html'>unit</a></span><span class='op'>(</span><span class='fl'>0.4</span>, <span class='st'>'cm'</span><span class='op'>)</span>, <span class='co'>#change legend key height</span>
+        legend.key.width <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/grid/unit.html'>unit</a></span><span class='op'>(</span><span class='fl'>0.4</span>, <span class='st'>'cm'</span><span class='op'>)</span>,<span class='op'>)</span> <span class='op'>+</span>  
+<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/scale_manual.html'>scale_fill_manual</a></span><span class='op'>(</span>values <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='va'>col_vector_2</span>, <span class='fl'>10</span><span class='op'>)</span><span class='op'>)</span><span class='op'>+</span> 
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>xlab</a></span><span class='op'>(</span><span class='st'>"Topic Groups"</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>ylab</a></span><span class='op'>(</span><span class='st'>"Number of Posts in Group"</span><span class='op'>)</span> <span class='op'>+</span> 
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/guides.html'>guides</a></span><span class='op'>(</span>fill<span class='op'>=</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/guide_legend.html'>guide_legend</a></span><span class='op'>(</span>title<span class='op'>=</span><span class='st'>"Topic Groups"</span><span class='op'>)</span><span class='op'>)</span>  <span class='op'>+</span>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/coord_polar.html'>coord_polar</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_void</a></span><span class='op'>(</span><span class='op'>)</span>
 </code></pre>
 </div>
 <p><img src="text-as-data-poster-work_files/figure-html5/unnamed-chunk-35-1.png" width="624" /></p>
@@ -2230,16 +2328,16 @@ Gibbs sampling completed!</code></pre>
 <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>df_for_visualization_relevant</span><span class='op'>$</span><span class='va'>frequency</span><span class='op'>)</span>
 </code></pre>
 </div>
-<pre><code>[1] 1225</code></pre>
+<pre><code>[1] 1139</code></pre>
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>ggplot</span><span class='op'>(</span><span class='va'>df_for_visualization_relevant</span>, <span class='fu'>aes</span><span class='op'>(</span>x<span class='op'>=</span><span class='va'>group_names</span>, y<span class='op'>=</span><span class='va'>proportion</span>,  fill<span class='op'>=</span><span class='va'>group_names</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> 
-  <span class='fu'>geom_bar</span><span class='op'>(</span>stat <span class='op'>=</span> <span class='st'>"identity"</span> <span class='op'>)</span> <span class='op'>+</span>    
-  <span class='fu'>scale_fill_manual</span><span class='op'>(</span>values <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='va'>col_vector_2</span>, <span class='fl'>4</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> 
-   <span class='fu'>theme</span><span class='op'>(</span>axis.text.x <span class='op'>=</span> <span class='fu'>element_text</span><span class='op'>(</span>size <span class='op'>=</span> <span class='fl'>6</span><span class='op'>)</span><span class='op'>)</span><span class='op'>+</span>
-  <span class='fu'>scale_x_discrete</span><span class='op'>(</span>guide <span class='op'>=</span> <span class='fu'>guide_axis</span><span class='op'>(</span>n.dodge <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'>xlab</span><span class='op'>(</span><span class='st'>"Topic Groups"</span><span class='op'>)</span> <span class='op'>+</span>
-  <span class='fu'>ylab</span><span class='op'>(</span><span class='st'>"Number of Posts in Group"</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'>guides</span><span class='op'>(</span>fill<span class='op'>=</span><span class='fu'>guide_legend</span><span class='op'>(</span>title<span class='op'>=</span><span class='st'>"Topic Groups"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>+</span>
-  <span class='fu'>coord_polar</span><span class='op'>(</span><span class='op'>)</span><span class='op'>+</span>
-  <span class='fu'>theme_void</span><span class='op'>(</span><span class='op'>)</span>
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>df_for_visualization_relevant</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='va'>group_names</span>, y<span class='op'>=</span><span class='va'>proportion</span>,  fill<span class='op'>=</span><span class='va'>group_names</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> 
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_bar.html'>geom_bar</a></span><span class='op'>(</span>stat <span class='op'>=</span> <span class='st'>"identity"</span> <span class='op'>)</span> <span class='op'>+</span>    
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/scale_manual.html'>scale_fill_manual</a></span><span class='op'>(</span>values <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='va'>col_vector_2</span>, <span class='fl'>4</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> 
+   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/theme.html'>theme</a></span><span class='op'>(</span>axis.text.x <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_text</a></span><span class='op'>(</span>size <span class='op'>=</span> <span class='fl'>6</span><span class='op'>)</span><span class='op'>)</span><span class='op'>+</span>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/scale_discrete.html'>scale_x_discrete</a></span><span class='op'>(</span>guide <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/guide_axis.html'>guide_axis</a></span><span class='op'>(</span>n.dodge <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>xlab</a></span><span class='op'>(</span><span class='st'>"Topic Groups"</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>ylab</a></span><span class='op'>(</span><span class='st'>"Number of Posts in Group"</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/guides.html'>guides</a></span><span class='op'>(</span>fill<span class='op'>=</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/guide_legend.html'>guide_legend</a></span><span class='op'>(</span>title<span class='op'>=</span><span class='st'>"Topic Groups"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>+</span>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/coord_polar.html'>coord_polar</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>+</span>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_void</a></span><span class='op'>(</span><span class='op'>)</span>
 </code></pre>
 </div>
 <img src="text-as-data-poster-work_files/figure-html5/unnamed-chunk-36-1.png" width="624" />
@@ -2248,43 +2346,43 @@ Gibbs sampling completed!</code></pre>
 </code></pre>
 </div>
 <pre><code>  df_for_visualization[c(1, 3, 4, 10), ]          group_names
-1                                    429      Concealed Carry
-2                                    333              Hunting
-3                                    238 Range and Recreation
-4                                    225         Home Defense
+1                                    389      Concealed Carry
+2                                    349              Hunting
+3                                    264 Range and Recreation
+4                                    137         Home Defense
   group_numbers frequency proportion
-1             1       429  0.3502041
-2             3       333  0.2718367
-3             4       238  0.1942857
-4            10       225  0.1836735</code></pre>
+1             1       389  0.3415277
+2             3       349  0.3064091
+3             4       264  0.2317823
+4            10       137  0.1202809</code></pre>
 </div>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/stats/terms.html'>terms</a></span><span class='op'>(</span><span class='va'>topicModel</span>, <span class='fl'>10</span><span class='op'>)</span>
 </code></pre>
 </div>
-<pre><code>      Topic 1  Topic 2     Topic 3   Topic 4    Topic 5   Topic 6   
- [1,] &quot;rifle&quot;  &quot;barrel&quot;    &quot;sights&quot;  &quot;found&quot;    &quot;amp&quot;     &quot;gun&quot;     
- [2,] &quot;range&quot;  &quot;question&quot;  &quot;holster&quot; &quot;ruger&quot;    &quot;glock&quot;   &quot;guns&quot;    
- [3,] &quot;shot&quot;   &quot;stock&quot;     &quot;sig&quot;     &quot;scam&quot;     &quot;love&quot;    &quot;buy&quot;     
- [4,] &quot;day&quot;    &quot;build&quot;     &quot;price&quot;   &quot;site&quot;     &quot;trigger&quot; &quot;defense&quot; 
- [5,] &quot;shoot&quot;  &quot;wondering&quot; &quot;1911&quot;    &quot;guys&quot;     &quot;great&quot;   &quot;ammo&quot;    
- [6,] &quot;find&quot;   &quot;parts&quot;     &quot;9mm&quot;     &quot;picked&quot;   &quot;grip&quot;    &quot;good&quot;    
- [7,] &quot;good&quot;   &quot;dot&quot;       &quot;left&quot;    &quot;find&quot;     &quot;model&quot;   &quot;home&quot;    
- [8,] &quot;9mm&quot;    &quot;lower&quot;     &quot;light&quot;   &quot;firearms&quot; &quot;people&quot;  &quot;shotgun&quot; 
- [9,] &quot;wanted&quot; &quot;fit&quot;       &quot;good&quot;    &quot;shop&quot;     &quot;make&quot;    &quot;buying&quot;  
-[10,] &quot;bit&quot;    &quot;red_dot&quot;   &quot;carry&quot;   &quot;number&quot;   &quot;556&quot;     &quot;purchase&quot;
-      Topic 7   Topic 8    Topic 9   Topic 10  
- [1,] &quot;pistol&quot;  &quot;back&quot;     &quot;gun&quot;     &quot;shooting&quot;
- [2,] &quot;time&quot;    &quot;round&quot;    &quot;today&quot;   &quot;range&quot;   
- [3,] &quot;carry&quot;   &quot;slide&quot;    &quot;mag&quot;     &quot;rifle&quot;   
- [4,] &quot;state&quot;   &quot;bought&quot;   &quot;firearm&quot; &quot;ammo&quot;    
- [5,] &quot;don&quot;     &quot;rounds&quot;   &quot;safe&quot;    &quot;time&quot;    
- [6,] &quot;gun&quot;     &quot;put&quot;      &quot;feel&quot;    &quot;guns&quot;    
- [7,] &quot;license&quot; &quot;sight&quot;    &quot;case&quot;    &quot;years&quot;   
- [8,] &quot;handgun&quot; &quot;issue&quot;    &quot;full&quot;    &quot;steel&quot;   
- [9,] &quot;permit&quot;  &quot;magazine&quot; &quot;mags&quot;    &quot;hunting&quot; 
-[10,] &quot;years&quot;   &quot;post&quot;     &quot;don&quot;     &quot;ago&quot;     </code></pre>
+<pre><code>      Topic 1   Topic 2    Topic 3     Topic 4    Topic 5  
+ [1,] &quot;pistol&quot;  &quot;good&quot;     &quot;rifle&quot;     &quot;range&quot;    &quot;found&quot;  
+ [2,] &quot;carry&quot;   &quot;question&quot; &quot;ruger&quot;     &quot;ammo&quot;     &quot;red&quot;    
+ [3,] &quot;buy&quot;     &quot;find&quot;     &quot;pretty&quot;    &quot;time&quot;     &quot;sight&quot;  
+ [4,] &quot;people&quot;  &quot;guns&quot;     &quot;long&quot;      &quot;shooting&quot; &quot;sights&quot; 
+ [5,] &quot;state&quot;   &quot;day&quot;      &quot;bolt&quot;      &quot;shoot&quot;    &quot;build&quot;  
+ [6,] &quot;thing&quot;   &quot;9mm&quot;      &quot;hunting&quot;   &quot;today&quot;    &quot;site&quot;   
+ [7,] &quot;make&quot;    &quot;full&quot;     &quot;action&quot;    &quot;shot&quot;     &quot;dot&quot;    
+ [8,] &quot;time&quot;    &quot;worth&quot;    &quot;scope&quot;     &quot;bought&quot;   &quot;1911&quot;   
+ [9,] &quot;handgun&quot; &quot;holster&quot;  &quot;remington&quot; &quot;years&quot;    &quot;optic&quot;  
+[10,] &quot;license&quot; &quot;sig&quot;      &quot;idea&quot;      &quot;guys&quot;     &quot;red_dot&quot;
+      Topic 6      Topic 7     Topic 8     Topic 9    Topic 10      
+ [1,] &quot;gun&quot;        &quot;glock&quot;     &quot;barrel&quot;    &quot;back&quot;     &quot;gun&quot;         
+ [2,] &quot;safe&quot;       &quot;amp&quot;       &quot;bought&quot;    &quot;round&quot;    &quot;guns&quot;        
+ [3,] &quot;post&quot;       &quot;love&quot;      &quot;lower&quot;     &quot;rounds&quot;   &quot;home&quot;        
+ [4,] &quot;feel&quot;       &quot;trigger&quot;   &quot;recently&quot;  &quot;slide&quot;    &quot;defense&quot;     
+ [5,] &quot;dad&quot;        &quot;great&quot;     &quot;rifles&quot;    &quot;mag&quot;      &quot;firearm&quot;     
+ [6,] &quot;don&quot;        &quot;model&quot;     &quot;made&quot;      &quot;put&quot;      &quot;firearms&quot;    
+ [7,] &quot;picked&quot;     &quot;grip&quot;      &quot;steel&quot;     &quot;ar15&quot;     &quot;home_defense&quot;
+ [8,] &quot;ago&quot;        &quot;wondering&quot; &quot;stock&quot;     &quot;issue&quot;    &quot;purchase&quot;    
+ [9,] &quot;kit&quot;        &quot;make&quot;      &quot;wondering&quot; &quot;magazine&quot; &quot;check&quot;       
+[10,] &quot;experience&quot; &quot;work&quot;      &quot;carbine&quot;   &quot;issues&quot;   &quot;buying&quot;      </code></pre>
 </div>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
@@ -2299,27 +2397,27 @@ Gibbs sampling completed!</code></pre>
 
 <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>topic_proportion_per_decade</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>2</span><span class='op'>:</span><span class='op'>(</span><span class='va'>K</span><span class='op'>+</span><span class='fl'>1</span><span class='op'>)</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='va'>topicNames</span>
 <span class='co'># reshape data frame</span>
-<span class='va'>vizDataFrame</span> <span class='op'>&lt;-</span> <span class='fu'>melt</span><span class='op'>(</span><span class='va'>topic_proportion_per_decade</span>, id.vars <span class='op'>=</span> <span class='st'>"day"</span><span class='op'>)</span>
+<span class='va'>vizDataFrame</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/reshape2/man/melt.html'>melt</a></span><span class='op'>(</span><span class='va'>topic_proportion_per_decade</span>, id.vars <span class='op'>=</span> <span class='st'>"day"</span><span class='op'>)</span>
 <span class='co'># plot topic proportions per decade as bar plot</span>
-<span class='fu'>ggplot</span><span class='op'>(</span><span class='va'>vizDataFrame</span>, <span class='fu'>aes</span><span class='op'>(</span>x<span class='op'>=</span><span class='va'>day</span>, y<span class='op'>=</span><span class='va'>value</span>, fill<span class='op'>=</span><span class='va'>variable</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> 
-  <span class='fu'>geom_bar</span><span class='op'>(</span>stat <span class='op'>=</span> <span class='st'>"identity"</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'>ylab</span><span class='op'>(</span><span class='st'>"proportion"</span><span class='op'>)</span> <span class='op'>+</span> 
-  <span class='fu'>scale_fill_manual</span><span class='op'>(</span>values <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='va'>col_vector_2</span>, <span class='fl'>10</span><span class='op'>)</span>, name <span class='op'>=</span> <span class='st'>"day"</span><span class='op'>)</span> <span class='op'>+</span> 
-  <span class='fu'>theme</span><span class='op'>(</span>axis.text.x <span class='op'>=</span> <span class='fu'>element_text</span><span class='op'>(</span>angle <span class='op'>=</span> <span class='fl'>90</span>, hjust <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> 
-  <span class='fu'>theme_minimal</span><span class='op'>(</span><span class='op'>)</span>
+<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>vizDataFrame</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='va'>day</span>, y<span class='op'>=</span><span class='va'>value</span>, fill<span class='op'>=</span><span class='va'>variable</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> 
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_bar.html'>geom_bar</a></span><span class='op'>(</span>stat <span class='op'>=</span> <span class='st'>"identity"</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>ylab</a></span><span class='op'>(</span><span class='st'>"proportion"</span><span class='op'>)</span> <span class='op'>+</span> 
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/scale_manual.html'>scale_fill_manual</a></span><span class='op'>(</span>values <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='va'>col_vector_2</span>, <span class='fl'>10</span><span class='op'>)</span>, name <span class='op'>=</span> <span class='st'>"day"</span><span class='op'>)</span> <span class='op'>+</span> 
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/theme.html'>theme</a></span><span class='op'>(</span>axis.text.x <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_text</a></span><span class='op'>(</span>angle <span class='op'>=</span> <span class='fl'>90</span>, hjust <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> 
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_minimal</a></span><span class='op'>(</span><span class='op'>)</span>
 </code></pre>
 </div>
 <p><img src="text-as-data-poster-work_files/figure-html5/unnamed-chunk-38-1.png" width="624" /></p>
 </div>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>dat2</span> <span class='op'>&lt;-</span> <span class='va'>whole_data_frame_unique</span> <span class='op'>%&gt;%</span> 
-  <span class='fu'>group_by</span><span class='op'>(</span><span class='va'>date_utc</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
-  <span class='fu'>summarise</span><span class='op'>(</span>n <span class='op'>=</span> <span class='fu'>n</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
-  <span class='fu'>mutate</span><span class='op'>(</span>prop <span class='op'>=</span> <span class='va'>n</span><span class='op'>/</span><span class='fu'><a href='https://rdrr.io/r/stats/lag.html'>lag</a></span><span class='op'>(</span><span class='va'>n</span><span class='op'>)</span><span class='op'>)</span>
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>dat2</span> <span class='op'>&lt;-</span> <span class='va'>whole_data_frame_unique</span> <span class='op'><a href='https://stringr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> 
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>date_utc</span><span class='op'>)</span> <span class='op'><a href='https://stringr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> 
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarise</a></span><span class='op'>(</span>n <span class='op'>=</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/context.html'>n</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'><a href='https://stringr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> 
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>prop <span class='op'>=</span> <span class='va'>n</span><span class='op'>/</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/lead-lag.html'>lag</a></span><span class='op'>(</span><span class='va'>n</span><span class='op'>)</span><span class='op'>)</span>
 <span class='co'>#&gt; `summarise()` ungrouping output (override with `.groups` argument)</span>
 
-<span class='fu'>ggplot</span><span class='op'>(</span><span class='va'>dat2</span>, <span class='fu'>aes</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>date_utc</span>, y <span class='op'>=</span> <span class='va'>n</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
-  <span class='fu'>geom_col</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span><span class='fu'>theme_minimal</span><span class='op'>(</span><span class='op'>)</span>
+<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>dat2</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>date_utc</span>, y <span class='op'>=</span> <span class='va'>n</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_bar.html'>geom_col</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_minimal</a></span><span class='op'>(</span><span class='op'>)</span>
 </code></pre>
 </div>
 <p><img src="text-as-data-poster-work_files/figure-html5/unnamed-chunk-39-1.png" width="624" /></p>

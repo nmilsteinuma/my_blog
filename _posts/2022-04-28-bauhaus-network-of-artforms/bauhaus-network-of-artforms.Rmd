@@ -1,0 +1,94 @@
+---
+title: "Bauhaus Network of Artforms"
+description: |
+  A short description of the post.
+author:
+  - name: Noah Milstein
+    url: {}
+date: 2022-04-28
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+library(corrr)
+library(readxl)
+library(igraph)
+library(statnet)
+library(network)
+library(tidyverse)
+library(ggnetwork)
+library(GGally)
+library(ggplot2)
+library(ggraph)
+library(sna)
+library(intergraph)
+library(knitr)
+library(GGally)
+library(aRtsy)
+library(stringr)
+
+```
+
+```{r,echo=FALSE}
+
+Wars_in_latter_half_of_20th <- 
+  read_excel("~/Desktop/Spring 2022/Networks/Wars_in_latter_half_of_20th.xlsx")
+
+Wars_in_latter_half_of_20th$In <- 
+  str_trim(Wars_in_latter_half_of_20th$In, side = c("left"))
+
+Wars_in_latter_half_of_20th$Out <- 
+  str_trim(Wars_in_latter_half_of_20th$Out, side = c("left"))
+
+```
+
+```{r}
+Bauhaus <- read_excel("/Users/noahmilstein/Desktop/Spring 2022/Networks/bauhaus_and_its_derivations.xlsx")
+Bauhaus$In <- Bauhaus$Teachers
+Bauhaus$Out <- Bauhaus$Speciality
+Bauhaus<-Bauhaus[c(3,4)]
+Bauhaus
+```
+
+
+```{r, echo=FALSE}
+
+Bauhaus_edgelist <- as.matrix(Bauhaus)
+
+Bauhaus_network_edgelist <- graph.edgelist(Bauhaus_edgelist, directed=TRUE)
+
+Bauhaus_CDs.ig<-graph_from_data_frame(Bauhaus)
+
+Bauhaus_CDs_network <- asNetwork(Bauhaus_CDs.ig)
+
+```
+
+
+```{r}
+
+set.seed(777)
+
+#net %v% "phono" = ifelse(Bauhaus="", "vowel", "consonant")
+
+#net %v% "color" = ifelse(Bauhaus_CDs_network %v% "phono" == "vowel", "steelblue", "tomato")
+
+ggplot(Bauhaus_CDs_network, aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_edges(color = "grey25", alpha = 0.25, arrow = arrow(length = unit(2, "pt"), type = "closed"))+
+  geom_nodes(color = "blue", alpha = 0.3, size = 2) +
+  geom_nodetext(aes( label = vertex.names ), size=1)+
+    ggtitle("Networks of Creativity") +
+  theme_blank()
+
+```
+
+
+```{r}
+
+ggnet2(Bauhaus_CDs_network, col="mode", label = TRUE)
+
+```
+

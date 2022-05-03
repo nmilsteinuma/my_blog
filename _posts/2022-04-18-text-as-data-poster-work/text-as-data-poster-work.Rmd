@@ -11,7 +11,15 @@ output:
     self_contained: false
 ---
 
-```{r, echo=FALSE}
+## Overview
+
+**Explanation:** In this post I go through my final visualizations for my text-as-data poster. These Include my final steps of analysis that are consistent with what is seen on my submitted poster.
+
+### Loading Required Packages
+
+**Basis:** Firstly I load quite a few packages, both those I need for the final paper, and a number of packages that I used in coming up with my research design. I specifically us the tm package for topic modeling with LDA or latent Dirichlet allocation.
+
+```{r}
 library(rmarkdown)
 library(RedditExtractoR)
 library(jsonlite)
@@ -47,8 +55,12 @@ remotes::install_github("rlesur/klippy")
 
 ```
 
+### Loading and Scraping Data
+
+**Basis:** First I load my Rdata in using a custom function. Though I don't have the code running for api purposes the RedditExtractoR code I used is included. 
 
 ```{r}
+
 set.seed(836)
 # First I use a fucntion to load an RData file as R has no default 
 
@@ -60,6 +72,9 @@ loadRData <- function(fileName){
 
 # My first data frame comprises new posts as of march 26 2022 which are taken 
 # from the 15th-26th of march primarily. 
+
+# new_guns_urls <- find_thread_urls(subreddit="guns", sort_by="new")
+
 
 new_guns_urls <- loadRData("/Users/noahmilstein/Desktop/Spring 2022/Textasdata/text_as_data_work/New_reddit_posts_3_26.RData")
 
@@ -73,12 +88,16 @@ new_guns_urls_df<-new_guns_urls[,c("title", "date_utc", "comments", "text")]
 
 top_guns_urls <- loadRData("/Users/noahmilstein/Desktop/Spring 2022/Textasdata/text_as_data_work/top_guns_urls.RData")
 
+# top_guns_urls <- find_thread_urls(subreddit="guns", sort_by="top")
+
 top_guns_urls_df<-top_guns_urls[,c("title", "date_utc", "comments",  "text")]
 
 #hot_guns_urls <- find_thread_urls(subreddit="guns", sort_by="hot")
 # save(hot_guns_urls, file="hot_guns_urls.RData")
 
 # Next "hot" posts are loaded which are also primarily from march 2022
+
+# hot_guns_urls <- find_thread_urls(subreddit="guns", sort_by="got")
 
 hot_guns_urls<-
   loadRData("/Users/noahmilstein/Desktop/my_blog/_posts/2022-03-29-tad-post-4/hot_guns_urls.RData")
@@ -87,6 +106,10 @@ hot_guns_urls_df<-hot_guns_urls[,c("title", "date_utc", "comments", "text")]
 #hot_guns_urls_df
 
 ```
+
+### Initial Data Cleaning
+
+**Basis:** Explanation for each step is included in the code below and mostly entails adding row numbers then combining all 3 data frames for new, top, and hot posts together.
 
 ```{r}
 
@@ -115,7 +138,9 @@ whole_data_frame <- rbind(hg_and_ng, top_guns_urls_df)
 
 ```
 
-Since all of the posts come from the same sub Reddit I have to ensure that all posts are unique as to avoid bias towards any particular set of words. This is because top posts, hot posts, and recent posts could all include the same post if it were to qualify for any of the categories by the reddit algorithm.
+#### Data Cleaning Continued 
+
+**Basis:** Since all of the posts come from the same sub-Reddit I have to ensure that all posts are unique as to avoid bias towards any particular set of words. This is because top posts, hot posts, and recent posts could all include the same post if it were to qualify for any of the categories by the reddit algorithm.
 
 ```{r}
 
@@ -142,7 +167,9 @@ whole_data_frame_unique$"all_text" <- sapply(whole_data_frame_unique$"all_text",
 
 ```
 
-Next I must convert the character vector of dates into an actual date object using the as.Date() function.
+#### Converting Charater Dates to Dates UTC
+
+**Basis:** Next I must convert the character vector of dates into an actual date object using the as.Date() function.
 
 ```{r,cache = TRUE}
 
@@ -155,9 +182,14 @@ whole_data_frame_unique$date_utc <- as.Date(whole_data_frame_unique$date_utc)
 
 ```
 
+### Initial Topic Modeling
+
 ```{r}
+#first I load the stm package though I will not use it much here.
 library(stm)
 ```
+
+#### Creating a Document Feature Matrix Test.
 
 ```{r}
 
@@ -173,8 +205,12 @@ dim(myDfm)
 
 ```
 
-```{r}
+## Topic Modeling for the Project
 
+**Basis:** In this project I primarily create my topic modeling using tm() and topicmodels() which I begin in this section.
+
+```{r}
+#First I load the topicmodels package 
 library(topicmodels)
 
 ```
@@ -183,27 +219,47 @@ library(topicmodels)
 
 set.seed(836)
 
+# First I load 
 
-# load stopwords
-english_stopwords <- readLines("https://slcladal.github.io/resources/stopwords_en.txt", encoding = "UTF-8")
+# loading stopwords I found via an internet resource that appeared comprehensive
 
-# create corpus object
+english_stopwords <- 
+  readLines("https://slcladal.github.io/resources/stopwords_en.txt", 
+            encoding = "UTF-8")
+
+# create a data frame with my dataframe and date metadata
+
 textdata <- data.frame(doc_id=row.names(whole_data_frame_unique),
-                       text=whole_data_frame_unique$all_text, date=whole_data_frame_unique$date_utc)
+                       text=whole_data_frame_unique$all_text, 
+                       date=whole_data_frame_unique$date_utc)
+
+# create a corpus using that dataframe
 
 corpus <- VCorpus(DataframeSource(textdata))
 
 # Preprocessing chain
 
+# First I transform my corpus to lowercase.
+
 processedCorpus_guns <- tm_map(corpus, content_transformer(tolower))
 
-processedCorpus_guns <- tm_map(processedCorpus_guns, removeWords, english_stopwords)
+# Next I remove the stopwords that I loaded above.
+
+processedCorpus_guns <- tm_map(processedCorpus_guns, removeWords, 
+                               english_stopwords)
+
+# Finally I remove punctuation.
 
 processedCorpus_guns <- tm_map(processedCorpus_guns, removePunctuation)
 
+set.seed(836)
 
 
 ```
+
+### Tokenization and Continued Analysis
+
+**Basis:** First I load the package tokenizers.
 
 ```{r}
 
@@ -211,17 +267,21 @@ library(tokenizers)
 
 ```
 
+#### N-Grams and the Removal of Common Terms
+
 ```{r}
 
 set.seed(836)
 
+minimumFrequency <- 5
 NLP_tokenizer <- function(x) {
   unlist(lapply(ngrams(words(x), 1:2), paste, collapse = "_"), use.names = FALSE)
 }
 
 DTM <- DocumentTermMatrix(
   processedCorpus_guns, 
-  control = list(tokenize = NLP_tokenizer))
+  control = list(tokenize = NLP_tokenizer ,
+  bounds = list(global = c(minimumFrequency, Inf))))
 
 removeCommonTerms <- function (x, pct) 
 {
@@ -240,7 +300,13 @@ removeCommonTerms <- function (x, pct)
 
 DTM <- removeCommonTerms(DTM, 0.8)
 
+
 ```
+
+#### DTM Dimension
+
+**Basis:** looking at the dimensions of the DTM we see it is 2711 x 40081
+
 
 ```{r}
 
@@ -305,6 +371,7 @@ set.seed(836)
 tmResult <- posterior(topicModel)
 # format of the resulting object
 attributes(tmResult)
+
 ```
 
 ```{r}
@@ -418,6 +485,7 @@ probabilities <- sort(tmResult$terms[topicToViz,], decreasing=TRUE)[1:40]
 # visualize the terms as wordcloud
 mycolors <- brewer.pal(8, "Dark2")
 wordcloud(words, probabilities, random.order = FALSE, color = mycolors)
+
 ```
 
 ```{r}
@@ -433,7 +501,6 @@ probabilities <- sort(tmResult$terms[topicToViz,], decreasing=TRUE)[1:40]
 # visualize the terms as wordcloud
 mycolors <- brewer.pal(8, "Dark2")
 wordcloud(words, probabilities, random.order = TRUE, color = mycolors)
-
 ```
 
 ```{r}
