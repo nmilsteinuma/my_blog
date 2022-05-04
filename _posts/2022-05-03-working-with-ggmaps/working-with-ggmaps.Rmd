@@ -10,4 +10,305 @@ output:
   distill::distill_article:
     self_contained: false
 ---
+```{r}
+library(readxl)
+library(igraph)
+library(statnet)
+library(network)
+library(tidyverse)
+library(ggnetwork)
+library(GGally)
+library(ggplot2)
+library(sna)
+library(intergraph)
+library(ggbiplot)
+library(knitr)
+library(GGally)
+library(aRtsy)
+library(stringr)
+
+```
+
+
+```{r setup, include=FALSE}
+
+wars_in_1000s <- read_excel("~/Desktop/Spring 2022/Networks/wars_in_1000s.xlsx")
+
+wars_in_1000s$"Out-list" <- sapply(wars_in_1000s$"Out-list",
+                                    function(x) { gsub("[\r\n]", "", x) })
+wars_in_1000s$"In-list"<- sapply(wars_in_1000s$"In-list",
+                                    function(x) { gsub("[\r\n]", "", x) })
+
+wars_in_1100s <- read_excel("~/Desktop/Spring 2022/Networks/wars_in_1100s.xlsx")
+
+wars_in_1100s$"Out" <- sapply(wars_in_1100s$"Out",
+                                    function(x) { gsub("[\r\n]", "", x) })
+wars_in_1100s$"In"<- sapply(wars_in_1100s$"In",
+                                    function(x) { gsub("[\r\n]", "", x) })
+
+wars_in_1200s <- read_excel("~/Desktop/Spring 2022/Networks/wars_in_1200s.xlsx")
+
+
+wars_in_1200s$"Out" <- sapply(wars_in_1200s$"Out",
+                                    function(x) { gsub("[\r\n]", "", x) })
+
+wars_in_1200s$"In"<- sapply(wars_in_1200s$"In",  
+                                    function(x) { gsub("[\r\n]", "", x) })
+
+wars_in_1300s <- read_excel("~/Desktop/Spring 2022/Networks/wars_in_1300s.xlsx")
+
+wars_in_1300s$"In" <- sapply(wars_in_1300s$"Out-List",
+                                    function(x) { gsub("[\r\n]", "", x) })
+wars_in_1300s$"Out"<- sapply(wars_in_1300s$"In-List",  
+                                    function(x) { gsub("[\r\n]", "", x) })
+
+wars_in_1300s <- wars_in_1300s[,c(6:7)]
+# Had non-breaking spaces so I had to use str_trim()
+wars_in_1300s$In <- str_trim(wars_in_1300s$In)
+
+wars_in_1300s$Out <- str_trim(wars_in_1300s$Out)
+
+wars_in_1400s <- read_excel("~/Desktop/Spring 2022/Networks/wars_in_1400s.xlsx")
+
+wars_in_1400s$"In" <- sapply(wars_in_1400s$"In-List",
+                                    function(x) { gsub("[\r\n]", "", x) })
+wars_in_1400s$"Out"<- sapply(wars_in_1400s$"Out-List",  
+                                    function(x) { gsub("[\r\n]", "", x) })
+
+wars_in_1400s <- wars_in_1400s[,c(6:7)]
+
+wars_in_1400s$In <- str_trim(wars_in_1400s$In)
+
+wars_in_1400s$Out <- str_trim(wars_in_1400s$Out)
+
+wars_in_1500s <- read_excel("~/Desktop/Spring 2022/Networks/wars_in_1500s.xlsx")
+
+wars_in_1500s$"In" <- sapply(wars_in_1500s$"In-List",
+                                    function(x) { gsub("[\r\n]", "", x) })
+wars_in_1500s$"Out"<- sapply(wars_in_1500s$"Out-List",  
+                                    function(x) { gsub("[\r\n]", "", x) })
+
+wars_in_1500s <- wars_in_1500s[,c(6:7)]
+
+wars_in_1500s$In <- str_trim(wars_in_1500s$In)
+
+wars_in_1500s$Out <- str_trim(wars_in_1500s$Out)
+
+wars_in_1600s <- read_excel("~/Desktop/Spring 2022/Networks/wars_in_1600s.xlsx")
+
+wars_in_1600s$"In" <- sapply(wars_in_1600s$"In-List",
+                                    function(x) { gsub("[\r\n]", "", x) })
+wars_in_1600s$"Out"<- sapply(wars_in_1600s$"Out-List",  
+                                    function(x) { gsub("[\r\n]", "", x) })
+
+wars_in_1600s <- wars_in_1600s[,c(6:7)]
+
+wars_in_1600s$In <- str_trim(wars_in_1600s$In)
+
+wars_in_1600s$Out <- str_trim(wars_in_1600s$Out)
+
+wars_in_1700s <- read_excel("~/Desktop/Spring 2022/Networks/wars_in_1700s.xlsx")
+
+wars_in_1700s$"In" <- sapply(wars_in_1700s$"In-List",
+                                    function(x) { gsub("[\r\n]", "", x) })
+wars_in_1700s$"Out"<- sapply(wars_in_1700s$"Out-List",  
+                                    function(x) { gsub("[\r\n]", "", x) })
+
+wars_in_1700s <- wars_in_1700s[,c(6:7)]
+
+wars_in_1700s$In <- str_trim(wars_in_1700s$In)
+
+wars_in_1700s$Out <- str_trim(wars_in_1700s$Out)
+
+wars_in_1800s <- read_excel("~/Desktop/Spring 2022/Networks/wars_in_1800s.xlsx")
+
+wars_in_1800s$"In" <- sapply(wars_in_1800s$"In-List",
+                                    function(x) { gsub("[\r\n]", "", x) })
+wars_in_1800s$"Out"<- sapply(wars_in_1800s$"Out-List",  
+                                    function(x) { gsub("[\r\n]", "", x) })
+
+wars_in_1800s <- wars_in_1800s[,c(6:7)]
+
+wars_in_1800s$In <- str_trim(wars_in_1800s$In)
+
+wars_in_1800s$Out <- str_trim(wars_in_1800s$Out)
+
+```
+
+```{r}
+
+wars_in_1000s_edgelist <- as.matrix(wars_in_1000s)
+
+wars_in_1000s_edgelist_network_edgelist <- graph.edgelist(wars_in_1000s_edgelist, directed=TRUE)
+
+wars_in_1000s.ig<-graph_from_data_frame(wars_in_1000s)
+
+wars_in_1000s_network <- asNetwork(wars_in_1000s.ig)
+
+wars_in_1100s_edgelist <- as.matrix(wars_in_1100s)
+
+wars_in_1100s_edgelist_network_edgelist <- graph.edgelist(wars_in_1100s_edgelist, directed=TRUE)
+
+wars_in_1100s.ig<-graph_from_data_frame(wars_in_1100s)
+
+wars_in_1100s_network <- asNetwork(wars_in_1100s.ig)
+
+wars_in_1200s_edgelist <- as.matrix(wars_in_1200s)
+
+wars_in_1200s_edgelist_network_edgelist <- graph.edgelist(wars_in_1200s_edgelist, directed=TRUE)
+
+wars_in_1200s.ig<-graph_from_data_frame(wars_in_1200s)
+
+wars_in_1200s_network <- asNetwork(wars_in_1200s.ig)
+
+wars_in_1300s_edgelist <- as.matrix(wars_in_1300s)
+
+wars_in_1300s_edgelist_network_edgelist <- graph.edgelist(wars_in_1300s_edgelist, directed=TRUE)
+
+wars_in_1300s.ig<-graph_from_data_frame(wars_in_1300s)
+
+wars_in_1300s_network <- asNetwork(wars_in_1300s.ig)
+
+wars_in_1400s_edgelist <- as.matrix(wars_in_1400s)
+
+wars_in_1400s_edgelist_network_edgelist <- graph.edgelist(wars_in_1400s_edgelist, directed=TRUE)
+
+wars_in_1400s.ig<-graph_from_data_frame(wars_in_1400s)
+
+wars_in_1400s_network <- asNetwork(wars_in_1400s.ig)
+
+wars_in_1500s_edgelist <- as.matrix(wars_in_1500s)
+
+wars_in_1500s_edgelist_network_edgelist <- graph.edgelist(wars_in_1500s_edgelist, directed=TRUE)
+
+wars_in_1500s.ig<-graph_from_data_frame(wars_in_1500s)
+
+wars_in_1500s_network <- asNetwork(wars_in_1500s.ig)
+
+wars_in_1600s_edgelist <- as.matrix(wars_in_1600s)
+
+wars_in_1600s_edgelist_network_edgelist <- graph.edgelist(wars_in_1600s_edgelist, directed=TRUE)
+
+wars_in_1600s.ig<-graph_from_data_frame(wars_in_1600s)
+
+wars_in_1600s_network <- asNetwork(wars_in_1600s.ig)
+
+wars_in_1700s_edgelist <- as.matrix(wars_in_1700s)
+
+wars_in_1700s_edgelist_network_edgelist <- graph.edgelist(wars_in_1700s_edgelist, directed=TRUE)
+
+wars_in_1700s.ig<-graph_from_data_frame(wars_in_1700s)
+
+wars_in_1700s_network <- asNetwork(wars_in_1700s.ig)
+
+wars_in_1800s_edgelist <- as.matrix(wars_in_1800s)
+
+#wars_in_1800s_edgelist_network_edgelist <- graph.edgelist(wars_in_1800s_edgelist, directed=TRUE)
+
+wars_in_1800s.ig<-graph_from_data_frame(wars_in_1800s)
+
+wars_in_1800s_network <- asNetwork(wars_in_1800s.ig)
+
+```
+
+```{r}
+
+set.seed(777)
+ggplot(wars_in_1000s_network, aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_edges(color = "grey25", alpha = 0.25, arrow = arrow(length = unit(2, "pt"), type = "closed"))+
+  geom_nodes(color = "purple1", alpha = 0.3, size = 2) +
+  geom_nodetext(aes( label = vertex.names ), size=1)+
+    ggtitle("Networks of Wars in the 1000s") +
+  theme_blank()
+```
+
+```{r}
+
+set.seed(777)
+ggplot(wars_in_1100s_network, aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_edges(color = "grey25", alpha = 0.25, arrow = arrow(length = unit(2, "pt"), type = "closed"))+
+  geom_nodes(color = "gold", alpha = 0.3, size = 2) +
+  geom_nodetext(aes( label = vertex.names ), size=1)+
+    ggtitle("Networks of Wars in the 1100s") +
+  theme_blank()
+```
+
+```{r}
+
+set.seed(777)
+ggplot(wars_in_1200s_network, aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_edges(color = "grey25", alpha = 0.25, arrow = arrow(length = unit(2, "pt"), type = "closed"))+
+  geom_nodes(color = "forestgreen", alpha = 0.3, size = 2) +
+  geom_nodetext(aes( label = vertex.names ), size=1)+
+    ggtitle("Networks of Wars in the 1200s") +
+  theme_blank()
+```
+
+```{r}
+
+set.seed(777)
+ggplot(wars_in_1300s_network, aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_edges(color = "grey25", alpha = 0.25, arrow = arrow(length = unit(2, "pt"), type = "closed"))+
+  geom_nodes(color = "burlywood1", alpha = 0.3, size = 2) +
+  geom_nodetext(aes( label = vertex.names ), size=1)+
+    ggtitle("Networks of Wars in the 1300s") +
+  theme_blank()
+```
+
+```{r}
+
+set.seed(777)
+ggplot(wars_in_1400s_network, aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_edges(color = "grey25", alpha = 0.25, arrow = arrow(length = unit(2, "pt"), type = "closed"))+
+  geom_nodes(color = "aquamarine2", alpha = 0.3, size = 2) +
+  geom_nodetext(aes( label = vertex.names ), size=1)+
+    ggtitle("Networks of Wars in the 1400s") +
+  theme_blank()
+```
+
+```{r}
+
+set.seed(777)
+ggplot(wars_in_1500s_network, aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_edges(color = "grey25", alpha = 0.25, arrow = arrow(length = unit(2, "pt"), type = "closed"))+
+  geom_nodes(color = "mediumorchid1", alpha = 0.3, size = 2) +
+  geom_nodetext(aes( label = vertex.names ), size=1)+
+    ggtitle("Networks of Wars in the 1500s") +
+  theme_blank()
+```
+
+```{r}
+
+set.seed(777)
+ggplot(wars_in_1600s_network, aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_edges(color = "grey25", alpha = 0.25, arrow = arrow(length = unit(2, "pt"), type = "closed"))+
+  geom_nodes(color = "plum2", alpha = 0.3, size = 2) +
+  geom_nodetext(aes( label = vertex.names ), size=1)+
+    ggtitle("Networks of Wars in the 1600s") +
+  theme_blank()
+```
+
+```{r}
+
+set.seed(777)
+ggplot(wars_in_1700s_network, aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_edges(color = "grey25", alpha = 0.25, arrow = arrow(length = unit(2, "pt"), type = "closed"))+
+  geom_nodes(color = "tomato1", alpha = 0.3, size = 2) +
+  geom_nodetext(aes( label = vertex.names ), size=1)+
+    ggtitle("Networks of Wars in the 1700s") +
+  theme_blank()
+```
+
+```{r}
+
+set.seed(777)
+ggplot(wars_in_1800s_network, aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_edges(color = "grey25", alpha = 0.25, arrow = arrow(length = unit(2, "pt"), type = "closed"))+
+  geom_nodes(color = "steelblue1", alpha = 0.3, size = 2) +
+  geom_nodetext(aes( label = vertex.names ), size=1)+
+    ggtitle("Networks of Wars in the 1800s") +
+  theme_blank()
+```
+
+
 
