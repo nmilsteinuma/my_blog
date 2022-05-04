@@ -1,0 +1,13 @@
+---
+title: "Brining it All Together (Extended Networks Towards Thesis"
+description: |
+  Here I extend my inital networks from 1000-1300 to the year 1900.
+author:
+  - name: Noah Milstein
+    url: {}
+date: 2022-05-03
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
