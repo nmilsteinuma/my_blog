@@ -122,9 +122,9 @@ wars_in_1700s$Out <- str_trim(wars_in_1700s$Out)
 
 wars_in_1800s <- read_excel("~/Desktop/Spring 2022/Networks/wars_in_1800s.xlsx")
 
-wars_in_1800s$"In" <- sapply(wars_in_1800s$"In-List",
+wars_in_1800s$In <- sapply(wars_in_1800s$"In-List",
                                     function(x) { gsub("[\r\n]", "", x) })
-wars_in_1800s$"Out"<- sapply(wars_in_1800s$"Out-List",  
+wars_in_1800s$Out<- sapply(wars_in_1800s$"Out-List",  
                                     function(x) { gsub("[\r\n]", "", x) })
 
 wars_in_1800s <- wars_in_1800s[,c(6:7)]
@@ -145,6 +145,8 @@ wars_in_1000s.ig<-graph_from_data_frame(wars_in_1000s)
 
 wars_in_1000s_network <- asNetwork(wars_in_1000s.ig)
 
+wars_1000s<-as.matrix(as_adjacency_matrix(wars_in_1000s.ig))
+
 wars_in_1100s_edgelist <- as.matrix(wars_in_1100s)
 
 wars_in_1100s_edgelist_network_edgelist <- graph.edgelist(wars_in_1100s_edgelist, directed=TRUE)
@@ -152,6 +154,8 @@ wars_in_1100s_edgelist_network_edgelist <- graph.edgelist(wars_in_1100s_edgelist
 wars_in_1100s.ig<-graph_from_data_frame(wars_in_1100s)
 
 wars_in_1100s_network <- asNetwork(wars_in_1100s.ig)
+
+wars_1100s<-as.matrix(as_adjacency_matrix(wars_in_1100s.ig))
 
 wars_in_1200s_edgelist <- as.matrix(wars_in_1200s)
 
@@ -161,6 +165,8 @@ wars_in_1200s.ig<-graph_from_data_frame(wars_in_1200s)
 
 wars_in_1200s_network <- asNetwork(wars_in_1200s.ig)
 
+wars_1200s<-as.matrix(as_adjacency_matrix(wars_in_1200s.ig))
+
 wars_in_1300s_edgelist <- as.matrix(wars_in_1300s)
 
 wars_in_1300s_edgelist_network_edgelist <- graph.edgelist(wars_in_1300s_edgelist, directed=TRUE)
@@ -168,6 +174,8 @@ wars_in_1300s_edgelist_network_edgelist <- graph.edgelist(wars_in_1300s_edgelist
 wars_in_1300s.ig<-graph_from_data_frame(wars_in_1300s)
 
 wars_in_1300s_network <- asNetwork(wars_in_1300s.ig)
+
+wars_1300s<-as.matrix(as_adjacency_matrix(wars_in_1300s.ig))
 
 wars_in_1400s_edgelist <- as.matrix(wars_in_1400s)
 
@@ -177,6 +185,8 @@ wars_in_1400s.ig<-graph_from_data_frame(wars_in_1400s)
 
 wars_in_1400s_network <- asNetwork(wars_in_1400s.ig)
 
+wars_1400s<-as.matrix(as_adjacency_matrix(wars_in_1400s.ig))
+
 wars_in_1500s_edgelist <- as.matrix(wars_in_1500s)
 
 wars_in_1500s_edgelist_network_edgelist <- graph.edgelist(wars_in_1500s_edgelist, directed=TRUE)
@@ -184,6 +194,8 @@ wars_in_1500s_edgelist_network_edgelist <- graph.edgelist(wars_in_1500s_edgelist
 wars_in_1500s.ig<-graph_from_data_frame(wars_in_1500s)
 
 wars_in_1500s_network <- asNetwork(wars_in_1500s.ig)
+
+wars_1500s<-as.matrix(as_adjacency_matrix(wars_in_1500s.ig))
 
 wars_in_1600s_edgelist <- as.matrix(wars_in_1600s)
 
@@ -193,6 +205,8 @@ wars_in_1600s.ig<-graph_from_data_frame(wars_in_1600s)
 
 wars_in_1600s_network <- asNetwork(wars_in_1600s.ig)
 
+wars_1600s<-as.matrix(as_adjacency_matrix(wars_in_1600s.ig))
+
 wars_in_1700s_edgelist <- as.matrix(wars_in_1700s)
 
 wars_in_1700s_edgelist_network_edgelist <- graph.edgelist(wars_in_1700s_edgelist, directed=TRUE)
@@ -201,13 +215,25 @@ wars_in_1700s.ig<-graph_from_data_frame(wars_in_1700s)
 
 wars_in_1700s_network <- asNetwork(wars_in_1700s.ig)
 
+wars_1700s<-as.matrix(as_adjacency_matrix(wars_in_1700s.ig))
+
 wars_in_1800s_edgelist <- as.matrix(wars_in_1800s)
 
-#wars_in_1800s_edgelist_network_edgelist <- graph.edgelist(wars_in_1800s_edgelist, directed=TRUE)
+wars_in_1800s_edgelist_network_edgelist <- graph.edgelist(wars_in_1800s_edgelist, directed=TRUE)
 
 wars_in_1800s.ig<-graph_from_data_frame(wars_in_1800s)
 
 wars_in_1800s_network <- asNetwork(wars_in_1800s.ig)
+
+wars_1800s<-as.matrix(as_adjacency_matrix(wars_in_1800s.ig))
+
+```
+
+```{r}
+summary(wars_in_1000s_network)
+summary(wars_in_1100s_network)
+summary(wars_in_1200s_network)
+
 
 ```
 
@@ -310,5 +336,388 @@ ggplot(wars_in_1800s_network, aes(x = x, y = y, xend = xend, yend = yend)) +
   theme_blank()
 ```
 
+```{r}
+
+set.seed(238)
+#Run clustering algorithm: fast_greedy
+wars_in_1000s.wt<-walktrap.community(wars_in_1000s.ig)
+
+#igraph::groups(wars_in_1000s.wt)
+
+```
+
+Adding more steps resulted in 19 groups for both 10 and 20 steps.
+
+```{r}
+#Run & inspect clustering algorithm: 10 steps
+#igraph::groups(walktrap.community(wars_in_1000s.ig, steps=10)) 
+#Run & inspect clustering algorithm: 20 steps
+#igraph::groups(walktrap.community(wars_in_1000s.ig ,steps=20))
+#Run & inspect clustering algorithm
+```
+
+```{r, echo=FALSE}
+
+plot(wars_in_1000s.wt, wars_in_1000s.ig, vertex.size=0.5, edge.size=0.25, edge.arrow.size=.25,  vertex.label.dist=1.5,vertex.label.cex=0.25,asp = 0)
+
+```
+```{r}
+
+set.seed(238)
+#Run clustering algorithm: fast_greedy
+wars_in_1100s.wt<-walktrap.community(wars_in_1100s.ig)
+
+#igraph::groups(wars_in_1000s.wt)
+
+```
+
+```{r, echo=FALSE}
+
+plot(wars_in_1100s.wt, wars_in_1100s.ig, vertex.size=0.5, edge.size=0.25, edge.arrow.size=.25,  vertex.label.dist=1.5,vertex.label.cex=0.25,asp = 0)
+
+```
+
+```{r}
+
+set.seed(238)
+#Run clustering algorithm: fast_greedy
+wars_in_1200s.wt<-walktrap.community(wars_in_1200s.ig)
+
+#igraph::groups(wars_in_1000s.wt)
+
+```
+
+```{r, echo=FALSE}
+
+plot(wars_in_1200s.wt, wars_in_1200s.ig, vertex.size=0.5, edge.size=0.25, edge.arrow.size=.25,  vertex.label.dist=1.5,vertex.label.cex=0.25,asp = 0)
+
+```
+
+```{r}
+
+set.seed(238)
+#Run clustering algorithm: fast_greedy
+wars_in_1300s.wt<-walktrap.community(wars_in_1300s.ig)
+
+#igraph::groups(wars_in_1000s.wt)
+
+```
+
+```{r, echo=FALSE}
+
+plot(wars_in_1300s.wt, wars_in_1300s.ig, vertex.size=0.5, edge.size=0.25, edge.arrow.size=.25,  vertex.label.dist=1.5,vertex.label.cex=0.25,asp = 0)
+
+```
+
+```{r}
+
+set.seed(238)
+#Run clustering algorithm: fast_greedy
+wars_in_1400s.wt<-walktrap.community(wars_in_1400s.ig)
+
+#igraph::groups(wars_in_1000s.wt)
+
+```
+
+```{r, echo=FALSE}
+
+plot(wars_in_1400s.wt, wars_in_1400s.ig, vertex.size=0.5, edge.size=0.25, edge.arrow.size=.25,  vertex.label.dist=1.5,vertex.label.cex=0.25,asp = 0)
+
+```
+
+```{r}
+
+set.seed(238)
+#Run clustering algorithm: fast_greedy
+wars_in_1500s.wt<-walktrap.community(wars_in_1500s.ig)
+
+#igraph::groups(wars_in_1000s.wt)
+
+```
+
+```{r, echo=FALSE}
+
+plot(wars_in_1500s.wt, wars_in_1500s.ig, vertex.size=0.5, edge.size=0.25, edge.arrow.size=.25,  vertex.label.dist=1.5,vertex.label.cex=0.25,asp = 0)
+
+```
+```{r}
+
+set.seed(238)
+#Run clustering algorithm: fast_greedy
+wars_in_1600s.wt<-walktrap.community(wars_in_1600s.ig)
+
+#igraph::groups(wars_in_1000s.wt)
+
+```
+
+```{r, echo=FALSE}
+
+plot(wars_in_1600s.wt, wars_in_1600s.ig, vertex.size=0.5, edge.size=0.25, edge.arrow.size=.25,  vertex.label.dist=1.5,vertex.label.cex=0.25,asp = 0)
+
+```
+
+```{r}
+
+set.seed(238)
+#Run clustering algorithm: fast_greedy
+wars_in_1700s.wt<-walktrap.community(wars_in_1700s.ig)
+
+#igraph::groups(wars_in_1000s.wt)
+
+```
+
+```{r, echo=FALSE}
+
+plot(wars_in_1700s.wt, wars_in_1700s.ig, vertex.size=0.5, edge.size=0.25, edge.arrow.size=.25,  vertex.label.dist=1.5,vertex.label.cex=0.25,asp = 0)
+
+```
+
+```{r}
+
+set.seed(238)
+#Run clustering algorithm: fast_greedy
+wars_in_1800s.wt<-walktrap.community(wars_in_1800s.ig)
+
+#igraph::groups(wars_in_1000s.wt)
+
+```
+
+```{r, echo=FALSE}
+
+plot(wars_in_1800s.wt, wars_in_1800s.ig, vertex.size=0.5, edge.size=0.25, edge.arrow.size=.25,  vertex.label.dist=1.5,vertex.label.cex=0.25,asp = 0)
+
+```
+
+```{r}
+library(ape)
+library(ggdendro)
+library(sets)
+library(ggplot2)
+library(dendextend)
+library(RColorBrewer)
+
+```
+
+```{r}
+
+#pdf("h_clust_plot.pdf") 
+
+dd <- dist(scale(wars_1000s), method = "euclidean")
+
+hc <- hclust(dd, method = "complete")
+
+dend <- hc %>% as.dendrogram() %>%
+   set("branches_k_color", k=39) %>% 
+  set("branches_lwd", 1)  %>%     
+  set("labels_cex", c(.3,0.3)) 
+
+# plot the dend in usual "base" plotting engine:
+plot(dend,col="white", type="rectangle", frame.plot = FALSE, center	=FALSE, xlab="Belligerents", ylab="Distance (Euclidean)", main="Complete, Euclidean Distance Dendrogram" , cex=0.5,   horiz = FALSE)
+
+
+
+```
+
+```{r}
+
+#pdf("h_clust_plot.pdf") 
+
+dd <- dist(scale(wars_1100s), method = "euclidean")
+
+hc <- hclust(dd, method = "complete")
+
+dend <- hc %>% as.dendrogram() %>%
+   set("branches_k_color", k=39) %>% 
+  set("branches_lwd", 1)  %>%     
+  set("labels_cex", c(.2,0.2)) 
+
+# plot the dend in usual "base" plotting engine:
+plot(dend,col="white", type="rectangle", frame.plot = FALSE, center	=FALSE, xlab="Belligerents", ylab="Distance (Euclidean)", main="Complete, Euclidean Distance Dendrogram" , cex=0.5,   horiz = FALSE)
+
+
+
+```
+
+```{r}
+
+#pdf("h_clust_plot.pdf") 
+
+dd <- dist(scale(wars_1200s), method = "euclidean")
+
+hc <- hclust(dd, method = "complete")
+
+dend <- hc %>% as.dendrogram() %>%
+   set("branches_k_color", k=39) %>% 
+  set("branches_lwd", 1)  %>%     
+  set("labels_cex", c(.2,0.2)) 
+
+# plot the dend in usual "base" plotting engine:
+plot(dend,col="white", type="rectangle", frame.plot = FALSE, center	=FALSE, xlab="Belligerents", ylab="Distance (Euclidean)", main="Complete, Euclidean Distance Dendrogram" , cex=0.5,   horiz = FALSE)
+
+
+
+```
+
+```{r}
+
+#pdf("h_clust_plot.pdf") 
+
+dd <- dist(scale(wars_1300s), method = "euclidean")
+
+hc <- hclust(dd, method = "complete")
+
+dend <- hc %>% as.dendrogram() %>%
+   set("branches_k_color", k=39) %>% 
+  set("branches_lwd", 1)  %>%     
+  set("labels_cex", c(.2,0.2)) 
+
+# plot the dend in usual "base" plotting engine:
+plot(dend,col="white", type="rectangle", frame.plot = FALSE, center	=FALSE, xlab="Belligerents", ylab="Distance (Euclidean)", main="Complete, Euclidean Distance Dendrogram" , cex=0.5,   horiz = FALSE)
+
+```
+
+```{r}
+
+#pdf("h_clust_plot.pdf") 
+
+dd <- dist(scale(wars_1400s), method = "euclidean")
+
+hc <- hclust(dd, method = "complete")
+
+dend <- hc %>% as.dendrogram() %>%
+   set("branches_k_color", k=39) %>% 
+  set("branches_lwd", 1)  %>%     
+  set("labels_cex", c(.15,0.15)) 
+
+# plot the dend in usual "base" plotting engine:
+plot(dend,col="white", type="rectangle", frame.plot = FALSE, center	=FALSE, xlab="Belligerents", ylab="Distance (Euclidean)", main="Complete, Euclidean Distance Dendrogram" , cex=0.5,   horiz = FALSE)
+
+```
+
+```{r}
+
+#pdf("h_clust_plot.pdf") 
+
+dd <- dist(scale(wars_1500s), method = "euclidean")
+
+hc <- hclust(dd, method = "complete")
+
+dend <- hc %>% as.dendrogram() %>%
+   set("branches_k_color", k=39) %>% 
+  set("branches_lwd", 1)  %>%     
+  set("labels_cex", c(.15,0.15)) 
+
+# plot the dend in usual "base" plotting engine:
+plot(dend,col="white", type="rectangle", frame.plot = FALSE, center	=FALSE, xlab="Belligerents", ylab="Distance (Euclidean)", main="Complete, Euclidean Distance Dendrogram" , cex=0.5,   horiz = FALSE)
+
+```
+
+```{r}
+
+#pdf("h_clust_plot.pdf") 
+
+dd <- dist(scale(wars_1600s), method = "euclidean")
+
+hc <- hclust(dd, method = "complete")
+
+dend <- hc %>% as.dendrogram() %>%
+   set("branches_k_color", k=39) %>% 
+  set("branches_lwd", 1)  %>%     
+  set("labels_cex", c(.15,0.15)) 
+
+# plot the dend in usual "base" plotting engine:
+plot(dend,col="white", type="rectangle", frame.plot = FALSE, center	=FALSE, xlab="Belligerents", ylab="Distance (Euclidean)", main="Complete, Euclidean Distance Dendrogram" , cex=0.5,   horiz = FALSE)
+
+```
+
+```{r}
+
+#pdf("h_clust_plot.pdf") 
+
+dd <- dist(scale(wars_1700s), method = "euclidean")
+
+hc <- hclust(dd, method = "complete")
+
+dend <- hc %>% as.dendrogram() %>%
+   set("branches_k_color", k=39) %>% 
+  set("branches_lwd", 1)  %>%     
+  set("labels_cex", c(.15,0.15)) 
+
+# plot the dend in usual "base" plotting engine:
+plot(dend,col="white", type="rectangle", frame.plot = FALSE, center	=FALSE, xlab="Belligerents", ylab="Distance (Euclidean)", main="Complete, Euclidean Distance Dendrogram" , cex=0.5,   horiz = FALSE)
+
+```
+
+```{r}
+
+#pdf("h_clust_plot.pdf") 
+
+set.seed(883)
+
+dd <- dist(scale(wars_1800s), method = "euclidean")
+
+hc <- hclust(dd, method = "complete")
+
+dend <- hc %>% as.dendrogram() %>%
+   set("branches_k_color", k=39) %>% 
+  set("branches_lwd", 1)  %>%     
+  set("labels_cex", c(.1,0.1)) 
+
+# plot the dend in usual "base" plotting engine:
+plot(dend,col="white", type="rectangle", frame.plot = FALSE, center	=FALSE, xlab="Belligerents", ylab="Distance (Euclidean)", main="Complete, Euclidean Distance Dendrogram" , cex=0.5,   horiz = FALSE)
+
+```
+
+## Trade Data
+
+```{r}
+library('maps')
+library('geosphere')
+library(diagram)
+library(plotrix)
+```
+
+```{r, warning=FALSE}
+
+#pdf("1800_map.pdf") 
+set.seed(15887) 
+aspects_of_1800s_states_for_map <- read_excel("~/Desktop/Spring 2022/Networks/aspects_of_1800s_states_for_map.xlsx")
+
+aspects_of_1800s_states_for_map <- aspects_of_1800s_states_for_map[,c(1:3)]
+
+cl <- colors(distinct = TRUE)
+
+# to set random generator seed
+
+mycols2 <- sample(cl, 502)
+mycols3 <- sample(cl, 145)
+mycols2<-c(mycols2, mycols3)
+palette(mycols2)
+
+map('world', fill = TRUE, col = "white", mar = rep(0, 4), resolution = 10 , myborder = 0.001, bg="skyblue1") 
+
+nodes <- transform(aspects_of_1800s_states_for_map, countries = as.factor(aspects_of_1800s_states_for_map$name))
+
+with(nodes, points(long, Lat, col=countries, pch=19, cex=0.5)) 
+
+edges <- subset(data.frame(from = wars_in_1800s$In, to = wars_in_1800s$Out, stringsAsFactors = F), from != to)
+
+edges <- merge(merge(edges, nodes[, c("name", "long", "Lat")], by.x = "from", by.y = "name"), nodes[, c("name", "long", "Lat")], by.x = "to", by.y = "name")
+
+edges$col <- as.integer(nodes$countries[match(edges$from, nodes$name)])
+
+edges$long.x<-as.integer(edges$long.x)
+
+edges$Lat.x<-as.integer(edges$Lat.x)
+
+edges$long.y<-as.integer(edges$long.y)
+
+edges$Lat.y<-as.integer(edges$Lat.y)
+
+apply(edges[,-(1:2)], 1, function(x)
+curvedarrow(to=x[3:4], from=x[1:2], lcol=x[5], 
+            curve=.1, arr.pos = 1, lwd=.2, arr.lwd=0.01, 
+                          arr.width=0.1, arr.length=0.1))
+```
 
 
