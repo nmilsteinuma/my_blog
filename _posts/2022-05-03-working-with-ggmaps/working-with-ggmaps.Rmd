@@ -10,34 +10,64 @@ output:
   distill::distill_article:
     self_contained: false
 ---
+
+### Loading Required Packages
+
 ```{r}
+
 library(readxl)
+
 library(igraph)
+
 library(statnet)
+
 library(network)
+
 library(tidyverse)
+
 library(ggnetwork)
+
 library(GGally)
+
 library(ggplot2)
+
 library(sna)
+
 library(intergraph)
+
 library(ggbiplot)
+
 library(knitr)
+
 library(GGally)
+
 library(aRtsy)
+
 library(stringr)
+
+library(dplyr)
 
 ```
 
 
+#### Loading Datasets
+
+As will be the case in nearly all chunks that follow, I use the same basic, repeated code for each of the 8 datasets from 1000 to 1800. 
+
 ```{r setup, include=FALSE}
 
+# First using the read_excel function from readxl I load the excel spreadsheet
+
 wars_in_1000s <- read_excel("~/Desktop/Spring 2022/Networks/wars_in_1000s.xlsx")
+
+# Next I load my in list and out list removing line breaks
 
 wars_in_1000s$"Out-list" <- sapply(wars_in_1000s$"Out-list",
                                     function(x) { gsub("[\r\n]", "", x) })
 wars_in_1000s$"In-list"<- sapply(wars_in_1000s$"In-list",
                                     function(x) { gsub("[\r\n]", "", x) })
+
+# This procedure is repeated 8 times.
 
 wars_in_1100s <- read_excel("~/Desktop/Spring 2022/Networks/wars_in_1100s.xlsx")
 
@@ -63,7 +93,9 @@ wars_in_1300s$"Out"<- sapply(wars_in_1300s$"In-List",
                                     function(x) { gsub("[\r\n]", "", x) })
 
 wars_in_1300s <- wars_in_1300s[,c(6:7)]
-# Had non-breaking spaces so I had to use str_trim()
+
+# I then had non-breaking spaces so I had to use str_trim()
+
 wars_in_1300s$In <- str_trim(wars_in_1300s$In)
 
 wars_in_1300s$Out <- str_trim(wars_in_1300s$Out)
@@ -135,21 +167,42 @@ wars_in_1800s$Out <- str_trim(wars_in_1800s$Out)
 
 ```
 
+#### Creating Networks
+
+Subsequently I must make my excel spreadsheet into a variety of network types for later analysis.
+
 ```{r}
+
+# First I used as.matrix from base to make the data frame into a matrix.
 
 wars_in_1000s_edgelist <- as.matrix(wars_in_1000s)
 
-wars_in_1000s_edgelist_network_edgelist <- graph.edgelist(wars_in_1000s_edgelist, directed=TRUE)
+# Next I make a igraph object first using graph.edgelist from igraph
+
+wars_in_1000s_edgelist_network_edgelist <- 
+  
+  graph.edgelist(wars_in_1000s_edgelist, directed=TRUE)
+
+# To Simplify this I then just use graph_from_data_frame() from Igraph
 
 wars_in_1000s.ig<-graph_from_data_frame(wars_in_1000s)
 
+# In order to make a network obejct from statnet and sna I then use 
+# asNetwork from intergraph to coerce the igraph network to a statnet object.
+
 wars_in_1000s_network <- asNetwork(wars_in_1000s.ig)
+
+# I finally convert the igraph object back to a matrix to make sure information
+
+# was not lost during the conversion. This process is repeated.
 
 wars_1000s<-as.matrix(as_adjacency_matrix(wars_in_1000s.ig))
 
 wars_in_1100s_edgelist <- as.matrix(wars_in_1100s)
 
-wars_in_1100s_edgelist_network_edgelist <- graph.edgelist(wars_in_1100s_edgelist, directed=TRUE)
+wars_in_1100s_edgelist_network_edgelist <- 
+  
+  graph.edgelist(wars_in_1100s_edgelist, directed=TRUE)
 
 wars_in_1100s.ig<-graph_from_data_frame(wars_in_1100s)
 
@@ -159,27 +212,33 @@ wars_1100s<-as.matrix(as_adjacency_matrix(wars_in_1100s.ig))
 
 wars_in_1200s_edgelist <- as.matrix(wars_in_1200s)
 
-wars_in_1200s_edgelist_network_edgelist <- graph.edgelist(wars_in_1200s_edgelist, directed=TRUE)
+wars_in_1200s_edgelist_network_edgelist <- 
+  
+  graph.edgelist(wars_in_1200s_edgelist, directed=TRUE)
 
-wars_in_1200s.ig<-graph_from_data_frame(wars_in_1200s)
+wars_in_1200s.ig <- graph_from_data_frame(wars_in_1200s)
 
 wars_in_1200s_network <- asNetwork(wars_in_1200s.ig)
 
-wars_1200s<-as.matrix(as_adjacency_matrix(wars_in_1200s.ig))
+wars_1200s <- as.matrix(as_adjacency_matrix(wars_in_1200s.ig))
 
 wars_in_1300s_edgelist <- as.matrix(wars_in_1300s)
 
-wars_in_1300s_edgelist_network_edgelist <- graph.edgelist(wars_in_1300s_edgelist, directed=TRUE)
+wars_in_1300s_edgelist_network_edgelist <- 
+  
+  graph.edgelist(wars_in_1300s_edgelist, directed=TRUE)
 
 wars_in_1300s.ig<-graph_from_data_frame(wars_in_1300s)
 
 wars_in_1300s_network <- asNetwork(wars_in_1300s.ig)
 
-wars_1300s<-as.matrix(as_adjacency_matrix(wars_in_1300s.ig))
+wars_1300s <- as.matrix(as_adjacency_matrix(wars_in_1300s.ig))
 
 wars_in_1400s_edgelist <- as.matrix(wars_in_1400s)
 
-wars_in_1400s_edgelist_network_edgelist <- graph.edgelist(wars_in_1400s_edgelist, directed=TRUE)
+wars_in_1400s_edgelist_network_edgelist <- 
+  
+  graph.edgelist(wars_in_1400s_edgelist, directed=TRUE)
 
 wars_in_1400s.ig<-graph_from_data_frame(wars_in_1400s)
 
@@ -189,7 +248,9 @@ wars_1400s<-as.matrix(as_adjacency_matrix(wars_in_1400s.ig))
 
 wars_in_1500s_edgelist <- as.matrix(wars_in_1500s)
 
-wars_in_1500s_edgelist_network_edgelist <- graph.edgelist(wars_in_1500s_edgelist, directed=TRUE)
+wars_in_1500s_edgelist_network_edgelist <- 
+  
+  graph.edgelist(wars_in_1500s_edgelist, directed=TRUE)
 
 wars_in_1500s.ig<-graph_from_data_frame(wars_in_1500s)
 
@@ -199,17 +260,21 @@ wars_1500s<-as.matrix(as_adjacency_matrix(wars_in_1500s.ig))
 
 wars_in_1600s_edgelist <- as.matrix(wars_in_1600s)
 
-wars_in_1600s_edgelist_network_edgelist <- graph.edgelist(wars_in_1600s_edgelist, directed=TRUE)
+wars_in_1600s_edgelist_network_edgelist <- 
+  
+  graph.edgelist(wars_in_1600s_edgelist, directed=TRUE)
 
-wars_in_1600s.ig<-graph_from_data_frame(wars_in_1600s)
+wars_in_1600s.ig <- graph_from_data_frame(wars_in_1600s)
 
 wars_in_1600s_network <- asNetwork(wars_in_1600s.ig)
 
-wars_1600s<-as.matrix(as_adjacency_matrix(wars_in_1600s.ig))
+wars_1600s <- as.matrix(as_adjacency_matrix(wars_in_1600s.ig))
 
 wars_in_1700s_edgelist <- as.matrix(wars_in_1700s)
 
-wars_in_1700s_edgelist_network_edgelist <- graph.edgelist(wars_in_1700s_edgelist, directed=TRUE)
+wars_in_1700s_edgelist_network_edgelist <- 
+  
+  graph.edgelist(wars_in_1700s_edgelist, directed=TRUE)
 
 wars_in_1700s.ig<-graph_from_data_frame(wars_in_1700s)
 
@@ -219,21 +284,2003 @@ wars_1700s<-as.matrix(as_adjacency_matrix(wars_in_1700s.ig))
 
 wars_in_1800s_edgelist <- as.matrix(wars_in_1800s)
 
-wars_in_1800s_edgelist_network_edgelist <- graph.edgelist(wars_in_1800s_edgelist, directed=TRUE)
+wars_in_1800s_edgelist_network_edgelist <- 
+  
+  graph.edgelist(wars_in_1800s_edgelist, directed=TRUE)
 
 wars_in_1800s.ig<-graph_from_data_frame(wars_in_1800s)
 
 wars_in_1800s_network <- asNetwork(wars_in_1800s.ig)
 
-wars_1800s<-as.matrix(as_adjacency_matrix(wars_in_1800s.ig))
+wars_1800s <- as.matrix(as_adjacency_matrix(wars_in_1800s.ig))
+
+```
+
+### Inital Network Analysis and Statistics
+
+#### Dyad Census
+
+In order to ensure proper loading and formatting we first look at the dyad census of our networks using sna.
+
+```{r}
+
+sna::dyad.census(wars_in_1000s_network) %>% kable()
+
+sna::dyad.census(wars_in_1100s_network) %>% kable()
+
+sna::dyad.census(wars_in_1200s_network) %>% kable()
+
+sna::dyad.census(wars_in_1300s_network) %>% kable()
+
+sna::dyad.census(wars_in_1400s_network) %>% kable()
+
+sna::dyad.census(wars_in_1500s_network) %>% kable()
+
+sna::dyad.census(wars_in_1600s_network) %>% kable()
+
+sna::dyad.census(wars_in_1700s_network) %>% kable()
+
+sna::dyad.census(wars_in_1800s_network) %>% kable()
+
+```
+
+#### Triad Census
+
+Following this we look at the triad census in our data. This is conceptually important for conflict prediction going forward. Certain types of triads may be effective at indicating instability between nations and give us some sense of future conflict development along with general network stability.
+
+```{r}
+
+sna::triad.census(wars_in_1000s_network, mode="graph") %>% kable()
+
+sna::triad.census(wars_in_1100s_network, mode="graph") %>% kable()
+
+sna::triad.census(wars_in_1200s_network, mode="graph") %>% kable()
+
+sna::triad.census(wars_in_1300s_network, mode="graph") %>% kable()
+
+sna::triad.census(wars_in_1400s_network, mode="graph") %>% kable()
+
+sna::triad.census(wars_in_1500s_network, mode="graph") %>% kable()
+
+sna::triad.census(wars_in_1600s_network, mode="graph") %>% kable()
+
+sna::triad.census(wars_in_1700s_network, mode="graph") %>% kable()
+
+sna::triad.census(wars_in_1800s_network, mode="graph") %>% kable()
+
+```
+
+#### Transitivity Attributes for Each Century
+
+##### Global Transitivity Attributes for Each Century
+
+Looking at this attributes individually is useful, however in order to understand how they change over time we will concatenate the scores and graph them.
+
+```{r}
+
+transitivity_over_time_global <-c(
+  
+transitivity(wars_in_1000s.ig, type="global"),
+
+transitivity(wars_in_1100s.ig, type="global"),
+
+transitivity(wars_in_1200s.ig, type="global"),
+
+transitivity(wars_in_1300s.ig, type="global"),
+
+transitivity(wars_in_1400s.ig, type="global"),
+
+transitivity(wars_in_1500s.ig, type="global"),
+
+transitivity(wars_in_1600s.ig, type="global"),
+
+transitivity(wars_in_1700s.ig, type="global"),
+
+transitivity(wars_in_1800s.ig, type="global")
+
+)
+
+
+network_atts_for_plot <- data.frame(transitivity_over_time_global)
+
+
+```
+
+##### Century Attributes, Numeric
+
+I then create a list of doubles to indicate my century of conflict in subsequent analysis.
+
+```{r}
+
+century_for_graphing <- c(1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800)
+
+network_atts_for_plot$century_for_graphing <- century_for_graphing
+
+```
+
+#### Global Transitivity Over Time Graphed
+
+I then use ggplot to plot the network's transitivity over time using global transitivity.
+
+```{r}
+
+
+ggplot(network_atts_for_plot) +
+  
+geom_point(
+  
+  color="darkorange2", 
+  
+  aes(
+    
+    x=century_for_graphing, 
+                                
+      y=transitivity_over_time_global
+
+    )
+)
+
+
+```
+
+##### Average Transitivity Attributes for Each Century
+
+
+```{r}
+
+transitivity_over_time_average <-c(
+  
+transitivity(wars_in_1000s.ig, type="average"),
+
+transitivity(wars_in_1100s.ig, type="average"),
+
+transitivity(wars_in_1200s.ig, type="average"),
+
+transitivity(wars_in_1300s.ig, type="average"),
+
+transitivity(wars_in_1400s.ig, type="average"),
+
+transitivity(wars_in_1500s.ig, type="average"),
+
+transitivity(wars_in_1600s.ig, type="average"),
+
+transitivity(wars_in_1700s.ig, type="average"),
+
+transitivity(wars_in_1800s.ig, type="average")
+
+)
+
+network_atts_for_plot$transitivity_over_time_average <- 
+  transitivity_over_time_average
+
+```
+
+#### Average Transitivity Over Time Graphed
+
+These clustering coefficients do differ from century to century between average and global clustering.
+
+```{r}
+
+
+ggplot(network_atts_for_plot) +
+  
+geom_point(
+  
+  color="forestgreen", 
+  
+  aes(
+    
+    x=century_for_graphing, 
+                                
+      y=transitivity_over_time_average
+
+    )
+)
+
+
+```
+
+#### Average Path Length 
+
+
+```{r}
+
+average_path_length_wars <- c(
+  
+average.path.length(wars_in_1000s.ig,directed=T),
+
+average.path.length(wars_in_1100s.ig,directed=T),
+
+average.path.length(wars_in_1200s.ig,directed=T),
+
+average.path.length(wars_in_1300s.ig,directed=T),
+
+average.path.length(wars_in_1400s.ig,directed=T),
+
+average.path.length(wars_in_1500s.ig,directed=T),
+
+average.path.length(wars_in_1600s.ig,directed=T),
+
+average.path.length(wars_in_1700s.ig,directed=T),
+
+average.path.length(wars_in_1800s.ig,directed=T)
+
+)
+
+
+network_atts_for_plot$average_path_length_wars <- 
+  average_path_length_wars
+
+
+```
+
+
+#### Average Transitivity Over Time Graphed
+
+These clustering coefficients do differ from century to century between average and global clustering.
+
+```{r}
+
+
+ggplot(network_atts_for_plot) +
+  
+geom_point(
+  
+  color="darkslateblue", 
+  
+  aes(
+    
+    x=century_for_graphing, 
+                                
+      y=average_path_length_wars
+
+    )
+)
+
+
+```
+
+#### Density Attributes for Each Century
+
+```{r}
+
+densities_over_time <- c(
+  
+network.density(wars_in_1000s_network),
+  
+network.density(wars_in_1100s_network), 
+  
+network.density(wars_in_1200s_network), 
+  
+network.density(wars_in_1300s_network),
+  
+network.density(wars_in_1400s_network),
+
+network.density(wars_in_1500s_network),
+
+network.density(wars_in_1600s_network),
+
+network.density(wars_in_1700s_network),
+
+network.density(wars_in_1800s_network)
+)
+
+network_atts_for_plot$densities_over_time <- 
+  densities_over_time
+
+```
+
+#### Average Density Over Time Graphed
+
+```{r}
+
+
+ggplot(network_atts_for_plot) +
+  
+geom_point(
+  
+  color="firebrick4", 
+  
+  aes(
+    
+    x=century_for_graphing, 
+                                
+      y=densities_over_time
+
+    )
+)
+
+
+```
+
+#### Centralization Attributes for Each Century
+
+```{r}
+
+centralities_in_degree_over_time<- c(
+  
+centr_degree(wars_in_1000s.ig, loops = FALSE, mode="in")$centralization,
+
+centr_degree(wars_in_1100s.ig, loops = FALSE, mode="in")$centralization, 
+
+centr_degree(wars_in_1200s.ig, loops = FALSE, mode="in")$centralization, 
+
+centr_degree(wars_in_1300s.ig, loops = FALSE, mode="in")$centralization, 
+
+centr_degree(wars_in_1400s.ig, loops = FALSE, mode="in")$centralization, 
+
+centr_degree(wars_in_1500s.ig, loops = FALSE, mode="in")$centralization, 
+
+centr_degree(wars_in_1600s.ig, loops = FALSE, mode="in")$centralization,
+
+centr_degree(wars_in_1700s.ig, loops = FALSE, mode="in")$centralization,
+
+centr_degree(wars_in_1800s.ig, loops = FALSE, mode="in")$centralization
+
+)
+
+network_atts_for_plot$centralities_in_degree_over_time <- 
+  centralities_in_degree_over_time
+
+```
+
+#### Average Centrality Over Time Graphed
+
+```{r}
+
+
+ggplot(network_atts_for_plot) +
+  
+geom_point(
+  
+  color="firebrick4", 
+  
+  aes(
+    
+    x=century_for_graphing, 
+                                
+      y=centralities_in_degree_over_time
+
+    )
+)
+
+
+```
+
+### Beginning with Individual Node Attributes 
+
+#### Nodes Attributes for Each Century Total Degree and Names
+
+```{r}
+
+nodes_1000s <-data.frame(name=wars_in_1000s_network%v%"vertex.names", 
+                         degree=sna::degree(wars_in_1000s_network))
+
+nodes_1100s <-data.frame(name=wars_in_1100s_network%v%"vertex.names", 
+                         degree=sna::degree(wars_in_1100s_network))
+
+nodes_1200s <-data.frame(name=wars_in_1200s_network%v%"vertex.names", 
+                         degree=sna::degree(wars_in_1200s_network))
+
+nodes_1300s <-data.frame(name=wars_in_1300s_network%v%"vertex.names", 
+                         degree=sna::degree(wars_in_1300s_network))
+
+nodes_1400s <-data.frame(name=wars_in_1400s_network%v%"vertex.names", 
+                         degree=sna::degree(wars_in_1400s_network))
+
+nodes_1500s <-data.frame(name=wars_in_1500s_network%v%"vertex.names", 
+                         degree=sna::degree(wars_in_1500s_network))
+
+nodes_1600s <-data.frame(name=wars_in_1600s_network%v%"vertex.names", 
+                         degree=sna::degree(wars_in_1600s_network))
+
+nodes_1700s <-data.frame(name=wars_in_1700s_network%v%"vertex.names", 
+                         degree=sna::degree(wars_in_1700s_network))
+
+nodes_1800s <-data.frame(name=wars_in_1800s_network%v%"vertex.names", 
+                         degree=sna::degree(wars_in_1800s_network))
+
+```
+
+#### Nodes Attributes for Each Century In and Out Degree
+
+```{r}
+
+nodes_1000s<-nodes_1000s %>%
+    mutate(indegree=sna::degree(wars_in_1000s_network, cmode="indegree"),
+          outdegree=sna::degree(wars_in_1000s_network, cmode="outdegree"))
+
+nodes_1100s<-nodes_1100s %>%
+    mutate(indegree=sna::degree(wars_in_1100s_network, cmode="indegree"),
+          outdegree=sna::degree(wars_in_1100s_network, cmode="outdegree"))
+
+nodes_1200s<-nodes_1200s %>%
+    mutate(indegree=sna::degree(wars_in_1200s_network, cmode="indegree"),
+          outdegree=sna::degree(wars_in_1200s_network, cmode="outdegree"))
+
+nodes_1300s<-nodes_1300s %>%
+    mutate(indegree=sna::degree(wars_in_1300s_network, cmode="indegree"),
+          outdegree=sna::degree(wars_in_1300s_network, cmode="outdegree"))
+
+nodes_1400s<-nodes_1400s %>%
+    mutate(indegree=sna::degree(wars_in_1400s_network, cmode="indegree"),
+          outdegree=sna::degree(wars_in_1400s_network, cmode="outdegree"))
+
+nodes_1500s<-nodes_1500s %>%
+    mutate(indegree=sna::degree(wars_in_1500s_network, cmode="indegree"),
+          outdegree=sna::degree(wars_in_1500s_network, cmode="outdegree"))
+
+nodes_1600s<-nodes_1600s %>%
+    mutate(indegree=sna::degree(wars_in_1600s_network, cmode="indegree"),
+          outdegree=sna::degree(wars_in_1600s_network, cmode="outdegree"))
+
+nodes_1700s<-nodes_1700s %>%
+    mutate(indegree=sna::degree(wars_in_1700s_network, cmode="indegree"),
+          outdegree=sna::degree(wars_in_1700s_network, cmode="outdegree"))
+
+nodes_1800s<-nodes_1800s %>%
+    mutate(indegree=sna::degree(wars_in_1800s_network, cmode="indegree"),
+          outdegree=sna::degree(wars_in_1800s_network, cmode="outdegree"))
+
+```
+
+#### Eigenvector Centrality
+
+```{r}
+
+nodes_1000s$eigen<-evcent(wars_in_1000s_network)
+
+nodes_1100s$eigen<-evcent(wars_in_1100s_network)
+
+nodes_1200s$eigen<-evcent(wars_in_1200s_network)
+
+nodes_1300s$eigen<-evcent(wars_in_1300s_network)
+
+nodes_1400s$eigen<-evcent(wars_in_1400s_network)
+
+nodes_1500s$eigen<-evcent(wars_in_1500s_network)
+
+nodes_1600s$eigen<-evcent(wars_in_1600s_network)
+
+nodes_1700s$eigen<-evcent(wars_in_1700s_network)
+
+nodes_1800s$eigen<-evcent(wars_in_1800s_network)
+
+```
+
+#### Bonpow Centrality
+
+```{r}
+
+#nodes_1000s$bonpow <- bonpow(wars_in_1000s_network) 
+
+#nodes_1100s$bonpow<-bonpow(wars_in_1100s_network)
+
+#nodes_1200s$bonpow<-bonpow(wars_in_1200s_network)
+
+#nodes_1300s$bonpow<-bonpow(wars_in_1300s_network)
+
+#nodes_1400s$bonpow<-bonpow(wars_in_1400s_network)
+
+#nodes_1500s$bonpow<-bonpow(wars_in_1500s_network)
+
+#nodes_1600s$bonpow<-bonpow(wars_in_1600s_network)
+
+#nodes_1700s$bonpow<-bonpow(wars_in_1700s_network)
+
+#nodes_1800s$bonpow<-bonpow(wars_in_1800s_network)
+
+```
+
+#### Recieved and Distributed Centrality
+
+##### 1000s rc, dc, Inital Nodes Calculations
+
+```{r}
+
+mat1000s<-as.matrix(as_adjacency_matrix(wars_in_1000s.ig))
+
+mat1000s_sq<-t(mat1000s) %*% mat1000s
+
+nodes_1000s$rc<-diag(mat1000s_sq)/rowSums(mat1000s_sq)
+
+nodes_1000s$rc<-ifelse(is.nan(nodes_1000s$rc),0,nodes_1000s$rc)
+
+nodes_1000s$eigen.rc<-nodes_1000s$eigen*nodes_1000s$rc
+
+#Calculate the proportion of derived centrality.
+nodes_1000s$dc<-1-diag(mat1000s_sq)/rowSums(mat1000s_sq)
+#replace missing values with 0
+nodes_1000s$dc<-ifelse(is.nan(nodes_1000s$dc),1,nodes_1000s$dc)
+#Calculate received eigenvalue centrality
+nodes_1000s$eigen.dc<-nodes_1000s$eigen*nodes_1000s$dc
+
+```
+
+##### 1100s rc, dc, Inital Nodes Calculations
+
+```{r}
+
+mat1100s<-as.matrix(as_adjacency_matrix(wars_in_1100s.ig))
+
+mat1100s_sq<-t(mat1100s) %*% mat1100s
+
+nodes_1100s$rc<-diag(mat1100s_sq)/rowSums(mat1100s_sq)
+
+nodes_1100s$rc<-ifelse(is.nan(nodes_1100s$rc),0,nodes_1100s$rc)
+
+nodes_1100s$eigen.rc<-nodes_1100s$eigen*nodes_1100s$rc
+
+#Calculate the proportion of derived centrality.
+nodes_1100s$dc<-1-diag(mat1100s_sq)/rowSums(mat1100s_sq)
+#replace missing values with 0
+nodes_1100s$dc<-ifelse(is.nan(nodes_1100s$dc),1,nodes_1100s$dc)
+#Calculate received eigenvalue centrality
+nodes_1100s$eigen.dc<-nodes_1100s$eigen*nodes_1100s$dc
+
+```
+
+#### 1200s rc, dc, Inital Nodes Calculations
+
+```{r}
+
+mat1200s<-as.matrix(as_adjacency_matrix(wars_in_1200s.ig))
+
+mat1200s_sq<-t(mat1200s) %*% mat1200s
+
+nodes_1200s$rc<-diag(mat1200s_sq)/rowSums(mat1200s_sq)
+
+nodes_1200s$rc<-ifelse(is.nan(nodes_1200s$rc),0,nodes_1200s$rc)
+
+nodes_1200s$eigen.rc<-nodes_1200s$eigen*nodes_1200s$rc
+
+#Calculate the proportion of derived centrality.
+nodes_1200s$dc<-1-diag(mat1200s_sq)/rowSums(mat1200s_sq)
+#replace missing values with 0
+nodes_1200s$dc<-ifelse(is.nan(nodes_1200s$dc),1,nodes_1200s$dc)
+#Calculate received eigenvalue centrality
+nodes_1200s$eigen.dc<-nodes_1200s$eigen*nodes_1200s$dc
+
+```
+
+#### 1300s rc, dc, Inital Nodes Calculations
+
+```{r}
+
+mat1300s<-as.matrix(as_adjacency_matrix(wars_in_1300s.ig))
+
+mat1300s_sq<-t(mat1300s) %*% mat1300s
+
+nodes_1300s$rc<-diag(mat1300s_sq)/rowSums(mat1300s_sq)
+
+nodes_1300s$rc<-ifelse(is.nan(nodes_1300s$rc),0,nodes_1300s$rc)
+
+nodes_1300s$eigen.rc<-nodes_1300s$eigen*nodes_1300s$rc
+
+#Calculate the proportion of derived centrality.
+nodes_1300s$dc<-1-diag(mat1300s_sq)/rowSums(mat1300s_sq)
+#replace missing values with 0
+nodes_1300s$dc<-ifelse(is.nan(nodes_1300s$dc),1,nodes_1300s$dc)
+#Calculate received eigenvalue centrality
+nodes_1300s$eigen.dc<-nodes_1300s$eigen*nodes_1300s$dc
+
+```
+
+#### 1400s rc, dc, Inital Nodes Calculations
+
+```{r}
+
+mat1400s<-as.matrix(as_adjacency_matrix(wars_in_1400s.ig))
+
+mat1400s_sq<-t(mat1400s) %*% mat1400s
+
+nodes_1400s$rc<-diag(mat1400s_sq)/rowSums(mat1400s_sq)
+
+nodes_1400s$rc<-ifelse(is.nan(nodes_1400s$rc),0,nodes_1400s$rc)
+
+nodes_1400s$eigen.rc<-nodes_1400s$eigen*nodes_1400s$rc
+
+#Calculate the proportion of derived centrality.
+nodes_1400s$dc<-1-diag(mat1400s_sq)/rowSums(mat1400s_sq)
+#replace missing values with 0
+nodes_1400s$dc<-ifelse(is.nan(nodes_1400s$dc),1,nodes_1400s$dc)
+#Calculate received eigenvalue centrality
+nodes_1400s$eigen.dc<-nodes_1400s$eigen*nodes_1400s$dc
+
+```
+
+#### 1500s rc, dc, Inital Nodes Calculations
+
+```{r}
+
+mat1500s<-as.matrix(as_adjacency_matrix(wars_in_1500s.ig))
+
+mat1500s_sq<-t(mat1500s) %*% mat1500s
+
+nodes_1500s$rc<-diag(mat1500s_sq)/rowSums(mat1500s_sq)
+
+nodes_1500s$rc<-ifelse(is.nan(nodes_1500s$rc),0,nodes_1500s$rc)
+
+nodes_1500s$eigen.rc<-nodes_1500s$eigen*nodes_1500s$rc
+
+#Calculate the proportion of derived centrality.
+nodes_1500s$dc<-1-diag(mat1500s_sq)/rowSums(mat1500s_sq)
+#replace missing values with 0
+nodes_1500s$dc<-ifelse(is.nan(nodes_1500s$dc),1,nodes_1500s$dc)
+#Calculate received eigenvalue centrality
+nodes_1500s$eigen.dc<-nodes_1500s$eigen*nodes_1500s$dc
+
+```
+
+#### 1600s rc, dc, Inital Nodes Calculations
+
+```{r}
+
+mat1600s<-as.matrix(as_adjacency_matrix(wars_in_1600s.ig))
+
+mat1600s_sq<-t(mat1600s) %*% mat1600s
+
+nodes_1600s$rc<-diag(mat1600s_sq)/rowSums(mat1600s_sq)
+
+nodes_1600s$rc<-ifelse(is.nan(nodes_1600s$rc),0,nodes_1600s$rc)
+
+nodes_1600s$eigen.rc<-nodes_1600s$eigen*nodes_1600s$rc
+
+#Calculate the proportion of derived centrality.
+nodes_1600s$dc<-1-diag(mat1600s_sq)/rowSums(mat1600s_sq)
+#replace missing values with 0
+nodes_1600s$dc<-ifelse(is.nan(nodes_1600s$dc),1,nodes_1600s$dc)
+#Calculate received eigenvalue centrality
+nodes_1600s$eigen.dc<-nodes_1600s$eigen*nodes_1600s$dc
+
+```
+
+#### 1700s rc, dc, Inital Nodes Calculations
+
+```{r}
+
+mat1700s<-as.matrix(as_adjacency_matrix(wars_in_1700s.ig))
+
+mat1700s_sq<-t(mat1700s) %*% mat1700s
+
+nodes_1700s$rc<-diag(mat1700s_sq)/rowSums(mat1700s_sq)
+
+nodes_1700s$rc<-ifelse(is.nan(nodes_1700s$rc),0,nodes_1700s$rc)
+
+nodes_1700s$eigen.rc<-nodes_1700s$eigen*nodes_1700s$rc
+
+#Calculate the proportion of derived centrality.
+nodes_1700s$dc<-1-diag(mat1700s_sq)/rowSums(mat1700s_sq)
+#replace missing values with 0
+nodes_1700s$dc<-ifelse(is.nan(nodes_1700s$dc),1,nodes_1700s$dc)
+#Calculate received eigenvalue centrality
+nodes_1700s$eigen.dc<-nodes_1700s$eigen*nodes_1700s$dc
+
+```
+
+#### 1800s rc, dc, Inital Nodes Calculations
+
+```{r}
+
+mat1800s<-as.matrix(as_adjacency_matrix(wars_in_1800s.ig))
+
+mat1800s_sq<-t(mat1800s) %*% mat1800s
+
+nodes_1800s$rc<-diag(mat1800s_sq)/rowSums(mat1800s_sq)
+
+nodes_1800s$rc<-ifelse(is.nan(nodes_1800s$rc),0,nodes_1800s$rc)
+
+nodes_1800s$eigen.rc<-nodes_1800s$eigen*nodes_1800s$rc
+
+#Calculate the proportion of derived centrality.
+nodes_1800s$dc<-1-diag(mat1800s_sq)/rowSums(mat1800s_sq)
+#replace missing values with 0
+nodes_1800s$dc<-ifelse(is.nan(nodes_1800s$dc),1,nodes_1800s$dc)
+#Calculate received eigenvalue centrality
+nodes_1800s$eigen.dc<-nodes_1800s$eigen*nodes_1800s$dc
+
+```
+
+### Brokerage and Applications in an Unusual Dataset.
+
+```{r}
+
+temporary_1800s_brokerage <-data.frame(brokerage(wars_in_1800s_network, cl = nodes_1800s$degree)$z.nli)
+
+nodes_1800s <- nodes_1800s %>%
+  mutate(broker.tot = temporary_1800s_brokerage$t,
+         
+         broker.coord = temporary_1800s_brokerage$w_I,
+         
+         broker.itin = temporary_1800s_brokerage$w_O,
+         
+         broker.rep = temporary_1800s_brokerage$b_IO,
+         
+         broker.gate = temporary_1800s_brokerage$b_OI,
+         
+         broker.lia = temporary_1800s_brokerage$b_O)
+
+
+```
+
+
+#### Gould Fernandez Brokerage
+
+### Nodes Distributions 
+
+##### Histogram 1000s Nodes Distribution
+
+```{r}
+nodes_1000s[-1] %>%
+   gather() %>% 
+  ggplot(aes(value)) +
+    geom_histogram() +
+    facet_wrap(~key, scales = "free")
+
+```
+
+##### Histogram 1100s Nodes Distribution
+
+```{r}
+
+nodes_1100s[-1] %>%
+  gather() %>% 
+  ggplot(aes(value)) +
+    geom_histogram() +
+    facet_wrap(~key, scales = "free")
+
+```
+
+##### Histogram 1200s Nodes Distribution
+
+```{r}
+
+nodes_1200s[-1] %>% 
+  gather() %>% 
+  ggplot(aes(value)) +
+    geom_histogram() +
+    facet_wrap(~key, scales = "free")
+
+```
+
+##### Histogram 1300s Nodes Distribution
+
+```{r}
+
+nodes_1300s[-1] %>%
+  gather() %>% 
+  ggplot(aes(value)) +
+    geom_histogram() +
+    facet_wrap(~key, scales = "free")
+
+```
+
+##### Histogram 1800s Nodes Distribution
+
+```{r}
+
+nodes_1400s[-1] %>% 
+  gather() %>% 
+  ggplot(aes(value)) +
+    geom_histogram() +
+    facet_wrap(~key, scales = "free")
+
+```
+
+##### Histogram 1500s Nodes Distribution
+
+```{r}
+
+nodes_1500s[-1]%>% 
+  gather() %>% 
+  ggplot(aes(value)) +
+    geom_histogram() +
+    facet_wrap(~key, scales = "free")
+
+```
+
+##### Histogram 1600s Nodes Distribution
+
+```{r}
+
+nodes_1600s[-1] %>% 
+  gather() %>% 
+  ggplot(aes(value)) +
+    geom_histogram() +
+    facet_wrap(~key, scales = "free")
+
+```
+
+##### Histogram 1700s Nodes Distribution
+
+```{r}
+
+nodes_1700s[-1] %>% 
+  gather() %>% 
+  ggplot(aes(value)) +
+    geom_histogram() +
+    facet_wrap(~key, scales = "free")
+
+```
+
+##### Histogram 1800s Nodes Distribution
+
+```{r}
+
+nodes_1800s[-1] %>% 
+  gather() %>% 
+  ggplot(aes(value)) +
+    geom_histogram() +
+    facet_wrap(~key, scales = "free")
+
+```
+
+
+```{r}
+
+library(corrr)
+
+```
+
+
+```{r}
+
+nodes_1800s_correlations <- nodes_1800s %>% 
+  dplyr::select(degree,indegree,outdegree,eigen,eigen.rc,eigen.dc) %>%
+ correlate() %>%
+  rearrange()
+rplot(nodes_1800s_correlations)
+
+```
+
+#### Centrality and Brokerage
+
+```{r}
+
+nodes_1000s$close <- sna::closeness(wars_in_1000s_network, cmode="suminvdir")
+
+nodes_1100s$close <- sna::closeness(wars_in_1100s_network, cmode="suminvdir")
+
+nodes_1200s$close <- sna::closeness(wars_in_1200s_network, cmode="suminvdir")
+
+nodes_1300s$close <- sna::closeness(wars_in_1300s_network, cmode="suminvdir")
+
+nodes_1400s$close <- sna::closeness(wars_in_1400s_network, cmode="suminvdir")
+
+nodes_1500s$close <- sna::closeness(wars_in_1500s_network, cmode="suminvdir")
+
+nodes_1600s$close <- sna::closeness(wars_in_1600s_network, cmode="suminvdir")
+
+nodes_1700s$close <- sna::closeness(wars_in_1700s_network, cmode="suminvdir")
+
+nodes_1800s$close <- sna::closeness(wars_in_1800s_network, cmode="suminvdir")
+
+```
+
+
+```{r}
+
+betweenness_centralization_digraph <- c(
+  
+centralization(wars_in_1000s_network,FUN="betweenness",mode="digraph"),
+
+centralization(wars_in_1100s_network,FUN="betweenness",mode="digraph"),
+
+centralization(wars_in_1200s_network,FUN="betweenness",mode="digraph"),
+
+centralization(wars_in_1300s_network,FUN="betweenness",mode="digraph"),
+
+centralization(wars_in_1400s_network,FUN="betweenness",mode="digraph"),
+
+centralization(wars_in_1500s_network,FUN="betweenness",mode="digraph"),
+
+centralization(wars_in_1600s_network,FUN="betweenness",mode="digraph"),
+
+centralization(wars_in_1700s_network,FUN="betweenness",mode="digraph"),
+
+centralization(wars_in_1800s_network,FUN="betweenness",mode="digraph")
+
+)
+
+network_atts_for_plot$betweenness_centralization_digraph <- 
+  betweenness_centralization_digraph
+
+```
+
+
+#### Closeness Centrality Over Time Graphed
+
+```{r}
+
+
+ggplot(network_atts_for_plot) +
+  
+geom_point(
+  
+  color="chocolate", 
+  
+  aes(
+    
+    x=century_for_graphing, 
+                                
+      y=betweenness_centralization_digraph
+
+    )
+)
+
+
+```
+##### Centralization
+
+```{r}
+nodes_1000s$between<-
+  
+sna::betweenness(wars_in_1000s_network, gmode="graph")
+
+nodes_1100s$between<-
+
+sna::betweenness(wars_in_1100s_network, gmode="graph")
+
+nodes_1200s$between<-
+
+sna::betweenness(wars_in_1200s_network, gmode="graph")
+
+nodes_1300s$between<-
+
+sna::betweenness(wars_in_1300s_network, gmode="graph")
+
+nodes_1400s$between<-
+
+sna::betweenness(wars_in_1400s_network, gmode="graph")
+
+nodes_1500s$between<-
+
+sna::betweenness(wars_in_1500s_network, gmode="graph")
+
+nodes_1600s$between<-
+
+sna::betweenness(wars_in_1600s_network, gmode="graph")
+
+nodes_1700s$between<-
+
+sna::betweenness(wars_in_1700s_network, gmode="graph")
+
+nodes_1800s$between<-
+
+sna::betweenness(wars_in_1800s_network, gmode="graph")
+
+```
+
+### Network Constraint 
+
+#### Find the nodes with highest and lowest constraint
+
+```{r}
+
+nodes_1000s$constraint <- constraint(wars_in_1000s.ig)
+
+nodes_1100s$constraint <- constraint(wars_in_1100s.ig)
+
+nodes_1200s$constraint <- constraint(wars_in_1200s.ig)
+
+nodes_1300s$constraint <- constraint(wars_in_1300s.ig)
+
+nodes_1400s$constraint <- constraint(wars_in_1400s.ig)
+
+nodes_1500s$constraint <- constraint(wars_in_1500s.ig)
+
+nodes_1600s$constraint <- constraint(wars_in_1600s.ig)
+
+nodes_1700s$constraint <- constraint(wars_in_1700s.ig)
+
+nodes_1800s$constraint <- constraint(wars_in_1800s.ig)
 
 ```
 
 ```{r}
-summary(wars_in_1000s_network)
-summary(wars_in_1100s_network)
-summary(wars_in_1200s_network)
 
+correlations_1800s_nodes <- nodes_1800s %>% 
+  dplyr::select(degree,indegree,outdegree,eigen,close, between, broker.tot, broker.coord,broker.itin, broker.rep, broker.gate, broker.lia, constraint)%>%
+  correlate() %>%
+  rearrange()
+
+rplot(correlations_1800s_nodes)
+
+```
+
+### Structural equivalance
+
+#### S.E. 1000s Sedist
+
+```{r}
+
+wars_in_1000s.ig_no_mult <- igraph::simplify(
+  wars_in_1000s.ig,
+  remove.multiple = TRUE
+)
+
+wars_in_1000s_network_no_mult <- asNetwork(wars_in_1000s.ig_no_mult)
+
+wars_in_1000s.se <- equiv.clust(wars_in_1000s_network_no_mult, equiv.fun="sedist", method="hamming", mode="digraph")
+
+plot(wars_in_1000s.se, labels=wars_in_1000s.se$glabels,  cex=0.3)
+
+```
+
+#### S.E. 1000s Average
+
+```{r}
+
+#with average cluster.method
+wars_in_1000s_network_no_mult.avg.se<-equiv.clust(wars_in_1000s_network_no_mult, equiv.fun="sedist", cluster.method="average", method="hamming", mode="digraph")
+
+#plot:
+plot(wars_in_1000s_network_no_mult.avg.se,labels=wars_in_1000s.se$glabels, cex=0.3)
+
+```
+
+#### S.E. 1000s Single
+
+```{r}
+#with single cluster.method
+wars_in_1000s_network_no_mult.sing.se<-equiv.clust(
+  wars_in_1000s_network_no_mult, equiv.fun="sedist", 
+  cluster.method="single", method="hamming", mode="digraph")
+
+#plot:
+plot(wars_in_1000s_network_no_mult.sing.se, labels=wars_in_1000s.se$glabels, cex=0.3 )
+
+```
+
+#### S.E. 1000s Ward-D
+
+```{r}
+
+#with ward.D cluster.method
+wars_in_1000s_network_no_mult.wrd.se<-equiv.clust(wars_in_1000s_network_no_mult, equiv.fun="sedist", cluster.method="ward.D", method="hamming",mode="digraph")
+
+wars_in_1000s_network_no_mult
+plot(wars_in_1000s_network_no_mult.wrd.se,labels=
+       wars_in_1000s.se$glabels, cex=0.3)
+
+```
+
+#### Adding Degree Weight
+
+```{r}
+
+nodes_1800s<-nodes_1800s %>% data.frame(
+  
+degree.wt=strength(wars_in_1800s.ig)
+
+)
+
+```
+
+### Community Detection
+
+#### Fast and Greedy Community Detection 1000s
+
+Fast Greedy does not support directed graphs so I have to convert my wars object to an undirected graph making this likely a weaker method for community detection.
+
+```{r}
+
+# The Giant Component below is loaded here but factors into community detection
+giant.component <- function(graph) {
+  cl <- clusters(graph)
+  induced.subgraph(graph, which(cl$membership == which.max(cl$csize)))
+}
+```
+
+```{r}
+
+wars_in_1000s_undirected.ig <- igraph::as.undirected(
+  wars_in_1000s.ig,
+  mode = c("collapse", "each", "mutual"),
+)
+
+wars_in_1000s_comm.fg<-cluster_fast_greedy(wars_in_1000s_undirected.ig)
+
+names(wars_in_1000s_comm.fg)
+
+```
+
+#### Fast and Greedy Blockmodel 1000s
+
+```{r}
+
+
+wars_in_1000s_undirected_network <- asNetwork(wars_in_1000s_undirected.ig)
+
+wars_in_1000s_undirected_network_blockmodel <- 
+  blockmodel(wars_in_1000s_undirected_network, wars_in_1000s_comm.fg$membership)
+
+
+```
+
+#### Node Attributes Fast Greedy Membership 1000s
+
+```{r}
+
+#add community membership as a node attribute
+nodes_1000s$comm.fg <- wars_in_1000s_comm.fg$membership
+#summarize node statistics by community
+
+```
+
+#### Walktrap Community Detection 1000s
+
+```{r}
+#Run clustering algorithm: walktrap
+wars_in_1000s_comm.wt <- walktrap.community(wars_in_1000s.ig)
+#add community membership as a vertex attribute
+nodes_1000s$comm.wt <- wars_in_1000s_comm.wt$membership
+#summarize node statistics by community
+```
+
+#### Leading Label Propagation Community Detection 1000s
+
+```{r}
+
+wars_in_1000s_comm.lab <- label.propagation.community(wars_in_1000s.ig)
+
+nodes_1000s$comm.lab<-wars_in_1000s_comm.lab$membership
+
+```
+
+#### Edge Betweenness Community Detection 1000s
+
+```{r}
+
+wars_in_1000s_comm.edge<-label.propagation.community(wars_in_1000s.ig)
+
+nodes_1000s$comm.edge<-wars_in_1000s_comm.edge$membership
+
+```
+
+#### Eigenvector Community Detection 1000s
+
+```{r}
+
+wars_in_1000s_comm.eigen <- leading.eigenvector.community(wars_in_1000s_undirected.ig)
+
+nodes_1000s$comm.eigen<-wars_in_1000s_comm.eigen$membership
+
+```
+
+#### Fast and Greedy Community Detection 1100s
+
+Fast Greedy does not support directed graphs so I have to convert my wars object to an undirected graph making this likely a weaker method for community detection.
+
+```{r}
+
+wars_in_1100s_undirected.ig <- igraph::as.undirected(
+  wars_in_1100s.ig,
+  mode = c("collapse", "each", "mutual"),
+)
+
+wars_in_1100s_comm.fg<-cluster_fast_greedy(wars_in_1100s_undirected.ig)
+
+names(wars_in_1100s_comm.fg)
+
+```
+
+#### Fast and Greedy Blockmodel 1100s
+
+```{r}
+
+
+wars_in_1100s_undirected_network <- asNetwork(wars_in_1100s_undirected.ig)
+
+wars_in_1100s_undirected_network_blockmodel <- blockmodel(wars_in_1100s_undirected_network,wars_in_1100s_comm.fg$membership)
+
+
+```
+
+#### Node Attributes Fast Greedy Membership 1100s
+
+```{r}
+
+#add community membership as a node attribute
+nodes_1100s$comm.fg<-wars_in_1100s_comm.fg$membership
+#summarize node statistics by community
+
+```
+
+#### Walktrap Community Detection 1100s
+
+```{r}
+#Run clustering algorithm: walktrap
+wars_in_1100s_comm.wt<-walktrap.community(wars_in_1100s.ig)
+#add community membership as a vertex attribute
+nodes_1100s$comm.wt <- wars_in_1100s_comm.wt$membership
+#summarize node statistics by community
+```
+
+#### Leading Label Propagation Community Detection 1100s
+
+```{r}
+
+wars_in_1100s_comm.lab<-label.propagation.community(wars_in_1100s.ig)
+
+nodes_1100s$comm.lab<-wars_in_1100s_comm.lab$membership
+
+```
+
+#### Edge Betweenness Community Detection 1100s
+
+```{r}
+
+wars_in_1100s_comm.edge<-label.propagation.community(wars_in_1100s.ig)
+
+nodes_1100s$comm.edge<-wars_in_1100s_comm.edge$membership
+
+```
+
+#### Eigenvector Community Detection 1100s
+
+```{r}
+
+wars_in_1100s_comm.eigen <- leading.eigenvector.community(wars_in_1100s_undirected.ig)
+
+nodes_1100s$comm.eigen<-wars_in_1100s_comm.eigen$membership
+
+```
+
+#### Fast and Greedy Community Detection 1200s
+
+Fast Greedy does not support directed graphs so I have to convert my wars object to an undirected graph making this likely a weaker method for community detection.
+
+```{r}
+
+wars_in_1200s_undirected.ig <- igraph::as.undirected(
+  wars_in_1200s.ig,
+  mode = c("collapse", "each", "mutual"),
+)
+
+wars_in_1200s_comm.fg<-cluster_fast_greedy(wars_in_1200s_undirected.ig)
+
+names(wars_in_1200s_comm.fg)
+
+```
+
+#### Fast and Greedy Blockmodel 1200s
+
+```{r}
+
+
+wars_in_1200s_undirected_network <- asNetwork(wars_in_1200s_undirected.ig)
+
+wars_in_1200s_undirected_network_blockmodel <- blockmodel(wars_in_1200s_undirected_network,wars_in_1200s_comm.fg$membership)
+
+
+```
+
+#### Node Attributes Fast Greedy Membership 1200s
+
+```{r}
+
+#add community membership as a node attribute
+nodes_1200s$comm.fg<-wars_in_1200s_comm.fg$membership
+#summarize node statistics by community
+
+```
+
+#### Walktrap Community Detection 1200s
+
+```{r}
+#Run clustering algorithm: walktrap
+wars_in_1200s_comm.wt<-walktrap.community(wars_in_1200s.ig)
+#add community membership as a vertex attribute
+nodes_1200s$comm.wt <- wars_in_1200s_comm.wt$membership
+#summarize node statistics by community
+```
+
+#### Leading Label Propagation Community Detection 1200s
+
+```{r}
+
+wars_in_1200s_comm.lab<-label.propagation.community(wars_in_1200s.ig)
+
+nodes_1200s$comm.lab<-wars_in_1200s_comm.lab$membership
+
+```
+
+#### Edge Betweenness Community Detection 1200s
+
+```{r}
+
+wars_in_1200s_comm.edge<-label.propagation.community(wars_in_1200s.ig)
+
+nodes_1200s$comm.edge<-wars_in_1200s_comm.edge$membership
+
+```
+
+#### Eigenvector Community Detection 1200s
+
+**Big Asterisk here!**
+
+```{r}
+
+wars_in_1200s_comm.eigen <- leading.eigenvector.community(wars_in_1200s.ig)
+
+nodes_1200s$comm.eigen<-wars_in_1200s_comm.eigen$membership
+
+```
+
+#### Fast and Greedy Community Detection 1300s
+
+Fast Greedy does not support directed graphs so I have to convert my wars object to an undirected graph making this likely a weaker method for community detection.
+
+```{r}
+
+wars_in_1300s_undirected.ig <- igraph::as.undirected(
+  wars_in_1300s.ig,
+  mode = c("collapse", "each", "mutual"),
+)
+
+wars_in_1300s_comm.fg<-cluster_fast_greedy(wars_in_1300s_undirected.ig)
+
+names(wars_in_1300s_comm.fg)
+
+```
+
+#### Fast and Greedy Blockmodel 1300s
+
+```{r}
+
+
+wars_in_1300s_undirected_network <- asNetwork(wars_in_1300s_undirected.ig)
+
+wars_in_1300s_undirected_network_blockmodel <- blockmodel(wars_in_1300s_undirected_network, wars_in_1300s_comm.fg$membership)
+
+
+```
+
+#### Node Attributes Fast Greedy Membership 1300s
+
+```{r}
+
+#add community membership as a node attribute
+nodes_1300s$comm.fg<-wars_in_1300s_comm.fg$membership
+#summarize node statistics by community
+
+```
+
+#### Walktrap Community Detection 1300s
+
+```{r}
+#Run clustering algorithm: walktrap
+wars_in_1300s_comm.wt<-walktrap.community(wars_in_1300s.ig)
+#add community membership as a vertex attribute
+nodes_1300s$comm.wt <- wars_in_1300s_comm.wt$membership
+#summarize node statistics by community
+```
+
+#### Leading Label Propagation Community Detection 1300s
+
+```{r}
+
+wars_in_1300s_comm.lab<-label.propagation.community(wars_in_1300s.ig)
+
+nodes_1300s$comm.lab<-wars_in_1300s_comm.lab$membership
+
+```
+
+#### Edge Betweenness Community Detection 1300s
+
+```{r}
+
+wars_in_1300s_comm.edge<-label.propagation.community(wars_in_1300s.ig)
+
+nodes_1300s$comm.edge<-wars_in_1300s_comm.edge$membership
+
+```
+
+#### Eigenvector Community Detection 1300s
+
+```{r}
+
+wars_in_1300s_comm.eigen <- leading.eigenvector.community(wars_in_1300s_undirected.ig)
+
+nodes_1300s$comm.eigen<-wars_in_1300s_comm.eigen$membership
+
+```
+
+#### Fast and Greedy Community Detection 1400s
+
+Fast Greedy does not support directed graphs so I have to convert my wars object to an undirected graph making this likely a weaker method for community detection.
+
+```{r}
+
+wars_in_1400s_undirected.ig <- igraph::as.undirected(
+  wars_in_1400s.ig,
+  mode = c("collapse", "each", "mutual"),
+)
+
+wars_in_1400s_comm.fg<-cluster_fast_greedy(wars_in_1400s_undirected.ig)
+
+names(wars_in_1400s_comm.fg)
+
+```
+
+#### Fast and Greedy Blockmodel 1400s
+
+```{r}
+
+
+wars_in_1400s_undirected_network <- asNetwork(wars_in_1400s_undirected.ig)
+
+wars_in_1400s_undirected_network_blockmodel <- blockmodel(wars_in_1400s_undirected_network, wars_in_1400s_comm.fg$membership)
+
+
+```
+
+#### Node Attributes Fast Greedy Membership 1400s
+
+```{r}
+
+#add community membership as a node attribute
+nodes_1400s$comm.fg<-wars_in_1400s_comm.fg$membership
+#summarize node statistics by community
+
+```
+
+#### Walktrap Community Detection 1400s
+
+```{r}
+#Run clustering algorithm: walktrap
+wars_in_1400s_comm.wt<-walktrap.community(wars_in_1400s.ig)
+#add community membership as a vertex attribute
+nodes_1400s$comm.wt <- wars_in_1400s_comm.wt$membership
+#summarize node statistics by community
+```
+
+#### Leading Label Propagation Community Detection 1400s
+
+```{r}
+
+wars_in_1400s_comm.lab<-label.propagation.community(wars_in_1400s.ig)
+
+nodes_1400s$comm.lab<-wars_in_1400s_comm.lab$membership
+
+```
+
+#### Edge Betweenness Community Detection 1400s
+
+```{r}
+
+wars_in_1400s_comm.edge<-label.propagation.community(wars_in_1400s.ig)
+
+nodes_1400s$comm.edge<-wars_in_1400s_comm.edge$membership
+
+```
+
+#### Eigenvector Community Detection 1400s
+
+**Big Asterisk here!**
+
+```{r}
+
+wars_in_1400s_comm.eigen <- leading.eigenvector.community(wars_in_1400s.ig)
+
+nodes_1400s$comm.eigen<-wars_in_1400s_comm.eigen$membership
+
+```
+
+#### Fast and Greedy Community Detection 1500s
+
+Fast Greedy does not support directed graphs so I have to convert my wars object to an undirected graph making this likely a weaker method for community detection.
+
+```{r}
+
+wars_in_1500s_undirected.ig <- igraph::as.undirected(
+  wars_in_1500s.ig,
+  mode = c("collapse", "each", "mutual"),
+)
+
+wars_in_1500s_comm.fg<-cluster_fast_greedy(wars_in_1500s_undirected.ig)
+
+names(wars_in_1500s_comm.fg)
+
+```
+
+#### Fast and Greedy Blockmodel 1500s
+
+```{r}
+
+
+wars_in_1500s_undirected_network <- asNetwork(wars_in_1500s_undirected.ig)
+
+wars_in_1500s_undirected_network_blockmodel <- blockmodel(wars_in_1500s_undirected_network, wars_in_1500s_comm.fg$membership)
+
+
+```
+
+#### Node Attributes Fast Greedy Membership 1500s
+
+```{r}
+
+#add community membership as a node attribute
+nodes_1500s$comm.fg<-wars_in_1500s_comm.fg$membership
+#summarize node statistics by community
+
+```
+
+#### Walktrap Community Detection 1500s
+
+```{r}
+#Run clustering algorithm: walktrap
+wars_in_1500s_comm.wt<-walktrap.community(wars_in_1500s.ig)
+#add community membership as a vertex attribute
+nodes_1500s$comm.wt <- wars_in_1500s_comm.wt$membership
+#summarize node statistics by community
+```
+
+#### Leading Label Propagation Community Detection 1500s
+
+```{r}
+
+wars_in_1500s_comm.lab<-label.propagation.community(wars_in_1500s.ig)
+
+nodes_1500s$comm.lab<-wars_in_1500s_comm.lab$membership
+
+```
+
+#### Edge Betweenness Community Detection 1500s
+
+```{r}
+
+wars_in_1500s_comm.edge<-label.propagation.community(wars_in_1500s.ig)
+
+nodes_1500s$comm.edge<-wars_in_1500s_comm.edge$membership
+
+```
+
+#### Eigenvector Community Detection 1500s
+
+**Big Asterisk here!**
+
+```{r}
+
+wars_in_1500s_comm.eigen <- leading.eigenvector.community(wars_in_1500s.ig)
+
+nodes_1500s$comm.eigen<-wars_in_1500s_comm.eigen$membership
+
+```
+
+#### Fast and Greedy Community Detection 1600s
+
+Fast Greedy does not support directed graphs so I have to convert my wars object to an undirected graph making this likely a weaker method for community detection.
+
+```{r}
+
+wars_in_1600s_undirected.ig <- igraph::as.undirected(
+  wars_in_1600s.ig,
+  mode = c("collapse", "each", "mutual"),
+)
+
+wars_in_1600s_comm.fg<-cluster_fast_greedy(wars_in_1600s_undirected.ig)
+
+names(wars_in_1600s_comm.fg)
+
+```
+
+#### Fast and Greedy Blockmodel 1600s
+
+```{r}
+
+
+wars_in_1600s_undirected_network <- asNetwork(wars_in_1600s_undirected.ig)
+
+wars_in_1600s_undirected_network_blockmodel <- blockmodel(wars_in_1600s_undirected_network, wars_in_1600s_comm.fg$membership)
+
+
+```
+
+#### Node Attributes Fast Greedy Membership 1600s
+
+```{r}
+
+#add community membership as a node attribute
+nodes_1600s$comm.fg<-wars_in_1600s_comm.fg$membership
+#summarize node statistics by community
+
+```
+
+#### Walktrap Community Detection 1600s
+
+```{r}
+#Run clustering algorithm: walktrap
+wars_in_1600s_comm.wt<-walktrap.community(wars_in_1600s.ig)
+#add community membership as a vertex attribute
+nodes_1600s$comm.wt <- wars_in_1600s_comm.wt$membership
+#summarize node statistics by community
+```
+
+#### Leading Label Propagation Community Detection 1600s
+
+```{r}
+
+wars_in_1600s_comm.lab<-label.propagation.community(wars_in_1600s.ig)
+
+nodes_1600s$comm.lab<-wars_in_1600s_comm.lab$membership
+
+```
+
+#### Edge Betweenness Community Detection 1600s
+
+```{r}
+
+wars_in_1600s_comm.edge<-label.propagation.community(wars_in_1600s.ig)
+
+nodes_1600s$comm.edge<-wars_in_1600s_comm.edge$membership
+
+```
+
+#### Eigenvector Community Detection 1600s
+
+```{r}
+
+wars_in_1600s_comm.eigen <- leading.eigenvector.community(wars_in_1600s_undirected.ig)
+
+nodes_1600s$comm.eigen<-wars_in_1600s_comm.eigen$membership
+
+```
+
+#### Fast and Greedy Community Detection 1700s
+
+Fast Greedy does not support directed graphs so I have to convert my wars object to an undirected graph making this likely a weaker method for community detection.
+
+```{r}
+
+wars_in_1700s_undirected.ig <- igraph::as.undirected(
+  wars_in_1700s.ig,
+  mode = c("collapse", "each", "mutual"),
+)
+
+wars_in_1700s_comm.fg<-cluster_fast_greedy(wars_in_1700s_undirected.ig)
+
+names(wars_in_1700s_comm.fg)
+
+```
+
+#### Fast and Greedy Blockmodel 1700s
+
+```{r}
+
+
+wars_in_1700s_undirected_network <- asNetwork(wars_in_1700s_undirected.ig)
+
+wars_in_1700s_undirected_network_blockmodel <- blockmodel(wars_in_1700s_undirected_network, wars_in_1700s_comm.fg$membership)
+
+
+```
+
+#### Node Attributes Fast Greedy Membership 1700s
+
+```{r}
+
+#add community membership as a node attribute
+nodes_1700s$comm.fg<-wars_in_1700s_comm.fg$membership
+#summarize node statistics by community
+
+```
+
+#### Walktrap Community Detection 1700s
+
+```{r}
+#Run clustering algorithm: walktrap
+wars_in_1700s_comm.wt<-walktrap.community(wars_in_1700s.ig)
+#add community membership as a vertex attribute
+nodes_1700s$comm.wt <- wars_in_1700s_comm.wt$membership
+#summarize node statistics by community
+```
+
+#### Leading Label Propagation Community Detection 1700s
+
+```{r}
+
+wars_in_1700s_comm.lab<-label.propagation.community(wars_in_1700s.ig)
+
+nodes_1700s$comm.lab<-wars_in_1700s_comm.lab$membership
+
+```
+
+#### Edge Betweenness Community Detection 1700s
+
+```{r}
+
+wars_in_1700s_comm.edge<-label.propagation.community(wars_in_1700s.ig)
+
+nodes_1700s$comm.edge<-wars_in_1700s_comm.edge$membership
+
+```
+
+#### Eigenvector Community Detection 1700s
+
+```{r}
+
+wars_in_1700s_comm.eigen <- leading.eigenvector.community(wars_in_1700s_undirected.ig)
+
+nodes_1700s$comm.eigen<-wars_in_1700s_comm.eigen$membership
+
+```
+
+#### Fast and Greedy Community Detection 1800s
+
+Fast Greedy does not support directed graphs so I have to convert my wars object to an undirected graph making this likely a weaker method for community detection.
+
+```{r}
+
+wars_in_1800s_undirected.ig <- igraph::as.undirected(
+  wars_in_1800s.ig,
+  mode = c("collapse", "each", "mutual"),
+)
+
+wars_in_1800s_comm.fg<-cluster_fast_greedy(wars_in_1800s_undirected.ig)
+
+names(wars_in_1800s_comm.fg)
+
+```
+
+#### Fast and Greedy Blockmodel 1800s
+
+```{r}
+
+
+wars_in_1800s_undirected_network <- asNetwork(wars_in_1800s_undirected.ig)
+
+wars_in_1800s_undirected_network_blockmodel <- blockmodel(wars_in_1800s_undirected_network, wars_in_1800s_comm.fg$membership)
+
+
+```
+
+#### Node Attributes Fast Greedy Membership 1800s
+
+```{r}
+
+#add community membership as a node attribute
+nodes_1800s$comm.fg<-wars_in_1800s_comm.fg$membership
+#summarize node statistics by community
+
+```
+
+#### Walktrap Community Detection 1800s
+
+```{r}
+#Run clustering algorithm: walktrap
+wars_in_1800s_comm.wt<-walktrap.community(wars_in_1800s.ig)
+#add community membership as a vertex attribute
+nodes_1800s$comm.wt <- wars_in_1800s_comm.wt$membership
+#summarize node statistics by community
+```
+
+#### Leading Label Propagation Community Detection 1800s
+
+```{r}
+
+wars_in_1800s_comm.lab<-label.propagation.community(wars_in_1800s.ig)
+
+nodes_1800s$comm.lab<-wars_in_1800s_comm.lab$membership
+
+```
+
+#### Edge Betweenness Community Detection 1800s
+
+```{r}
+
+wars_in_1800s_comm.edge<-label.propagation.community(wars_in_1800s.ig)
+
+nodes_1800s$comm.edge<-wars_in_1800s_comm.edge$membership
+
+```
+
+#### Eigenvector Community Detection 1800s
+
+```{r}
+
+wars_in_1800s_comm.eigen <- leading.eigenvector.community(wars_in_1800s_undirected.ig)
+
+nodes_1800s$comm.eigen<-wars_in_1800s_comm.eigen$membership
+
+```
+
+#### Comparing Modualrity Scores 
+
+```{r}
+compare.algs<-function(alg.a,alg.b,compare.meth=c("vi", "nmi", "split.join", "rand", "adjusted.rand")){
+  #create list of community objects and methods
+  comm.compare<-expand.grid(alg.a=alg.a, alg.b=alg.b, meth=compare.meth, result=NA, stringsAsFactors = FALSE)
+  #compare community partitions using a loop
+for(i in 1:nrow(comm.compare)){
+  comm1<-get(comm.compare$alg.a[i])
+  comm2<-get(comm.compare$alg.b[i])
+  method<-comm.compare$meth[i]
+  comm.compare$result[i]<-compare(comm1, comm2, method)
+}
+  return(comm.compare)
+}
+```
+
+#### Comparing 1000s Modualrity Scores 
+
+```{r}
+
+compare.algs(alg.a=c("wars_in_1000s_comm.fg","wars_in_1000s_comm.wt", "wars_in_1000s_comm.lab", "wars_in_1000s_comm.edge"), alg.b="wars_in_1000s_comm.eigen")
+
+```
+#### Comparing 1100s Modualrity Scores 
+
+```{r}
+
+compare.algs(alg.a=c("wars_in_1100s_comm.fg","wars_in_1100s_comm.wt", "wars_in_1100s_comm.lab", "wars_in_1100s_comm.edge"), alg.b="wars_in_1100s_comm.eigen")
+
+```
+
+#### Comparing 1200s Modualrity Scores 
+
+```{r}
+
+compare.algs(alg.a=c("wars_in_1200s_comm.fg","wars_in_1200s_comm.wt", "wars_in_1200s_comm.lab", "wars_in_1200s_comm.edge"), alg.b="wars_in_1200s_comm.eigen")
+
+```
+
+#### Comparing 1300s Modualrity Scores 
+
+```{r}
+
+compare.algs(alg.a=c("wars_in_1300s_comm.fg","wars_in_1300s_comm.wt", "wars_in_1300s_comm.lab", "wars_in_1300s_comm.edge"), alg.b="wars_in_1300s_comm.eigen")
+
+```
+
+#### Comparing 1400s Modualrity Scores 
+
+```{r}
+
+compare.algs(alg.a=c("wars_in_1400s_comm.fg","wars_in_1400s_comm.wt", "wars_in_1400s_comm.lab", "wars_in_1400s_comm.edge"), alg.b="wars_in_1400s_comm.eigen")
+
+```
+
+#### Comparing 1500s Modualrity Scores 
+
+```{r}
+
+compare.algs(alg.a=c("wars_in_1500s_comm.fg","wars_in_1500s_comm.wt", "wars_in_1500s_comm.lab", "wars_in_1500s_comm.edge"), alg.b="wars_in_1500s_comm.eigen")
+
+```
+
+#### Comparing 1600s Modualrity Scores 
+
+```{r}
+
+compare.algs(alg.a=c("wars_in_1600s_comm.fg","wars_in_1600s_comm.wt", "wars_in_1600s_comm.lab", "wars_in_1600s_comm.edge"), alg.b="wars_in_1600s_comm.eigen")
+
+```
+
+#### Comparing 1700s Modualrity Scores 
+
+```{r}
+
+compare.algs(alg.a=c("wars_in_1700s_comm.fg","wars_in_1700s_comm.wt", "wars_in_1700s_comm.lab", "wars_in_1700s_comm.edge"), alg.b="wars_in_1700s_comm.eigen")
+
+```
+
+#### Comparing 1800s Modualrity Scores 
+
+```{r}
+
+compare.algs(alg.a=c("wars_in_1800s_comm.fg","wars_in_1800s_comm.wt", "wars_in_1800s_comm.lab", "wars_in_1800s_comm.edge"), alg.b="wars_in_1800s_comm.eigen")
+
+```
+
+### Histograms of Important Network Attributes 
+
+##### Histogram 1000s Degree Distribution
+
+```{r}
+
+hist(nodes_1000s$indegree, main="Conflict in 1000s: In-degree Distribution", 
+     xlab="Co-Belligerents Defeated")
+
+hist(nodes_1000s$outdegree, main="Conflict in 1000s: Out-degree Distribution", 
+     xlab="Co-Belligerents Lost to")
+
+```
+
+##### Histogram 1100s Degree Distribution
+
+```{r}
+
+hist(nodes_1100s$indegree, main="Conflict in 1100s: In-degree Distribution", 
+     xlab="Co-Belligerents Defeated")
+
+hist(nodes_1100s$outdegree, main="Conflict in 1100s: Out-degree Distribution", 
+     xlab="Co-Belligerents Lost to")
+
+```
+
+##### Histogram 1200s Degree Distribution
+
+```{r}
+
+hist(nodes_1200s$indegree, main="Conflict in 1200s: In-degree Distribution", 
+     xlab="Co-Belligerents Defeated")
+
+hist(nodes_1200s$outdegree, main="Conflict in 1200s: Out-degree Distribution", 
+     xlab="Co-Belligerents Lost to")
+
+```
+
+##### Histogram 1300s Degree Distribution
+
+```{r}
+
+hist(nodes_1300s$indegree, main="Conflict in 1300s: In-degree Distribution",
+     xlab="Co-Belligerents Defeated")
+
+hist(nodes_1300s$outdegree, main="Conflict in 1300s: Out-degree Distribution", 
+     xlab="Co-Belligerents Lost to")
+
+```
+
+##### Histogram 1400s Degree Distribution
+
+```{r}
+
+hist(nodes_1400s$indegree, main="Conflict in 1400s: In-degree Distribution", 
+     xlab="Co-Belligerents Defeated")
+
+hist(nodes_1400s$outdegree, main="Conflict in 1400s: Out-degree Distribution", 
+     xlab="Co-Belligerents Lost to")
+
+```
+
+##### Histogram 1500s Degree Distribution
+
+```{r}
+
+hist(nodes_1500s$indegree, main="Conflict in 1500s: In-degree Distribution", 
+     xlab="Co-Belligerents Defeated")
+
+hist(nodes_1500s$outdegree, main="Conflict in 1500s: Out-degree Distribution", 
+     xlab="Co-Belligerents Lost to")
+
+```
+
+##### Histogram 1600s Degree Distribution
+
+```{r}
+
+hist(nodes_1600s$indegree, main="Conflict in 1600s: In-degree Distribution", 
+     xlab="Co-Belligerents Defeated")
+
+hist(nodes_1600s$outdegree, main="Conflict in 1600s: Out-degree Distribution", 
+     xlab="Co-Belligerents Lost to")
+
+```
+
+##### Histogram 1700s Degree Distribution
+
+```{r}
+
+hist(nodes_1700s$indegree, main="Conflict in 1700s: In-degree Distribution", 
+     xlab="Co-Belligerents Defeated")
+
+hist(nodes_1700s$outdegree, main="Conflict in 1700s: Out-degree Distribution", 
+     xlab="Co-Belligerents Lost to")
+
+```
+
+##### Histogram 1800s Degree Distribution
+
+```{r}
+
+hist(nodes_1800s$indegree, main="Conflict in 1800s: In-degree Distribution", 
+     xlab="Co-Belligerents Defeated")
+
+hist(nodes_1800s$outdegree, main="Conflict in 1800s: Out-degree Distribution", 
+     xlab="Co-Belligerents Lost to")
 
 ```
 
@@ -648,6 +2695,7 @@ plot(dend,col="white", type="rectangle", frame.plot = FALSE, center	=FALSE, xlab
 
 ```
 
+
 ```{r}
 
 #pdf("h_clust_plot.pdf") 
@@ -668,7 +2716,255 @@ plot(dend,col="white", type="rectangle", frame.plot = FALSE, center	=FALSE, xlab
 
 ```
 
-## Trade Data
+### Edge Prediction Analysis
+
+#### Edge Prediction 1000s
+
+Edge prediction will initally be done with predict_edges(), a function in igraph with stron influence from the work of Aaron Clauset, including "Hierarchical structure and the prediction of missing links in networks." This method of edge prediction gives the probability of an edge being missing between two nodes using HRG which is sampled in MCMC or Markov chain Monte Carlo. The MCMC characterizes the distribution of the data by randomly sampling. The first aspect of MCMC, Monte-Carlos "is the practice of estimating the properties of a distribution by examining random samples from the distribution."" (van Ravenzwaaij 143) The Latter part, Markov chain suggests that random samples are generated sequentially. This allows us to focus on a posterior distribution rather than assuming one in our data-generating-process.
+
+Clauset explains the process as taking an input graph initially and runs MCMC, each time sampling a dendrogram with corresponding log-likelihoods. This MCMC then outputs a list of possible missing connections in descending order of log-likelihood. 
+
+Next I will look to see if the simulations replicate some of the structure and connections of the 1100s data set. The 1100s data set has more edges than the 1000s so we will simulate conflicts to see if the simulations will result in wars that are seen in the 1100s. I will simulate a number of wars equivalent to the difference between the two. The 1100s have 238 edges and the 1000s have 153 edges. I will add these 85 edges.
+
+```{r}
+(238-153) %>% kable()
+```
+
+This is documented in the R Documentation for predict_edges 
+
+“A simple introduction to Markov Chain Monte-Carlo sampling.”
+
+"Structural Inference of Hierarchies in Networks"
+
+van Ravenzwaaij, Don et al. “A simple introduction to Markov Chain Monte-Carlo sampling.” Psychonomic bulletin & review vol. 25,1 (2018): 143-154. doi:10.3758/s13423-016-1015-8
+
+First I will start with 7 new edges that the simulations give a log-likelihood over 700
+
+```{r}
+set.seed(1287)
+
+prediction_for_1000s <- predict_edges(
+  wars_in_1000s.ig,
+  hrg = NULL,
+  start = FALSE,
+  num.samples = 100,
+  num.bins = 25
+)
+
+#Here I look for predicted edge probability over 33% as a test
+prediction_for_1000s$prob[c(1:7)]
+# It turns out that 28 predicted edges are given a probability over 33%
+prediction_for_1000s_best_7 <- (prediction_for_1000s$edges)[c(1:7),]
+# I then create a new rename of my graph object
+wars_in_1000s_for_adding_predicted_edges.ig <- wars_in_1000s.ig
+
+wars_in_1000s_added_edges.ig <- add_edges(wars_in_1000s_for_adding_predicted_edges.ig, 
+                                       prediction_for_1000s_best_7)
+
+
+E(wars_in_1000s_added_edges.ig)[1:153]$color = "gray50"
+
+E(wars_in_1000s_added_edges.ig)[154:160]$color = "red"
+
+# wars_in_1000s_added_edges_network<- asNetwork(wars_in_1000s_added_edges.ig)
+
+```
+
+```{r}
+
+set.seed(1287)
+
+colrs <- c("red", "gray50")
+
+set.seed(777)
+plot(
+  wars_in_1000s_added_edges.ig, 
+     vertex.color = "gray78",
+     vertex.size=4, 
+     edge.arrow.width=0.5, 
+     edge.arrow.size=.2, 
+     edge.curved=.2, 
+     vertex.label.cex=0.2,  
+     vertex.label.color="black"
+     )
+
+legend(x=-1.5, y=-1.1, c("Simulated Edge Color", "Original Edge"), pch=21,
+
+       col="#777777", pt.bg=colrs, pt.cex=2, cex=.8, bty="n", ncol=1)
+
+```
+```{r}
+# Circle layout
+
+set.seed(1287)
+
+l <- layout_in_circle(wars_in_1000s_added_edges.ig)
+
+plot(wars_in_1000s_added_edges.ig, layout=l,    vertex.color = "gray78",
+     vertex.size=4, 
+     edge.arrow.width=0.5, 
+     edge.arrow.size=.2, 
+     edge.curved=.2, 
+     vertex.label.cex=0.2,  
+     vertex.label.color="black"
+     )
+legend(x=-1.5, y=-1.1, c("Simulated Edge Color", "Original Edge"), pch=21,
+
+       col="#777777", pt.bg=colrs, pt.cex=2, cex=.8, bty="n", ncol=1)
+
+```
+
+```{r}
+# dh fr lgl
+layout_dh_1000s <- layout_with_dh(wars_in_1000s_added_edges.ig)
+
+plot(wars_in_1000s_added_edges.ig, layout=layout_dh_1000s,    
+     vertex.color = "gray78",
+     vertex.size=4, 
+     edge.arrow.width=0.5, 
+     edge.arrow.size=.2, 
+     edge.curved=.2, 
+     vertex.label.cex=0.2,  
+     vertex.label.color="black"
+     )
+legend(x=-1.5, y=-1.1, c("Simulated Edge Color", "Original Edge"), pch=21,
+
+       col="#777777", pt.bg=colrs, pt.cex=2, cex=.8, bty="n", ncol=1)
+
+```
+
+#### Comparison with 85 new edges
+
+```{r}
+
+set.seed(90234)
+
+prediction_for_1000s_85 <- predict_edges(
+  wars_in_1000s.ig,
+  hrg = NULL,
+  start = FALSE,
+  num.samples = 100,
+  num.bins = 25
+)
+
+#Here I look for predicted edge probability over 33% as a test
+
+# It turns out that 28 predicted edges are given a probability over 33%
+prediction_for_1000s_best_85 <- (prediction_for_1000s$edges)[c(1:85),]
+# I then create a new rename of my graph object
+wars_in_1000s_for_adding_predicted_edges_85.ig <- wars_in_1000s.ig
+
+wars_in_1000s_added_edges_85.ig <- add_edges(wars_in_1000s_for_adding_predicted_edges_85.ig, 
+                                       prediction_for_1000s_best_85)
+
+E(wars_in_1000s_added_edges_85.ig)[1:153]$color = "gray50"
+
+E(wars_in_1000s_added_edges_85.ig)[154:238]$color = "red"
+
+# wars_in_1000s_added_edges_network<- asNetwork(wars_in_1000s_added_edges.ig)
+
+```
+
+```{r}
+# dh fr lgl
+
+layout_dh_1000s_85 <- layout_with_dh(wars_in_1000s_added_edges_85.ig)
+
+plot(wars_in_1000s_added_edges_85.ig, layout=layout_dh_1000s_85,    
+     vertex.color = "gray78",
+     vertex.size=4, 
+     edge.arrow.width=0.5, 
+     edge.arrow.size=.2, 
+     edge.curved=.2, 
+     vertex.label.cex=0.2,  
+     vertex.label.color="black"
+     )
+legend(x=-1.5, y=-1.1, c("Simulated Edge Color", "Original Edge"), pch=21,
+
+       col="#777777", pt.bg=colrs, pt.cex=2, cex=.8, bty="n", ncol=1)
+
+
+```
+
+Package ‘NetworkComparisonTest’
+
+"This permutation based hypothesis test, suited for gaussian and binary data, assesses the difference between two networks based on several invariance measures (network structure invariance, global strength invariance, edge invariance). Network structures are estimated with l1-regularized partial correlations (gaussian data) or with l1-regularized logistic regression (eLasso, binary data). Suited for comparison of independent and dependent samples. For dependent samples, only supported for data of one group which is measured twice."
+
+http://eliassi.org/papers/soundarajan-sdm14.pdf
+
+```{r}
+
+wars_in_1000s_added_edges_7_network <- average.path.length(wars_in_1000s_added_edges.ig,directed=T)
+
+wars_in_1000s_added_edges_network <- as.network(as.matrix(wars_in_1000s_added_edges.ig))
+
+wars_in_1000s_added_edges_85_network <- as.network(as.matrix(wars_in_1000s_added_edges_85.ig))
+
+trans_for_added_edges_global <- c(
+  
+transitivity(wars_in_1000s.ig,  type="global"),
+
+transitivity(wars_in_1100s.ig,  type="global"),
+
+transitivity(wars_in_1000s_added_edges.ig,  type="global"),
+
+transitivity(wars_in_1000s_added_edges_85.ig,  type="global")
+
+)
+
+trans_for_added_edges_averge <- c(
+  
+transitivity(wars_in_1000s.ig,  type="average"),
+
+transitivity(wars_in_1100s.ig,  type="average"),
+
+transitivity(wars_in_1000s_added_edges.ig,  type="average"),
+
+transitivity(wars_in_1000s_added_edges_85.ig,  type="average")
+
+)
+
+apl_for_added_edges <- c(
+
+average.path.length(wars_in_1000s.ig,directed=T),
+
+average.path.length(wars_in_1100s.ig,directed=T),
+
+average.path.length(wars_in_1000s_added_edges.ig,directed=T),
+
+average.path.length(wars_in_1000s_added_edges_85.ig,directed=T)
+
+)
+
+network_density_for_added_edges <- c(
+
+network.density(wars_in_1000s_network),
+
+network.density(wars_in_1100s_network),
+
+network.density(wars_in_1000s_added_edges_network),
+
+network.density(wars_in_1000s_added_edges_85_network)
+
+)
+
+centr_degree(wars_in_1000s.ig, loops = FALSE, mode="in")$centralization
+
+centr_degree(wars_in_1100s.ig, loops = FALSE, mode="in")$centralization
+
+centr_degree(wars_in_1000s_added_edges.ig, loops = FALSE, mode="in")$centralization
+
+centr_degree(wars_in_1000s_added_edges_85.ig, loops = FALSE, mode="in")$centralization
+
+data_frame()
+```
+
+
+#### Edge Prediction1100s
+
+
+
+### Mapped Data 1800s
 
 ```{r}
 library('maps')
@@ -694,11 +2990,11 @@ mycols3 <- sample(cl, 145)
 mycols2<-c(mycols2, mycols3)
 palette(mycols2)
 
-map('world', fill = TRUE, col = "white", mar = rep(0, 4), resolution = 10 , myborder = 0.001, bg="skyblue1") 
+map('world', fill = TRUE, col = "white", mar = rep(0, 4), resolution = 10 , myborder = 0.001) #bg="skyblue1"
 
 nodes <- transform(aspects_of_1800s_states_for_map, countries = as.factor(aspects_of_1800s_states_for_map$name))
 
-with(nodes, points(long, Lat, col=countries, pch=19, cex=0.5)) 
+with(nodes, points(long, Lat, col=countries, pch=19, cex=0.25)) 
 
 edges <- subset(data.frame(from = wars_in_1800s$In, to = wars_in_1800s$Out, stringsAsFactors = F), from != to)
 
@@ -716,8 +3012,6 @@ edges$Lat.y<-as.integer(edges$Lat.y)
 
 apply(edges[,-(1:2)], 1, function(x)
 curvedarrow(to=x[3:4], from=x[1:2], lcol=x[5], 
-            curve=.1, arr.pos = 1, lwd=.2, arr.lwd=0.01, 
-                          arr.width=0.1, arr.length=0.1))
+            curve=.1, arr.pos = 1, lwd=.125, arr.lwd=0.01, 
+                          arr.width=0.01, arr.length=0.1))
 ```
-
-
