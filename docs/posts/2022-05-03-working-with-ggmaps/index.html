@@ -2630,44 +2630,42 @@ Transitivity Attributes for Each Century</h5>
 to understand how they change over time we will concatenate the scores
 and graph them.</p>
 <div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>transitivity_over_time_global</span> <span class='op'>&lt;-</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>
-  
-<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/transitivity.html'>transitivity</a></span><span class='op'>(</span><span class='va'>wars_in_1000s.ig</span>, type<span class='op'>=</span><span class='st'>"global"</span><span class='op'>)</span>,
-
-<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/transitivity.html'>transitivity</a></span><span class='op'>(</span><span class='va'>wars_in_1100s.ig</span>, type<span class='op'>=</span><span class='st'>"global"</span><span class='op'>)</span>,
-
-<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/transitivity.html'>transitivity</a></span><span class='op'>(</span><span class='va'>wars_in_1200s.ig</span>, type<span class='op'>=</span><span class='st'>"global"</span><span class='op'>)</span>,
-
-<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/transitivity.html'>transitivity</a></span><span class='op'>(</span><span class='va'>wars_in_1300s.ig</span>, type<span class='op'>=</span><span class='st'>"global"</span><span class='op'>)</span>,
-
-<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/transitivity.html'>transitivity</a></span><span class='op'>(</span><span class='va'>wars_in_1400s.ig</span>, type<span class='op'>=</span><span class='st'>"global"</span><span class='op'>)</span>,
-
-<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/transitivity.html'>transitivity</a></span><span class='op'>(</span><span class='va'>wars_in_1500s.ig</span>, type<span class='op'>=</span><span class='st'>"global"</span><span class='op'>)</span>,
-
-<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/transitivity.html'>transitivity</a></span><span class='op'>(</span><span class='va'>wars_in_1600s.ig</span>, type<span class='op'>=</span><span class='st'>"global"</span><span class='op'>)</span>,
-
-<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/transitivity.html'>transitivity</a></span><span class='op'>(</span><span class='va'>wars_in_1700s.ig</span>, type<span class='op'>=</span><span class='st'>"global"</span><span class='op'>)</span>,
-
-<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/transitivity.html'>transitivity</a></span><span class='op'>(</span><span class='va'>wars_in_1800s.ig</span>, type<span class='op'>=</span><span class='st'>"global"</span><span class='op'>)</span>
-
-<span class='op'>)</span>
-
-
-<span class='va'>network_atts_for_plot</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span><span class='va'>transitivity_over_time_global</span><span class='op'>)</span>
-<span class='va'>network_atts_for_plot</span>
-</code></pre>
-</div>
-<pre><code>  transitivity_over_time_global
-1                    0.07153502
-2                    0.07713126
-3                    0.09871795
-4                    0.10443864
-5                    0.02845850
-6                    0.07854774
-7                    0.15108767
-8                    0.14754667
-9                    0.09150109</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: right;">transitivity_over_time_global</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.0715350</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.0771313</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.0987179</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.1044386</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.0284585</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.0785477</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.1510877</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.1475467</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.0915011</td>
+</tr>
+</tbody>
+</table>
 </div>
 <h5 id="century-attributes-numeric">Century Attributes, Numeric</h5>
 <p>I then create a list of doubles to indicate my century of conflict in
@@ -2685,238 +2683,49 @@ Time Graphed</h4>
 <p>I then use ggplot to plot the network’s transitivity over time using
 global transitivity.</p>
 <div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>network_atts_for_plot</span><span class='op'>)</span> <span class='op'>+</span>
-  
-<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span>
-  
-  color<span class='op'>=</span><span class='st'>"darkorange2"</span>, 
-  
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>
-    
-    x<span class='op'>=</span><span class='va'>century_for_graphing</span>, 
-                                
-      y<span class='op'>=</span><span class='va'>transitivity_over_time_global</span>
-
-    <span class='op'>)</span>
-<span class='op'>)</span>
-</code></pre>
-</div>
 <p><img src="working-with-ggmaps_files/figure-html5/unnamed-chunk-7-1.png" width="624" /></p>
 </div>
 <h5 id="average-transitivity-attributes-for-each-century">Average
 Transitivity Attributes for Each Century</h5>
 <div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>transitivity_over_time_average</span> <span class='op'>&lt;-</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>
-  
-<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/transitivity.html'>transitivity</a></span><span class='op'>(</span><span class='va'>wars_in_1000s.ig</span>, type<span class='op'>=</span><span class='st'>"average"</span><span class='op'>)</span>,
 
-<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/transitivity.html'>transitivity</a></span><span class='op'>(</span><span class='va'>wars_in_1100s.ig</span>, type<span class='op'>=</span><span class='st'>"average"</span><span class='op'>)</span>,
-
-<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/transitivity.html'>transitivity</a></span><span class='op'>(</span><span class='va'>wars_in_1200s.ig</span>, type<span class='op'>=</span><span class='st'>"average"</span><span class='op'>)</span>,
-
-<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/transitivity.html'>transitivity</a></span><span class='op'>(</span><span class='va'>wars_in_1300s.ig</span>, type<span class='op'>=</span><span class='st'>"average"</span><span class='op'>)</span>,
-
-<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/transitivity.html'>transitivity</a></span><span class='op'>(</span><span class='va'>wars_in_1400s.ig</span>, type<span class='op'>=</span><span class='st'>"average"</span><span class='op'>)</span>,
-
-<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/transitivity.html'>transitivity</a></span><span class='op'>(</span><span class='va'>wars_in_1500s.ig</span>, type<span class='op'>=</span><span class='st'>"average"</span><span class='op'>)</span>,
-
-<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/transitivity.html'>transitivity</a></span><span class='op'>(</span><span class='va'>wars_in_1600s.ig</span>, type<span class='op'>=</span><span class='st'>"average"</span><span class='op'>)</span>,
-
-<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/transitivity.html'>transitivity</a></span><span class='op'>(</span><span class='va'>wars_in_1700s.ig</span>, type<span class='op'>=</span><span class='st'>"average"</span><span class='op'>)</span>,
-
-<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/transitivity.html'>transitivity</a></span><span class='op'>(</span><span class='va'>wars_in_1800s.ig</span>, type<span class='op'>=</span><span class='st'>"average"</span><span class='op'>)</span>
-
-<span class='op'>)</span>
-
-<span class='va'>network_atts_for_plot</span><span class='op'>$</span><span class='va'>transitivity_over_time_average</span> <span class='op'>&lt;-</span> 
-  <span class='va'>transitivity_over_time_average</span>
-</code></pre>
-</div>
 </div>
 <h4 id="average-transitivity-over-time-graphed">Average Transitivity
 Over Time Graphed</h4>
 <p>These clustering coefficients do differ from century to century
 between average and global clustering.</p>
 <div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>network_atts_for_plot</span><span class='op'>)</span> <span class='op'>+</span>
-  
-<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span>
-  
-  color<span class='op'>=</span><span class='st'>"forestgreen"</span>, 
-  
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>
-    
-    x<span class='op'>=</span><span class='va'>century_for_graphing</span>, 
-                                
-      y<span class='op'>=</span><span class='va'>transitivity_over_time_average</span>
-
-    <span class='op'>)</span>
-<span class='op'>)</span>
-</code></pre>
-</div>
 <p><img src="working-with-ggmaps_files/figure-html5/unnamed-chunk-9-1.png" width="624" /></p>
 </div>
 <h4 id="average-path-length">Average Path Length</h4>
 <div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>average_path_length_wars</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>
-  
-<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/distances.html'>average.path.length</a></span><span class='op'>(</span><span class='va'>wars_in_1000s.ig</span>,directed<span class='op'>=</span><span class='cn'>T</span><span class='op'>)</span>,
 
-<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/distances.html'>average.path.length</a></span><span class='op'>(</span><span class='va'>wars_in_1100s.ig</span>,directed<span class='op'>=</span><span class='cn'>T</span><span class='op'>)</span>,
-
-<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/distances.html'>average.path.length</a></span><span class='op'>(</span><span class='va'>wars_in_1200s.ig</span>,directed<span class='op'>=</span><span class='cn'>T</span><span class='op'>)</span>,
-
-<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/distances.html'>average.path.length</a></span><span class='op'>(</span><span class='va'>wars_in_1300s.ig</span>,directed<span class='op'>=</span><span class='cn'>T</span><span class='op'>)</span>,
-
-<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/distances.html'>average.path.length</a></span><span class='op'>(</span><span class='va'>wars_in_1400s.ig</span>,directed<span class='op'>=</span><span class='cn'>T</span><span class='op'>)</span>,
-
-<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/distances.html'>average.path.length</a></span><span class='op'>(</span><span class='va'>wars_in_1500s.ig</span>,directed<span class='op'>=</span><span class='cn'>T</span><span class='op'>)</span>,
-
-<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/distances.html'>average.path.length</a></span><span class='op'>(</span><span class='va'>wars_in_1600s.ig</span>,directed<span class='op'>=</span><span class='cn'>T</span><span class='op'>)</span>,
-
-<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/distances.html'>average.path.length</a></span><span class='op'>(</span><span class='va'>wars_in_1700s.ig</span>,directed<span class='op'>=</span><span class='cn'>T</span><span class='op'>)</span>,
-
-<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/distances.html'>average.path.length</a></span><span class='op'>(</span><span class='va'>wars_in_1800s.ig</span>,directed<span class='op'>=</span><span class='cn'>T</span><span class='op'>)</span>
-
-<span class='op'>)</span>
-
-
-<span class='va'>network_atts_for_plot</span><span class='op'>$</span><span class='va'>average_path_length_wars</span> <span class='op'>&lt;-</span> 
-  <span class='va'>average_path_length_wars</span>
-</code></pre>
-</div>
 </div>
 <h4 id="average-transitivity-over-time-graphed-1">Average Transitivity
 Over Time Graphed</h4>
 <p>These clustering coefficients do differ from century to century
 between average and global clustering.</p>
 <div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>network_atts_for_plot</span><span class='op'>)</span> <span class='op'>+</span>
-  
-<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span>
-  
-  color<span class='op'>=</span><span class='st'>"darkslateblue"</span>, 
-  
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>
-    
-    x<span class='op'>=</span><span class='va'>century_for_graphing</span>, 
-                                
-      y<span class='op'>=</span><span class='va'>average_path_length_wars</span>
-
-    <span class='op'>)</span>
-<span class='op'>)</span>
-</code></pre>
-</div>
 <p><img src="working-with-ggmaps_files/figure-html5/unnamed-chunk-11-1.png" width="624" /></p>
 </div>
 <h4 id="density-attributes-for-each-century">Density Attributes for Each
 Century</h4>
 <div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>densities_over_time</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>
-  
-<span class='fu'><a href='https://rdrr.io/pkg/network/man/network.density.html'>network.density</a></span><span class='op'>(</span><span class='va'>wars_in_1000s_network</span><span class='op'>)</span>,
-  
-<span class='fu'><a href='https://rdrr.io/pkg/network/man/network.density.html'>network.density</a></span><span class='op'>(</span><span class='va'>wars_in_1100s_network</span><span class='op'>)</span>, 
-  
-<span class='fu'><a href='https://rdrr.io/pkg/network/man/network.density.html'>network.density</a></span><span class='op'>(</span><span class='va'>wars_in_1200s_network</span><span class='op'>)</span>, 
-  
-<span class='fu'><a href='https://rdrr.io/pkg/network/man/network.density.html'>network.density</a></span><span class='op'>(</span><span class='va'>wars_in_1300s_network</span><span class='op'>)</span>,
-  
-<span class='fu'><a href='https://rdrr.io/pkg/network/man/network.density.html'>network.density</a></span><span class='op'>(</span><span class='va'>wars_in_1400s_network</span><span class='op'>)</span>,
 
-<span class='fu'><a href='https://rdrr.io/pkg/network/man/network.density.html'>network.density</a></span><span class='op'>(</span><span class='va'>wars_in_1500s_network</span><span class='op'>)</span>,
-
-<span class='fu'><a href='https://rdrr.io/pkg/network/man/network.density.html'>network.density</a></span><span class='op'>(</span><span class='va'>wars_in_1600s_network</span><span class='op'>)</span>,
-
-<span class='fu'><a href='https://rdrr.io/pkg/network/man/network.density.html'>network.density</a></span><span class='op'>(</span><span class='va'>wars_in_1700s_network</span><span class='op'>)</span>,
-
-<span class='fu'><a href='https://rdrr.io/pkg/network/man/network.density.html'>network.density</a></span><span class='op'>(</span><span class='va'>wars_in_1800s_network</span><span class='op'>)</span>
-<span class='op'>)</span>
-
-<span class='va'>network_atts_for_plot</span><span class='op'>$</span><span class='va'>densities_over_time</span> <span class='op'>&lt;-</span> 
-  <span class='va'>densities_over_time</span>
-</code></pre>
-</div>
 </div>
 <h4 id="average-density-over-time-graphed">Average Density Over Time
 Graphed</h4>
 <div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>network_atts_for_plot</span><span class='op'>)</span> <span class='op'>+</span>
-  
-<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span>
-  
-  color<span class='op'>=</span><span class='st'>"firebrick4"</span>, 
-  
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>
-    
-    x<span class='op'>=</span><span class='va'>century_for_graphing</span>, 
-                                
-      y<span class='op'>=</span><span class='va'>densities_over_time</span>
-
-    <span class='op'>)</span>
-<span class='op'>)</span>
-</code></pre>
-</div>
 <p><img src="working-with-ggmaps_files/figure-html5/unnamed-chunk-13-1.png" width="624" /></p>
 </div>
 <h4 id="centralization-attributes-for-each-century">Centralization
 Attributes for Each Century</h4>
 <div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>centralities_in_degree_over_time</span><span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>
-  
-<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/centr_degree.html'>centr_degree</a></span><span class='op'>(</span><span class='va'>wars_in_1000s.ig</span>, loops <span class='op'>=</span> <span class='cn'>FALSE</span>, mode<span class='op'>=</span><span class='st'>"in"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>centralization</span>,
 
-<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/centr_degree.html'>centr_degree</a></span><span class='op'>(</span><span class='va'>wars_in_1100s.ig</span>, loops <span class='op'>=</span> <span class='cn'>FALSE</span>, mode<span class='op'>=</span><span class='st'>"in"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>centralization</span>, 
-
-<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/centr_degree.html'>centr_degree</a></span><span class='op'>(</span><span class='va'>wars_in_1200s.ig</span>, loops <span class='op'>=</span> <span class='cn'>FALSE</span>, mode<span class='op'>=</span><span class='st'>"in"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>centralization</span>, 
-
-<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/centr_degree.html'>centr_degree</a></span><span class='op'>(</span><span class='va'>wars_in_1300s.ig</span>, loops <span class='op'>=</span> <span class='cn'>FALSE</span>, mode<span class='op'>=</span><span class='st'>"in"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>centralization</span>, 
-
-<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/centr_degree.html'>centr_degree</a></span><span class='op'>(</span><span class='va'>wars_in_1400s.ig</span>, loops <span class='op'>=</span> <span class='cn'>FALSE</span>, mode<span class='op'>=</span><span class='st'>"in"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>centralization</span>, 
-
-<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/centr_degree.html'>centr_degree</a></span><span class='op'>(</span><span class='va'>wars_in_1500s.ig</span>, loops <span class='op'>=</span> <span class='cn'>FALSE</span>, mode<span class='op'>=</span><span class='st'>"in"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>centralization</span>, 
-
-<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/centr_degree.html'>centr_degree</a></span><span class='op'>(</span><span class='va'>wars_in_1600s.ig</span>, loops <span class='op'>=</span> <span class='cn'>FALSE</span>, mode<span class='op'>=</span><span class='st'>"in"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>centralization</span>,
-
-<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/centr_degree.html'>centr_degree</a></span><span class='op'>(</span><span class='va'>wars_in_1700s.ig</span>, loops <span class='op'>=</span> <span class='cn'>FALSE</span>, mode<span class='op'>=</span><span class='st'>"in"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>centralization</span>,
-
-<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/centr_degree.html'>centr_degree</a></span><span class='op'>(</span><span class='va'>wars_in_1800s.ig</span>, loops <span class='op'>=</span> <span class='cn'>FALSE</span>, mode<span class='op'>=</span><span class='st'>"in"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>centralization</span>
-
-<span class='op'>)</span>
-
-<span class='va'>network_atts_for_plot</span><span class='op'>$</span><span class='va'>centralities_in_degree_over_time</span> <span class='op'>&lt;-</span> 
-  <span class='va'>centralities_in_degree_over_time</span>
-</code></pre>
-</div>
 </div>
 <h4 id="average-centrality-over-time-graphed">Average Centrality Over
 Time Graphed</h4>
 <div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>network_atts_for_plot</span><span class='op'>)</span> <span class='op'>+</span>
-  
-<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span>
-  
-  color<span class='op'>=</span><span class='st'>"firebrick4"</span>, 
-  
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>
-    
-    x<span class='op'>=</span><span class='va'>century_for_graphing</span>, 
-                                
-      y<span class='op'>=</span><span class='va'>centralities_in_degree_over_time</span>
-
-    <span class='op'>)</span>
-<span class='op'>)</span>
-</code></pre>
-</div>
 <p><img src="working-with-ggmaps_files/figure-html5/unnamed-chunk-15-1.png" width="624" /></p>
 </div>
 <h3 id="beginning-with-individual-node-attributes">Beginning with
@@ -2924,77 +2733,12 @@ Individual Node Attributes</h3>
 <h4 id="nodes-attributes-for-each-century-total-degree-and-names">Nodes
 Attributes for Each Century Total Degree and Names</h4>
 <div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>nodes_1000s</span> <span class='op'>&lt;-</span><span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>name<span class='op'>=</span><span class='va'>wars_in_1000s_network</span><span class='op'><a href='https://rdrr.io/pkg/network/man/network.extraction.html'>%v%</a></span><span class='st'>"vertex.names"</span>, 
-                         degree<span class='op'>=</span><span class='fu'>sna</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sna/man/degree.html'>degree</a></span><span class='op'>(</span><span class='va'>wars_in_1000s_network</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='va'>nodes_1100s</span> <span class='op'>&lt;-</span><span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>name<span class='op'>=</span><span class='va'>wars_in_1100s_network</span><span class='op'><a href='https://rdrr.io/pkg/network/man/network.extraction.html'>%v%</a></span><span class='st'>"vertex.names"</span>, 
-                         degree<span class='op'>=</span><span class='fu'>sna</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sna/man/degree.html'>degree</a></span><span class='op'>(</span><span class='va'>wars_in_1100s_network</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='va'>nodes_1200s</span> <span class='op'>&lt;-</span><span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>name<span class='op'>=</span><span class='va'>wars_in_1200s_network</span><span class='op'><a href='https://rdrr.io/pkg/network/man/network.extraction.html'>%v%</a></span><span class='st'>"vertex.names"</span>, 
-                         degree<span class='op'>=</span><span class='fu'>sna</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sna/man/degree.html'>degree</a></span><span class='op'>(</span><span class='va'>wars_in_1200s_network</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='va'>nodes_1300s</span> <span class='op'>&lt;-</span><span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>name<span class='op'>=</span><span class='va'>wars_in_1300s_network</span><span class='op'><a href='https://rdrr.io/pkg/network/man/network.extraction.html'>%v%</a></span><span class='st'>"vertex.names"</span>, 
-                         degree<span class='op'>=</span><span class='fu'>sna</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sna/man/degree.html'>degree</a></span><span class='op'>(</span><span class='va'>wars_in_1300s_network</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='va'>nodes_1400s</span> <span class='op'>&lt;-</span><span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>name<span class='op'>=</span><span class='va'>wars_in_1400s_network</span><span class='op'><a href='https://rdrr.io/pkg/network/man/network.extraction.html'>%v%</a></span><span class='st'>"vertex.names"</span>, 
-                         degree<span class='op'>=</span><span class='fu'>sna</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sna/man/degree.html'>degree</a></span><span class='op'>(</span><span class='va'>wars_in_1400s_network</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='va'>nodes_1500s</span> <span class='op'>&lt;-</span><span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>name<span class='op'>=</span><span class='va'>wars_in_1500s_network</span><span class='op'><a href='https://rdrr.io/pkg/network/man/network.extraction.html'>%v%</a></span><span class='st'>"vertex.names"</span>, 
-                         degree<span class='op'>=</span><span class='fu'>sna</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sna/man/degree.html'>degree</a></span><span class='op'>(</span><span class='va'>wars_in_1500s_network</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='va'>nodes_1600s</span> <span class='op'>&lt;-</span><span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>name<span class='op'>=</span><span class='va'>wars_in_1600s_network</span><span class='op'><a href='https://rdrr.io/pkg/network/man/network.extraction.html'>%v%</a></span><span class='st'>"vertex.names"</span>, 
-                         degree<span class='op'>=</span><span class='fu'>sna</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sna/man/degree.html'>degree</a></span><span class='op'>(</span><span class='va'>wars_in_1600s_network</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='va'>nodes_1700s</span> <span class='op'>&lt;-</span><span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>name<span class='op'>=</span><span class='va'>wars_in_1700s_network</span><span class='op'><a href='https://rdrr.io/pkg/network/man/network.extraction.html'>%v%</a></span><span class='st'>"vertex.names"</span>, 
-                         degree<span class='op'>=</span><span class='fu'>sna</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sna/man/degree.html'>degree</a></span><span class='op'>(</span><span class='va'>wars_in_1700s_network</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='va'>nodes_1800s</span> <span class='op'>&lt;-</span><span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>name<span class='op'>=</span><span class='va'>wars_in_1800s_network</span><span class='op'><a href='https://rdrr.io/pkg/network/man/network.extraction.html'>%v%</a></span><span class='st'>"vertex.names"</span>, 
-                         degree<span class='op'>=</span><span class='fu'>sna</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sna/man/degree.html'>degree</a></span><span class='op'>(</span><span class='va'>wars_in_1800s_network</span><span class='op'>)</span><span class='op'>)</span>
-</code></pre>
-</div>
 </div>
 <h4 id="nodes-attributes-for-each-century-in-and-out-degree">Nodes
 Attributes for Each Century In and Out Degree</h4>
 <div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>nodes_1000s</span><span class='op'>&lt;-</span><span class='va'>nodes_1000s</span> <span class='op'><a href='https://rdrr.io/pkg/igraph/man/pipe.html'>%&gt;%</a></span>
-    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>indegree<span class='op'>=</span><span class='fu'>sna</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sna/man/degree.html'>degree</a></span><span class='op'>(</span><span class='va'>wars_in_1000s_network</span>, cmode<span class='op'>=</span><span class='st'>"indegree"</span><span class='op'>)</span>,
-          outdegree<span class='op'>=</span><span class='fu'>sna</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sna/man/degree.html'>degree</a></span><span class='op'>(</span><span class='va'>wars_in_1000s_network</span>, cmode<span class='op'>=</span><span class='st'>"outdegree"</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='va'>nodes_1100s</span><span class='op'>&lt;-</span><span class='va'>nodes_1100s</span> <span class='op'><a href='https://rdrr.io/pkg/igraph/man/pipe.html'>%&gt;%</a></span>
-    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>indegree<span class='op'>=</span><span class='fu'>sna</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sna/man/degree.html'>degree</a></span><span class='op'>(</span><span class='va'>wars_in_1100s_network</span>, cmode<span class='op'>=</span><span class='st'>"indegree"</span><span class='op'>)</span>,
-          outdegree<span class='op'>=</span><span class='fu'>sna</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sna/man/degree.html'>degree</a></span><span class='op'>(</span><span class='va'>wars_in_1100s_network</span>, cmode<span class='op'>=</span><span class='st'>"outdegree"</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='va'>nodes_1200s</span><span class='op'>&lt;-</span><span class='va'>nodes_1200s</span> <span class='op'><a href='https://rdrr.io/pkg/igraph/man/pipe.html'>%&gt;%</a></span>
-    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>indegree<span class='op'>=</span><span class='fu'>sna</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sna/man/degree.html'>degree</a></span><span class='op'>(</span><span class='va'>wars_in_1200s_network</span>, cmode<span class='op'>=</span><span class='st'>"indegree"</span><span class='op'>)</span>,
-          outdegree<span class='op'>=</span><span class='fu'>sna</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sna/man/degree.html'>degree</a></span><span class='op'>(</span><span class='va'>wars_in_1200s_network</span>, cmode<span class='op'>=</span><span class='st'>"outdegree"</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='va'>nodes_1300s</span><span class='op'>&lt;-</span><span class='va'>nodes_1300s</span> <span class='op'><a href='https://rdrr.io/pkg/igraph/man/pipe.html'>%&gt;%</a></span>
-    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>indegree<span class='op'>=</span><span class='fu'>sna</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sna/man/degree.html'>degree</a></span><span class='op'>(</span><span class='va'>wars_in_1300s_network</span>, cmode<span class='op'>=</span><span class='st'>"indegree"</span><span class='op'>)</span>,
-          outdegree<span class='op'>=</span><span class='fu'>sna</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sna/man/degree.html'>degree</a></span><span class='op'>(</span><span class='va'>wars_in_1300s_network</span>, cmode<span class='op'>=</span><span class='st'>"outdegree"</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='va'>nodes_1400s</span><span class='op'>&lt;-</span><span class='va'>nodes_1400s</span> <span class='op'><a href='https://rdrr.io/pkg/igraph/man/pipe.html'>%&gt;%</a></span>
-    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>indegree<span class='op'>=</span><span class='fu'>sna</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sna/man/degree.html'>degree</a></span><span class='op'>(</span><span class='va'>wars_in_1400s_network</span>, cmode<span class='op'>=</span><span class='st'>"indegree"</span><span class='op'>)</span>,
-          outdegree<span class='op'>=</span><span class='fu'>sna</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sna/man/degree.html'>degree</a></span><span class='op'>(</span><span class='va'>wars_in_1400s_network</span>, cmode<span class='op'>=</span><span class='st'>"outdegree"</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='va'>nodes_1500s</span><span class='op'>&lt;-</span><span class='va'>nodes_1500s</span> <span class='op'><a href='https://rdrr.io/pkg/igraph/man/pipe.html'>%&gt;%</a></span>
-    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>indegree<span class='op'>=</span><span class='fu'>sna</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sna/man/degree.html'>degree</a></span><span class='op'>(</span><span class='va'>wars_in_1500s_network</span>, cmode<span class='op'>=</span><span class='st'>"indegree"</span><span class='op'>)</span>,
-          outdegree<span class='op'>=</span><span class='fu'>sna</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sna/man/degree.html'>degree</a></span><span class='op'>(</span><span class='va'>wars_in_1500s_network</span>, cmode<span class='op'>=</span><span class='st'>"outdegree"</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='va'>nodes_1600s</span><span class='op'>&lt;-</span><span class='va'>nodes_1600s</span> <span class='op'><a href='https://rdrr.io/pkg/igraph/man/pipe.html'>%&gt;%</a></span>
-    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>indegree<span class='op'>=</span><span class='fu'>sna</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sna/man/degree.html'>degree</a></span><span class='op'>(</span><span class='va'>wars_in_1600s_network</span>, cmode<span class='op'>=</span><span class='st'>"indegree"</span><span class='op'>)</span>,
-          outdegree<span class='op'>=</span><span class='fu'>sna</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sna/man/degree.html'>degree</a></span><span class='op'>(</span><span class='va'>wars_in_1600s_network</span>, cmode<span class='op'>=</span><span class='st'>"outdegree"</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='va'>nodes_1700s</span><span class='op'>&lt;-</span><span class='va'>nodes_1700s</span> <span class='op'><a href='https://rdrr.io/pkg/igraph/man/pipe.html'>%&gt;%</a></span>
-    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>indegree<span class='op'>=</span><span class='fu'>sna</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sna/man/degree.html'>degree</a></span><span class='op'>(</span><span class='va'>wars_in_1700s_network</span>, cmode<span class='op'>=</span><span class='st'>"indegree"</span><span class='op'>)</span>,
-          outdegree<span class='op'>=</span><span class='fu'>sna</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sna/man/degree.html'>degree</a></span><span class='op'>(</span><span class='va'>wars_in_1700s_network</span>, cmode<span class='op'>=</span><span class='st'>"outdegree"</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='va'>nodes_1800s</span><span class='op'>&lt;-</span><span class='va'>nodes_1800s</span> <span class='op'><a href='https://rdrr.io/pkg/igraph/man/pipe.html'>%&gt;%</a></span>
-    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>indegree<span class='op'>=</span><span class='fu'>sna</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sna/man/degree.html'>degree</a></span><span class='op'>(</span><span class='va'>wars_in_1800s_network</span>, cmode<span class='op'>=</span><span class='st'>"indegree"</span><span class='op'>)</span>,
-          outdegree<span class='op'>=</span><span class='fu'>sna</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sna/man/degree.html'>degree</a></span><span class='op'>(</span><span class='va'>wars_in_1800s_network</span>, cmode<span class='op'>=</span><span class='st'>"outdegree"</span><span class='op'>)</span><span class='op'>)</span>
-</code></pre>
-</div>
 </div>
 <h4 id="eigenvector-centrality">Eigenvector Centrality</h4>
 <div class="layout-chunk" data-layout="l-body">
@@ -4448,24 +4192,24 @@ Scores</h4>
        result
 1   0.3302618
 2   0.3156808
-3   1.0499661
-4   1.0538139
+3   1.0308946
+4   1.0989004
 5   0.9399610
 6   0.9396250
-7   0.8213520
-8   0.8252072
+7   0.8278858
+8   0.8173127
 9  14.0000000
 10 18.0000000
-11 46.0000000
-12 49.0000000
+11 50.0000000
+12 52.0000000
 13  0.9734644
 14  0.9433251
-15  0.9164619
-16  0.9284193
+15  0.9279279
+16  0.9251433
 17  0.8076418
 18  0.6909866
-19  0.4134017
-20  0.4074357</code></pre>
+19  0.4239798
+20  0.3887825</code></pre>
 </div>
 <h4 id="comparing-1100s-modualrity-scores">Comparing 1100s Modualrity
 Scores</h4>
@@ -4498,24 +4242,24 @@ Scores</h4>
         result
 1   0.08254291
 2   0.35000135
-3   1.11848964
-4   0.95647183
+3   0.86407725
+4   1.09570316
 5   0.98074615
 6   0.92293308
-7   0.77932101
-8   0.80824658
+7   0.82558213
+8   0.78402668
 9   2.00000000
 10 12.00000000
-11 40.00000000
-12 31.00000000
+11 28.00000000
+12 40.00000000
 13  0.99054983
 14  0.93878866
-15  0.87435567
-16  0.91301546
+15  0.92160653
+16  0.87478522
 17  0.96540698
 18  0.74674963
-19  0.43515909
-20  0.62355155</code></pre>
+19  0.66694705
+20  0.43195130</code></pre>
 </div>
 <h4 id="comparing-1200s-modualrity-scores">Comparing 1200s Modualrity
 Scores</h4>
@@ -4548,24 +4292,24 @@ Scores</h4>
        result
 1   0.7654429
 2   0.6412426
-3   1.4454074
-4   1.5488343
+3   1.5664251
+4   1.5552024
 5   0.8368277
 6   0.8683140
-7   0.7261957
-8   0.7082337
+7   0.7078349
+8   0.7078179
 9  52.0000000
 10 36.0000000
-11 84.0000000
-12 89.0000000
+11 90.0000000
+12 87.0000000
 13  0.9204193
 14  0.9402950
-15  0.8612578
-16  0.8622671
+15  0.8631211
+16  0.8592391
 17  0.6491112
 18  0.7280759
-19  0.4115702
-20  0.3989498</code></pre>
+19  0.3875940
+20  0.3850010</code></pre>
 </div>
 <h4 id="comparing-1300s-modualrity-scores">Comparing 1300s Modualrity
 Scores</h4>
@@ -4598,24 +4342,24 @@ Scores</h4>
        result
 1   0.1274760
 2   0.1964988
-3   1.0567452
-4   1.0381081
+3   1.0182046
+4   1.0103787
 5   0.9798963
 6   0.9693905
-7   0.8539014
-8   0.8576354
+7   0.8593514
+8   0.8602814
 9  10.0000000
 10 12.0000000
 11 61.0000000
-12 63.0000000
+12 59.0000000
 13  0.9891783
 14  0.9869418
-15  0.9508693
-16  0.9518072
+15  0.9518794
+16  0.9526730
 17  0.9030216
 18  0.8837036
-19  0.3863765
-20  0.3655531</code></pre>
+19  0.3913074
+20  0.4065620</code></pre>
 </div>
 <h4 id="comparing-1400s-modualrity-scores">Comparing 1400s Modualrity
 Scores</h4>
@@ -4648,24 +4392,24 @@ Scores</h4>
        result
 1   0.2707533
 2   0.4348029
-3   0.9674215
-4   0.9342050
+3   0.8964340
+4   0.9311139
 5   0.9605240
 6   0.9396398
-7   0.8765768
-8   0.8811986
+7   0.8862287
+8   0.8817523
 9  26.0000000
 10 46.0000000
-11 91.0000000
-12 88.0000000
+11 86.0000000
+12 89.0000000
 13  0.9832996
 14  0.9841506
-15  0.9696486
+15  0.9717761
 16  0.9703223
 17  0.8115084
 18  0.7738741
-19  0.4097181
-20  0.4081400</code></pre>
+19  0.4315714
+20  0.4065920</code></pre>
 </div>
 <h4 id="comparing-1500s-modualrity-scores">Comparing 1500s Modualrity
 Scores</h4>
@@ -4698,24 +4442,24 @@ Scores</h4>
         result
 1    0.7192478
 2    0.9301150
-3    1.5125263
-4    1.4817062
+3    1.4215858
+4    1.4182093
 5    0.8852108
 6    0.8571114
-7    0.7818987
-8    0.7899065
+7    0.7974552
+8    0.7965612
 9  100.0000000
 10 131.0000000
-11 186.0000000
-12 187.0000000
+11 178.0000000
+12 173.0000000
 13   0.9526409
 14   0.9326056
-15   0.9180792
-16   0.9261814
+15   0.9287748
+16   0.9274358
 17   0.6186294
 18   0.4728359
-19   0.3604751
-20   0.3745973</code></pre>
+19   0.3969492
+20   0.4123487</code></pre>
 </div>
 <h4 id="comparing-1600s-modualrity-scores">Comparing 1600s Modualrity
 Scores</h4>
@@ -4748,24 +4492,24 @@ Scores</h4>
         result
 1    1.1458706
 2    1.2878446
-3    2.0327753
-4    2.0155694
+3    2.0490352
+4    2.0460348
 5    0.7956418
 6    0.7861933
-7    0.6978185
-8    0.6998208
+7    0.6936650
+8    0.6941136
 9  143.0000000
 10 147.0000000
-11 192.0000000
-12 190.0000000
+11 193.0000000
+12 194.0000000
 13   0.9075767
 14   0.9062880
-15   0.8833075
-16   0.8852882
+15   0.8791791
+16   0.8793939
 17   0.4500123
 18   0.3730549
-19   0.1889523
-20   0.1980130</code></pre>
+19   0.1822409
+20   0.1848859</code></pre>
 </div>
 <h4 id="comparing-1700s-modualrity-scores">Comparing 1700s Modualrity
 Scores</h4>
@@ -4798,24 +4542,24 @@ Scores</h4>
         result
 1    1.1377494
 2    1.4085926
-3    1.9043730
-4    1.9212130
+3    1.9114021
+4    1.8858260
 5    0.8037331
 6    0.7625365
-7    0.7106745
-8    0.7092906
+7    0.7058674
+8    0.7133323
 9  158.0000000
 10 211.0000000
-11 219.0000000
-12 222.0000000
+11 221.0000000
+12 219.0000000
 13   0.9189145
 14   0.8695781
-15   0.8718177
-16   0.8737279
+15   0.8591707
+16   0.8735303
 17   0.4638354
 18   0.3109630
-19   0.2048617
-20   0.2026339</code></pre>
+19   0.1971434
+20   0.2110226</code></pre>
 </div>
 <h4 id="comparing-1800s-modualrity-scores">Comparing 1800s Modualrity
 Scores</h4>
@@ -4848,24 +4592,24 @@ Scores</h4>
          result
 1    1.74440715
 2    2.77534230
-3    2.96941644
-4    2.95553287
+3    2.96026654
+4    2.96623598
 5    0.64955628
 6    0.55142809
-7    0.51959644
-8    0.52144485
+7    0.51928573
+8    0.51743812
 9  522.00000000
 10 651.00000000
-11 665.00000000
-12 659.00000000
+11 662.00000000
+12 666.00000000
 13   0.69161712
 14   0.63908742
-15   0.64035232
-16   0.64055911
+15   0.64169862
+16   0.63901703
 17   0.23041042
 18   0.06333964
-19   0.08168824
-20   0.08283639</code></pre>
+19   0.08618759
+20   0.07999898</code></pre>
 </div>
 <h3 id="histograms-of-important-network-attributes">Histograms of
 Important Network Attributes</h3>
@@ -6361,9 +6105,9 @@ Dutch Republic and Denmark-Norway and the Holy Roman Empire.</p>
   <span class='op'>)</span>
 </code></pre>
 </div>
-<pre><code>IGRAPH ab2f3fa UN-- 585 3 -- 
+<pre><code>IGRAPH 15bdb25 UN-- 585 3 -- 
 + attr: name (v/c), color (e/c)
-+ edges from ab2f3fa (vertex names):
++ edges from 15bdb25 (vertex names):
 [1] Holy Roman Empire--Kingdom of France
 [2] Dutch Republic   --Kingdom of France
 [3] Poland–Lithuania --England          </code></pre>
@@ -11725,7 +11469,7 @@ network, rather than continuing edge prediction.</p>
 </div>
 <p><img src="working-with-ggmaps_files/figure-html5/unnamed-chunk-199-1.png" width="624" /></p>
 </div>
-<div class="sourceCode" id="cb42"><pre
+<div class="sourceCode" id="cb41"><pre
 class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->

@@ -356,7 +356,7 @@ sna::triad.census(wars_in_1800s_network, mode="graph") %>% kable()
 
 Looking at this attributes individually is useful, however in order to understand how they change over time we will concatenate the scores and graph them.
 
-```{r}
+```{r, echo=FALSE}
 
 transitivity_over_time_global <-c(
   
@@ -382,7 +382,8 @@ transitivity(wars_in_1800s.ig, type="global")
 
 
 network_atts_for_plot <- data.frame(transitivity_over_time_global)
-network_atts_for_plot
+
+network_atts_for_plot %>% kable()
 
 ```
 
@@ -402,23 +403,24 @@ network_atts_for_plot$century_for_graphing <- century_for_graphing
 
 I then use ggplot to plot the network's transitivity over time using global transitivity.
 
-```{r}
+```{r, echo=FALSE}
 
+set.seed(123)
 
-ggplot(network_atts_for_plot) +
-  
-geom_point(
-  
-  color="darkorange2", 
-  
-  aes(
-    
-    x=century_for_graphing, 
-                                
-      y=transitivity_over_time_global
+n <- 9
 
-    )
-)
+h4 <- hcl.colors(n, palette = "Dynamic")
+
+network_atts_for_plot %>% mutate(century_for_graphing = as.character(century_for_graphing)) %>%
+ggplot(aes(x=century_for_graphing, y=transitivity_over_time_global)) +
+geom_bar(position = "dodge",
+aes(fill = century_for_graphing), stat = "identity")+  
+  scale_fill_manual(values=c(h4))+
+  labs(title = "Global Transitivity by Century",
+        x = "Century",
+        y = "Global Transitvity")+
+  guides(color=guide_legend(title="Century"))+
+  theme_minimal()
 
 
 ```
@@ -426,7 +428,7 @@ geom_point(
 ##### Average Transitivity Attributes for Each Century
 
 
-```{r}
+```{r, echo=FALSE}
 
 transitivity_over_time_average <-c(
   
@@ -459,31 +461,23 @@ network_atts_for_plot$transitivity_over_time_average <-
 
 These clustering coefficients do differ from century to century between average and global clustering.
 
-```{r}
+```{r, echo=FALSE}
 
-
-ggplot(network_atts_for_plot) +
-  
-geom_point(
-  
-  color="forestgreen", 
-  
-  aes(
-    
-    x=century_for_graphing, 
-                                
-      y=transitivity_over_time_average
-
-    )
-)
-
+network_atts_for_plot %>% mutate(century_for_graphing = as.character(century_for_graphing)) %>%
+ggplot(aes(x=century_for_graphing, y=transitivity_over_time_average))+
+geom_bar(position = "dodge", aes(fill = century_for_graphing), stat = "identity")+  
+  scale_fill_manual(values=c(h4))+
+  labs(title = "Average Transitivity by Century",
+        x = "Century",
+        y = "Average Transitvity")+
+  guides(color=guide_legend(title="Century"))+
+  theme_minimal()
 
 ```
 
 #### Average Path Length 
 
-
-```{r}
+```{r, echo=FALSE}
 
 average_path_length_wars <- c(
   
@@ -519,30 +513,25 @@ network_atts_for_plot$average_path_length_wars <-
 
 These clustering coefficients do differ from century to century between average and global clustering.
 
-```{r}
+```{r, echo=FALSE}
 
-
-ggplot(network_atts_for_plot) +
-  
-geom_point(
-  
-  color="darkslateblue", 
-  
-  aes(
-    
-    x=century_for_graphing, 
-                                
-      y=average_path_length_wars
-
-    )
-)
+network_atts_for_plot %>% mutate(century_for_graphing = as.character(century_for_graphing)) %>%
+ggplot(aes(x=century_for_graphing, y=average_path_length_wars))+
+geom_bar(position = "dodge", aes(fill = century_for_graphing),
+             stat="identity")+  
+  scale_fill_manual(values=c(h4))+
+  labs(title = "Average Path Length by Century",
+        x = "Century",
+        y = "Average Path Length")+
+  guides(fill=guide_legend(title="Century"))+
+  theme_minimal()
 
 
 ```
 
 #### Density Attributes for Each Century
 
-```{r}
+```{r, echo=FALSE}
 
 densities_over_time <- c(
   
@@ -572,30 +561,24 @@ network_atts_for_plot$densities_over_time <-
 
 #### Average Density Over Time Graphed
 
-```{r}
+```{r, echo=FALSE}
 
-
-ggplot(network_atts_for_plot) +
-  
-geom_point(
-  
-  color="firebrick4", 
-  
-  aes(
-    
-    x=century_for_graphing, 
-                                
-      y=densities_over_time
-
-    )
-)
-
+network_atts_for_plot %>% mutate(century_for_graphing = as.character(century_for_graphing)) %>%
+ggplot(aes(x=century_for_graphing, y=densities_over_time)) +
+geom_bar(position="dodge", aes(fill = century_for_graphing),
+         stat='identity')+  
+  scale_fill_manual(values=c(h4))+
+  labs(title = "Average Network Density by Century",
+        x = "Century",
+        y = "Average Network Density")+
+  guides(fill=guide_legend(title="Century"))+
+  theme_minimal()
 
 ```
 
 #### Centralization Attributes for Each Century
 
-```{r}
+```{r, echo=FALSE}
 
 centralities_in_degree_over_time<- c(
   
@@ -626,23 +609,18 @@ network_atts_for_plot$centralities_in_degree_over_time <-
 
 #### Average Centrality Over Time Graphed
 
-```{r}
+```{r, echo=FALSE}
 
-
-ggplot(network_atts_for_plot) +
-  
-geom_point(
-  
-  color="firebrick4", 
-  
-  aes(
-    
-    x=century_for_graphing, 
-                                
-      y=centralities_in_degree_over_time
-
-    )
-)
+network_atts_for_plot %>% mutate(century_for_graphing = as.character(century_for_graphing)) %>%
+ggplot(aes(x=century_for_graphing, y=centralities_in_degree_over_time)) +
+geom_bar(position="dodge", aes(fill = century_for_graphing),
+         stat='identity')+  
+  scale_fill_manual(values=c(h4))+
+  labs(title = "Average Network Density by Century",
+        x = "Century",
+        y = "Average Network Centrality")+
+  guides(fill=guide_legend(title="Century"))+
+  theme_minimal()
 
 
 ```
@@ -651,7 +629,7 @@ geom_point(
 
 #### Nodes Attributes for Each Century Total Degree and Names
 
-```{r}
+```{r, echo=FALSE}
 
 nodes_1000s <-data.frame(name=wars_in_1000s_network%v%"vertex.names", 
                          degree=sna::degree(wars_in_1000s_network))
@@ -684,7 +662,7 @@ nodes_1800s <-data.frame(name=wars_in_1800s_network%v%"vertex.names",
 
 #### Nodes Attributes for Each Century In and Out Degree
 
-```{r}
+```{r,  echo=FALSE}
 
 nodes_1000s<-nodes_1000s %>%
     mutate(indegree=sna::degree(wars_in_1000s_network, cmode="indegree"),
