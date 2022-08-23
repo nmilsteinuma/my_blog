@@ -302,7 +302,7 @@ wars_1800s <- as.matrix(as_adjacency_matrix(wars_in_1800s.ig))
 
 In order to ensure proper loading and formatting we first look at the dyad census of our networks using sna.
 
-```{r}
+```{r, echo=FALSE}
 
 sna::dyad.census(wars_in_1000s_network) %>% kable()
 
@@ -328,7 +328,7 @@ sna::dyad.census(wars_in_1800s_network) %>% kable()
 
 Following this we look at the triad census in our data. This is conceptually important for conflict prediction going forward. Certain types of triads may be effective at indicating instability between nations and give us some sense of future conflict development along with general network stability.
 
-```{r}
+```{r, echo=FALSE}
 
 sna::triad.census(wars_in_1000s_network, mode="graph") %>% kable()
 
@@ -382,7 +382,7 @@ transitivity(wars_in_1800s.ig, type="global")
 
 
 network_atts_for_plot <- data.frame(transitivity_over_time_global)
-
+network_atts_for_plot
 
 ```
 
@@ -2741,6 +2741,7 @@ van Ravenzwaaij, Don et al. “A simple introduction to Markov Chain Monte-Carlo
 First I will start with 7 new edges that the simulations give a log-likelihood over 700
 
 ```{r}
+
 set.seed(1287)
 
 prediction_for_1000s <- predict_edges(
@@ -2815,6 +2816,9 @@ legend(x=-1.5, y=-1.1, c("Simulated Edge Color", "Original Edge"), pch=21,
 ```
 
 ```{r}
+
+set.seed(1287)
+
 # dh fr lgl
 layout_dh_1000s <- layout_with_dh(wars_in_1000s_added_edges.ig)
 
@@ -2868,6 +2872,8 @@ E(wars_in_1000s_added_edges_85.ig)[154:238]$color = "red"
 ```{r}
 # dh fr lgl
 
+set.seed(1287)
+
 layout_dh_1000s_85 <- layout_with_dh(wars_in_1000s_added_edges_85.ig)
 
 plot(wars_in_1000s_added_edges_85.ig, layout=layout_dh_1000s_85,    
@@ -2893,6 +2899,8 @@ Package ‘NetworkComparisonTest’
 http://eliassi.org/papers/soundarajan-sdm14.pdf
 
 ```{r}
+
+set.seed(1287)
 
 wars_in_1000s_added_edges_7_network <- average.path.length(wars_in_1000s_added_edges.ig,directed=T)
 
@@ -2948,21 +2956,532 @@ network.density(wars_in_1000s_added_edges_85_network)
 
 )
 
-centr_degree(wars_in_1000s.ig, loops = FALSE, mode="in")$centralization
+degree_centralization_for_added_edges <- c(
+centr_degree(wars_in_1000s.ig, loops = FALSE, mode="in")$centralization,
 
-centr_degree(wars_in_1100s.ig, loops = FALSE, mode="in")$centralization
+centr_degree(wars_in_1100s.ig, loops = FALSE, mode="in")$centralization,
 
-centr_degree(wars_in_1000s_added_edges.ig, loops = FALSE, mode="in")$centralization
+centr_degree(wars_in_1000s_added_edges.ig, loops = FALSE, mode="in")$centralization,
 
 centr_degree(wars_in_1000s_added_edges_85.ig, loops = FALSE, mode="in")$centralization
 
-data_frame()
+)
+data_frame(
+  c(trans_for_added_edges_global, 
+  trans_for_added_edges_averge, 
+  apl_for_added_edges, 
+  network_density_for_added_edges, 
+  degree_centralization_for_added_edges
+  )
+)
+
+groups_for_added_edges <- c("Wars in 1000s", "Wars in 1100s", "Wars in 1000s with 7 Edges", "Wars in 1000s with 85 Edges")
+
+df_for_edge_add_comp <- data.frame(trans_for_added_edges_global, 
+  trans_for_added_edges_averge, 
+  apl_for_added_edges, 
+  network_density_for_added_edges, 
+  degree_centralization_for_added_edges,groups_for_added_edges, row.names=c("Wars in 1000s", "Wars in 1100s", "Wars in 1000s with 7 Edges", "Wars in 1000s with 85 Edges"))
+
+names(df_for_edge_add_comp)[1:5] <- c("Global Transitivity", "Average Transitivity", "Average Path Length", "Network Density", "Degree Centralization")
+df_for_edge_add_comp
+
 ```
 
 
 #### Edge Prediction1100s
 
+```{r}
 
+set.seed(1287)
+
+ggplot(df_for_edge_add_comp, aes(x=`Global Transitivity`, fill=groups_for_added_edges)) + 
+  geom_histogram() +
+  scale_fill_manual(values = c("Wars in 1000s" = "#CD7F32",
+                               "Wars in 1100s" = "#C0C0C0",
+                               "Wars in 1000s with 7 Edges" = "gold",
+                               "Wars in 1000s with 85 Edges" = "red"))
+
+ggplot(df_for_edge_add_comp, aes(x=`Average Transitivity`, fill=groups_for_added_edges)) + 
+  geom_histogram() +
+  scale_fill_manual(values = c("Wars in 1000s" = "#CD7F32",
+                               "Wars in 1100s" = "#C0C0C0",
+                               "Wars in 1000s with 7 Edges" = "gold",
+                               "Wars in 1000s with 85 Edges" = "red"))
+
+ggplot(df_for_edge_add_comp, aes(x=`Average Path Length`, fill=groups_for_added_edges)) + 
+  geom_histogram() +
+  scale_fill_manual(values = c("Wars in 1000s" = "#CD7F32",
+                               "Wars in 1100s" = "#C0C0C0",
+                               "Wars in 1000s with 7 Edges" = "gold",
+                               "Wars in 1000s with 85 Edges" = "red"))
+ggplot(df_for_edge_add_comp, aes(x=`Network Density`, fill=groups_for_added_edges)) + 
+  geom_histogram() +
+  scale_fill_manual(values = c("Wars in 1000s" = "#CD7F32",
+                               "Wars in 1100s" = "#C0C0C0",
+                               "Wars in 1000s with 7 Edges" = "gold",
+                               "Wars in 1000s with 85 Edges" = "red"))
+
+ggplot(df_for_edge_add_comp, aes(x=`Degree Centralization`, fill=groups_for_added_edges)) + 
+  geom_histogram() +
+  scale_fill_manual(values = c("Wars in 1000s" = "#CD7F32",
+                               "Wars in 1100s" = "#C0C0C0",
+                               "Wars in 1000s with 7 Edges" = "gold",
+                               "Wars in 1000s with 85 Edges" = "red"))
+
+
+```
+
+```{r}
+
+set.seed(1287)
+
+u1 <- as.undirected(wars_in_1000s.ig)
+u2 <- as.undirected(wars_in_1100s.ig)
+u3 <- as.undirected(wars_in_1000s_added_edges.ig)
+u4 <- as.undirected(wars_in_1000s_added_edges_85.ig)
+
+
+same_1=length(E(intersection(wars_in_1000s.ig, wars_in_1100s.ig)))
+
+difference_1 <- length(E(difference(wars_in_1000s.ig, wars_in_1100s.ig)))
+
+reverse_1=length(E(difference(wars_in_1000s.ig,wars_in_1100s.ig )))-length(E(difference(u2,u1)))
+
+c(same_1, difference_1, reverse_1)
+
+same_2=length(E(intersection(wars_in_1100s.ig, wars_in_1000s_added_edges.ig)))
+
+difference_2 <- length(E(difference(wars_in_1100s.ig, wars_in_1000s_added_edges.ig)))
+
+c(same_2, difference_2)
+
+same_3=length(E(intersection(wars_in_1100s.ig, wars_in_1000s_added_edges_85.ig)))
+
+difference_3 <- length(E(difference(wars_in_1100s.ig, wars_in_1000s_added_edges_85.ig)))
+
+c(same_3, difference_3)
+
+reverse_1=length(E(difference(wars_in_1000s.ig,wars_in_1100s.ig)))-length(E(difference(u2,u1)))
+
+addition_1=length(E(difference(wars_in_1000s.ig,wars_in_1100s.ig)))-reverse_1
+
+same_2 = length(E(intersection(wars_in_1100s.ig, wars_in_1000s_added_edges.ig)))
+
+reverse_2=length(E(difference(wars_in_1100s.ig, wars_in_1000s_added_edges.ig)))-length(E(difference(u2,u3)))
+
+addition_2=length(E(difference(wars_in_1100s.ig, wars_in_1000s_added_edges.ig)))-reverse_2
+
+same_3 = length(E(intersection(wars_in_1100s.ig, wars_in_1000s_added_edges_85.ig)))
+
+
+difference_3 = length(E(difference(wars_in_1100s.ig, wars_in_1000s_added_edges_85.ig)))
+       
+reverse_3 = length(E(difference(wars_in_1100s.ig, wars_in_1000s_added_edges_85.ig)))-length(E(difference(u2,u4)))
+
+addition_3 = length(E(difference(wars_in_1100s.ig, wars_in_1000s_added_edges_85.ig)))-reverse_2
+
+```
+
+#### Edge Prediction 1100s
+
+```{r}
+
+set.seed(1287)
+
+prediction_for_1100s <- predict_edges(
+  wars_in_1100s.ig,
+  hrg = NULL,
+  start = FALSE,
+  num.samples = 100,
+  num.bins = 25
+)
+
+#Here I look for predicted edge probability over 33% as a test
+prediction_for_1100s$prob[c(1:7)]
+# It turns out that 29 predicted edges are given a probability over 33%
+prediction_for_1100s_best_7 <- (prediction_for_1100s$edges)[c(1:7),]
+# I then create a new rename of my graph object
+wars_in_1100s_for_adding_predicted_edges.ig <- wars_in_1100s.ig
+
+wars_in_1100s_added_edges.ig <- add_edges(wars_in_1100s_for_adding_predicted_edges.ig, 
+                                       prediction_for_1100s_best_7)
+
+
+E(wars_in_1100s_added_edges.ig)[1:153]$color = "gray50"
+
+E(wars_in_1100s_added_edges.ig)[154:160]$color = "red"
+
+# wars_in_1000s_added_edges_network<- asNetwork(wars_in_1000s_added_edges.ig)
+
+```
+
+```{r}
+
+set.seed(90234)
+
+prediction_for_1100s_75 <- predict_edges(
+  wars_in_1100s.ig,
+  hrg = NULL,
+  start = FALSE,
+  num.samples = 100,
+  num.bins = 25
+)
+
+#Here I look for predicted edge probability over 33% as a test
+
+# It turns out that 28 predicted edges are given a probability over 33%
+prediction_for_1100s_best_75 <- (prediction_for_1100s$edges)[c(1:75),]
+# I then create a new rename of my graph object
+wars_in_1100s_for_adding_predicted_edges_75.ig <- wars_in_1100s.ig
+
+wars_in_1100s_added_edges_75.ig <- add_edges(wars_in_1100s_for_adding_predicted_edges_75.ig, 
+                                       prediction_for_1100s_best_75)
+
+E(wars_in_1100s_added_edges_75.ig)[1:238]$color = "gray50"
+
+E(wars_in_1100s_added_edges_75.ig)[239:313]$color = "red"
+
+# wars_in_1000s_added_edges_network<- asNetwork(wars_in_1000s_added_edges.ig)
+
+```
+
+```{r}
+
+set.seed(1287)
+
+colrs <- c("red", "gray50")
+
+set.seed(777)
+plot(
+  wars_in_1100s_added_edges_75.ig, 
+     vertex.color = "gray78",
+     vertex.size=4, 
+     edge.arrow.width=0.5, 
+     edge.arrow.size=.2, 
+     edge.curved=.2, 
+     vertex.label.cex=0.2,  
+     vertex.label.color="black"
+     )
+
+legend(x=-1.5, y=-1.1, c("Simulated Edge Color", "Original Edge"), pch=21,
+
+       col="#777777", pt.bg=colrs, pt.cex=2, cex=.8, bty="n", ncol=1)
+
+```
+
+```{r}
+
+set.seed(1287)
+
+undirected_1100s <- as.undirected(wars_in_1100s.ig)
+
+undirected_1200s <- as.undirected(wars_in_1200s.ig)
+
+undirected_1100s_added_edges <- as.undirected(wars_in_1100s_added_edges_75.ig)
+
+intersection_1100s_1200s = length(E(intersection(undirected_1100s, undirected_1200s)))
+
+difference_1100s_1200s <- length(E(difference(undirected_1100s, undirected_1200s)))
+
+c(intersection_1100s_1200s, difference_1100s_1200s)
+
+intersection_1200s_1100s_added_edges = length(E(intersection(undirected_1200s, undirected_1100s_added_edges)))
+
+difference_1200s_1100s_added_edges <- length(E(difference(undirected_1200s, undirected_1100s_added_edges)))
+
+c(intersection_1200s_1100s_added_edges, difference_1200s_1100s_added_edges)
+
+```
+
+#### Edge Prediction 1200s
+
+This section is somewhat peculiar so it will be skipped, there was relatively less conflict going on, which one could likely attribute to the black plague. In fact the number of notable conflicts between my wars_in_1200s.ig and wars_in_1300s.ig decreases from 313 to 241. As a result it would be redundant to predict edges when not predicting the proliferation of conflict, but its decline due to a disease that crippled a center of worldwide conflict at the time.
+
+#### Edge Prediction 1300s to 1400s
+
+Fortunately in the 1300s we have much more room to predict for the 1400s as the period that followed the plague saw an escalation in conflict simply due to increasing population and nations simply having the ability to go to war once again.
+
+##### predict_edges for 1300s to 1400s
+
+```{r}
+
+set.seed(1287)
+
+prediction_for_1300s <- predict_edges(
+  wars_in_1300s.ig,
+  hrg = NULL,
+  start = FALSE,
+  num.samples = 1000,
+  num.bins = 25
+)
+
+#Here I look at the 7 predicted edges with the highest probabilities
+prediction_for_1300s$prob[c(1:7)]
+# The difference in number of edges between the 1300s and 1400s is 85 so 
+# I will predict 85 edges
+prediction_for_1300s_best_85 <- (prediction_for_1300s$edges)[c(1:85),]
+# I then create a new rename of my graph object
+wars_in_1300s_for_adding_predicted_edges.ig <- wars_in_1300s.ig
+
+wars_in_1300s_added_edges.ig <- add_edges(wars_in_1300s_for_adding_predicted_edges.ig, 
+                                       prediction_for_1300s_best_85)
+
+
+E(wars_in_1300s_added_edges.ig)[1:241]$color = "gray50"
+
+E(wars_in_1300s_added_edges.ig)[242:326]$color = "red"
+
+# wars_in_1000s_added_edges_network<- asNetwork(wars_in_1000s_added_edges.ig)
+
+```
+
+```{r}
+
+set.seed(1287)
+
+undirected_1300s <- as.undirected(wars_in_1300s.ig)
+
+undirected_1400s <- as.undirected(wars_in_1400s.ig)
+
+undirected_1300s_added_edges <- as.undirected(wars_in_1300s_added_edges.ig)
+
+intersection_1300s_1400s = length(E(intersection(undirected_1300s, undirected_1400s)))
+
+difference_1300s_1400s <- length(E(difference(undirected_1300s, undirected_1400s)))
+
+c(intersection_1300s_1400s, difference_1300s_1400s)
+
+intersection_1400s_1300s_added_edges = length(E(intersection(undirected_1400s, undirected_1300s_added_edges)))
+
+difference_1400s_1300s_added_edges <- length(E(difference(undirected_1400s, undirected_1300s_added_edges)))
+
+c(intersection_1400s_1300s_added_edges, difference_1400s_1300s_added_edges)
+
+```
+
+#### Edge Prediction 1400s to 1500s
+
+In the prior section we were correctly able to predict no more than the typical number of times. However, I will add a subsequent section that **removes** directness before edge calculation. This is because I noticed that adding predicted edges to the directed networks resulted in them being removed when making it undirected, thus I will make the network undirected first before analysis. I admit this likely loses some significant predictive implications. However, we will simply being seeing **if** a conflict occurs rather than predicting the conflct __and__ who wins.
+
+##### predict_edges for 1400s to 1500s
+
+```{r}
+
+set.seed(1287)
+
+prediction_for_1400s <- predict_edges(
+  wars_in_1400s.ig,
+  hrg = NULL,
+  start = FALSE,
+  num.samples = 1000,
+  num.bins = 25
+)
+
+#Here I look at the 7 predicted edges with the highest probabilities
+prediction_for_1400s$prob[c(1:7)]
+# The difference in number of edges between the 1300s and 1400s is 85 so 
+# I will predict 85 edges
+prediction_for_1400s_best_419 <- (prediction_for_1400s$edges)[c(1:419),]
+# I then create a new rename of my graph object
+wars_in_1400s_for_adding_predicted_edges.ig <- wars_in_1400s.ig
+
+wars_in_1400s_added_edges.ig <- add_edges(wars_in_1400s_for_adding_predicted_edges.ig, 
+                                       prediction_for_1400s_best_419)
+
+
+E(wars_in_1400s_added_edges.ig)[1:326]$color = "gray50"
+
+E(wars_in_1400s_added_edges.ig)[327:745]$color = "red"
+
+# wars_in_1000s_added_edges_network<- asNetwork(wars_in_1000s_added_edges.ig)
+
+
+```
+
+```{r}
+
+set.seed(1287)
+
+undirected_1400s <- as.undirected(wars_in_1400s.ig)
+
+undirected_1500s <- as.undirected(wars_in_1500s.ig)
+
+undirected_1400s_added_edges <- as.undirected(wars_in_1400s_added_edges.ig)
+
+intersection_1400s_1500s = length(E(intersection(undirected_1400s, undirected_1500s)))
+
+difference_1400s_1500s <- length(E(difference(undirected_1400s, undirected_1500s)))
+
+c(intersection_1400s_1500s, difference_1400s_1500s)
+
+intersection_1500s_1400s_added_edges = length(E(intersection(undirected_1500s, undirected_1400s_added_edges)))
+
+difference_1500s_1400s_added_edges <- length(E(difference(undirected_1500s, undirected_1400s_added_edges)))
+
+c(intersection_1500s_1400s_added_edges, difference_1500s_1400s_added_edges)
+
+```
+
+### Edge Prediction in an Undirected Network.
+
+#### predict_edges for 1400s to 1500s Undirected
+
+```{r}
+
+set.seed(1287)
+
+# undirected_1400s <- as.undirected(wars_in_1400s.ig)
+
+# 301 edges
+
+# undirected_1500s <- as.undirected(wars_in_1500s.ig)
+
+# 603 edges
+
+# 603-301 = 302
+
+prediction_for_1400s_undirected <- predict_edges(
+  undirected_1400s,
+  hrg = NULL,
+  start = FALSE,
+  num.samples = 1000,
+  num.bins = 100
+)
+
+#Here I look at the 7 predicted edges with the highest probabilities
+#prediction_for_1400s_undirected$prob[c(1:7)]
+
+# The difference in number of edges between the 1400s and 1500s is 302 so 
+# I will predict 302 edges in the undirected network
+prediction_for_1400s_undirected_best_302 <- (prediction_for_1400s_undirected$edges)[c(1:302),]
+# I then create a new rename of my graph object
+wars_in_1400s_for_adding_edges_undirected.ig <- undirected_1400s
+
+wars_in_1400s_added_edges_undirected.ig <- add_edges(wars_in_1400s_for_adding_edges_undirected.ig, 
+                                       prediction_for_1400s_undirected_best_302)
+
+
+E(wars_in_1400s_added_edges_undirected.ig)[1:301]$color = "gray50"
+
+E(wars_in_1400s_added_edges_undirected.ig)[302:603]$color = "red"
+
+# wars_in_1000s_added_edges_network<- asNetwork(wars_in_1000s_added_edges.ig)
+
+
+```
+
+```{r}
+
+set.seed(1287)
+
+# undirected_1400s <- as.undirected(wars_in_1400s.ig)
+
+# undirected_1500s <- as.undirected(wars_in_1500s.ig)
+
+#wars_in_1400s_added_edges_undirected.ig
+
+intersection_1400s_1500s = length(E(intersection(undirected_1400s, undirected_1500s)))
+
+difference_1400s_1500s <- length(E(difference(undirected_1400s, undirected_1500s)))
+
+c(intersection_1400s_1500s, difference_1400s_1500s)
+
+intersection_1500s_1400s_added_edges = length(E(intersection(undirected_1500s, wars_in_1400s_added_edges_undirected.ig)))
+
+difference_1500s_1400s_added_edges <- length(E(difference(undirected_1500s, wars_in_1400s_added_edges_undirected.ig)))
+
+c(intersection_1500s_1400s_added_edges, difference_1500s_1400s_added_edges)
+
+```
+
+#### predict_edges for 1600s to 1700s Undirected
+
+```{r}
+
+set.seed(1287)
+
+undirected_1600s <- as.undirected(wars_in_1600s.ig)
+
+# undirected_1500s
+
+# 598 edges
+
+undirected_1700s <- as.undirected(wars_in_1700s.ig)
+
+# 1027 edges
+
+# 1027-598 = 302
+
+prediction_for_1600s_undirected <- predict_edges(
+  undirected_1600s,
+  hrg = NULL,
+  start = FALSE,
+  num.samples = 1000,
+  num.bins = 100
+)
+
+#Here I look at the 7 predicted edges with the highest probabilities
+#prediction_for_1400s_undirected$prob[c(1:7)]
+
+# The difference in number of edges between the 1400s and 1500s is 429 so 
+# I will predict 302 edges in the undirected network
+
+prediction_for_1600s_undirected_best_429 <- (prediction_for_1600s_undirected$edges)[c(1:429),]
+# I then create a new rename of my graph object
+
+wars_in_1600s_for_adding_edges_undirected.ig <- undirected_1600s
+
+wars_in_1600s_added_edges_undirected.ig <- add_edges(wars_in_1600s_for_adding_edges_undirected.ig, 
+                                       prediction_for_1600s_undirected_best_429)
+
+
+E(wars_in_1600s_added_edges_undirected.ig)[1:429]$color = "gray50"
+
+E(wars_in_1600s_added_edges_undirected.ig)[430:1027]$color = "red"
+
+# wars_in_1000s_added_edges_network<- asNetwork(wars_in_1000s_added_edges.ig)
+
+
+```
+
+```{r}
+
+set.seed(1287)
+
+# undirected_1600s <- as.undirected(wars_in_1400s.ig)
+
+# undirected_1700s <- as.undirected(wars_in_1500s.ig)
+
+#wars_in_1600s_added_edges_undirected.ig
+
+intersection_1600s_1700s = length(E(intersection(undirected_1600s, undirected_1700s)))
+
+difference_1600s_1700s <- length(E(difference(undirected_1600s, undirected_1700s)))
+
+c(intersection_1600s_1700s, difference_1600s_1700s)
+
+intersection_1700s_1600s_added_edges = length(E(intersection(undirected_1700s, wars_in_1600s_added_edges_undirected.ig)))
+
+difference_1700s_1600s_added_edges <- length(E(difference(undirected_1700s, wars_in_1600s_added_edges_undirected.ig)))
+
+c(intersection_1700s_1600s_added_edges, difference_1700s_1600s_added_edges)
+
+```
+
+##### Analysis of intersection for 1600s Simulated Nodes on 1700s
+
+As can be seen above the this method only correctly predicts 2 additional edges, those being conflicts between Denmark-Norway and the Dutch Republic and Denmark-Norway and the Holy Roman Empire.
+
+```{r}
+
+difference(
+  intersection(undirected_1700s, wars_in_1600s_added_edges_undirected.ig), intersection(undirected_1600s, undirected_1700s)
+  )
+
+```
+
+to see what the probabilities of these were we must look into our original, undirected igraph data.
 
 ### Mapped Data 1800s
 
@@ -2975,7 +3494,7 @@ library(plotrix)
 
 ```{r, warning=FALSE}
 
-#pdf("1800_map.pdf") 
+pdf("1800_map.pdf") 
 set.seed(15887) 
 aspects_of_1800s_states_for_map <- read_excel("~/Desktop/Spring 2022/Networks/aspects_of_1800s_states_for_map.xlsx")
 
@@ -3014,4 +3533,102 @@ apply(edges[,-(1:2)], 1, function(x)
 curvedarrow(to=x[3:4], from=x[1:2], lcol=x[5], 
             curve=.1, arr.pos = 1, lwd=.125, arr.lwd=0.01, 
                           arr.width=0.01, arr.length=0.1))
+
 ```
+
+
+### Turning to Different Predictive Methods
+
+https://igraph.org/r/doc/
+
+### Back to Nodes
+
+From here I will continue my analysis analysis on the nodes in my network, rather than continuing edge prediction.
+
+```{r}
+
+nodes_1000s$proportion_of_wins <- (
+nodes_1000s$outdegree / nodes_1000s$degree
+)
+  
+nodes_1100s$proportion_of_wins <- (
+nodes_1100s$outdegree / nodes_1100s$degree
+)
+
+nodes_1200s$proportion_of_wins <- (
+nodes_1200s$outdegree / nodes_1200s$degree
+)
+
+nodes_1300s$proportion_of_wins <- (
+nodes_1300s$outdegree / nodes_1300s$degree
+)
+
+nodes_1400s$proportion_of_wins <- (
+nodes_1400s$outdegree / nodes_1400s$degree
+)
+
+nodes_1500s$proportion_of_wins <- (
+nodes_1500s$outdegree / nodes_1500s$degree
+)
+
+nodes_1600s$proportion_of_wins <- (
+nodes_1600s$outdegree / nodes_1600s$degree
+)
+
+nodes_1700s$proportion_of_wins <- (
+nodes_1700s$outdegree / nodes_1700s$degree
+)
+
+nodes_1800s$proportion_of_wins <- (
+nodes_1800s$outdegree / nodes_1800s$degree
+)
+
+nodes_list <- list(nodes_1000s, nodes_1100s, nodes_1200s, nodes_1300s, 
+                  nodes_1400s, nodes_1500s, nodes_1600s, nodes_1700s, 
+                  nodes_1800s)
+
+function_for_appending_nodes_with_prop_of_wins  <- function(x) { 
+      x %>%       
+          mutate(proportion_of_wins <- outdegree / degree)
+}
+
+function_for_appending_nodes_with_prop_of_losses  <- function(x) { 
+      x %>%       
+          mutate(proportion_of_losses <- indegree / degree)
+}
+
+nodes_1000s <- function_for_appending_nodes_with_prop_of_wins(nodes_1000s)
+
+nodes_1100s <- function_for_appending_nodes_with_prop_of_wins(nodes_1100s)
+
+nodes_1200s <- function_for_appending_nodes_with_prop_of_wins(nodes_1200s)
+
+nodes_1300s <- function_for_appending_nodes_with_prop_of_wins(nodes_1300s)
+
+nodes_1400s <- function_for_appending_nodes_with_prop_of_wins(nodes_1400s)
+
+nodes_1500s <- function_for_appending_nodes_with_prop_of_wins(nodes_1500s)
+
+nodes_1600s <- function_for_appending_nodes_with_prop_of_wins(nodes_1600s)
+
+nodes_1700s <- function_for_appending_nodes_with_prop_of_wins(nodes_1700s)
+
+nodes_1800s <- function_for_appending_nodes_with_prop_of_wins(nodes_1800s)
+
+```
+
+```{r}
+
+nodes_1000s %>% select(outdegree, name) %>%
+ggplot(aes(x=reorder(name, -outdegree), y=outdegree))+ 
+  geom_bar(position = 'dodge', stat= 'identity', aes(fill=name), show.legend = FALSE) + 
+  #geom_text(aes(label = name), size = 1, vjust = -0.5) +
+   labs(title = "Yearly Expenses by Category",
+        y = "Total Expense (USD)",
+        x = "Primary Expense Category") + 
+  theme_minimal(base_size=1,  base_family="Georgia")
+
+```
+
+
+
