@@ -993,7 +993,10 @@ nodes_1000s[-1] %>%
    gather() %>% 
   ggplot(aes(value)) +
     geom_histogram() +
-    facet_wrap(~key, scales = "free")
+    facet_wrap(~key, scales = "free")+  
+   labs(title = "1000s Node Attribute Distribtions")+
+  theme_minimal()
+
 
 ```
 
@@ -1005,7 +1008,10 @@ nodes_1100s[-1] %>%
   gather() %>% 
   ggplot(aes(value)) +
     geom_histogram() +
-    facet_wrap(~key, scales = "free")
+    facet_wrap(~key, scales = "free")+  
+   labs(title = "1100s Node Attribute Distribtions")+
+  theme_minimal()
+
 
 ```
 
@@ -1017,7 +1023,10 @@ nodes_1200s[-1] %>%
   gather() %>% 
   ggplot(aes(value)) +
     geom_histogram() +
-    facet_wrap(~key, scales = "free")
+    facet_wrap(~key, scales = "free")+  
+   labs(title = "1200s Node Attribute Distribtions")+
+  theme_minimal()
+
 
 ```
 
@@ -1029,7 +1038,65 @@ nodes_1300s[-1] %>%
   gather() %>% 
   ggplot(aes(value)) +
     geom_histogram() +
-    facet_wrap(~key, scales = "free")
+    facet_wrap(~key, scales = "free")+  
+   labs(title = "1300s Node Attribute Distribtions")+
+  theme_minimal()
+
+```
+
+##### Histogram 1400s Nodes Distribution
+
+```{r}
+
+nodes_1400s[-1] %>%
+  gather() %>% 
+  ggplot(aes(value)) +
+    geom_histogram() +
+    facet_wrap(~key, scales = "free")+  
+   labs(title = "1400s Node Attribute Distribtions")+
+  theme_minimal()
+
+```
+
+##### Histogram 1500s Nodes Distribution
+
+```{r}
+
+nodes_1500s[-1] %>%
+  gather() %>% 
+  ggplot(aes(value)) +
+    geom_histogram() +
+    facet_wrap(~key, scales = "free")+  
+   labs(title = "1500s Node Attribute Distribtions")+
+  theme_minimal()
+
+```
+
+##### Histogram 1600s Nodes Distribution
+
+```{r}
+
+nodes_1600s[-1] %>%
+  gather() %>% 
+  ggplot(aes(value)) +
+    geom_histogram() +
+    facet_wrap(~key, scales = "free")+  
+   labs(title = "1600s Node Attribute Distribtions")+
+  theme_minimal()
+
+```
+
+##### Histogram 1700s Nodes Distribution
+
+```{r}
+
+nodes_1700s[-1] %>%
+  gather() %>% 
+  ggplot(aes(value)) +
+    geom_histogram() +
+    facet_wrap(~key, scales = "free")+  
+   labs(title = "1700s Node Attribute Distribtions")+
+  theme_minimal()
 
 ```
 
@@ -1041,7 +1108,9 @@ nodes_1400s[-1] %>%
   gather() %>% 
   ggplot(aes(value)) +
     geom_histogram() +
-    facet_wrap(~key, scales = "free")
+    facet_wrap(~key, scales = "free")+  
+   labs(title = "1800s Node Attribute Distribtions")+
+  theme_minimal()
 
 ```
 
@@ -1113,6 +1182,8 @@ rplot(nodes_1800s_correlations)
 
 #### Centrality and Brokerage
 
+##### Closeness Centrality
+
 ```{r}
 
 nodes_1000s$close <- sna::closeness(wars_in_1000s_network, cmode="suminvdir")
@@ -1135,6 +1206,8 @@ nodes_1800s$close <- sna::closeness(wars_in_1800s_network, cmode="suminvdir")
 
 ```
 
+
+##### Betweeness Centrality
 
 ```{r}
 
@@ -1188,7 +1261,8 @@ geom_point(
 
 
 ```
-##### Centralization
+
+##### Nodes Betweeness Centralization 
 
 ```{r}
 nodes_1000s$between<-
@@ -1231,7 +1305,7 @@ sna::betweenness(wars_in_1800s_network, gmode="graph")
 
 ### Network Constraint 
 
-#### Find the nodes with highest and lowest constraint
+#### Nodes Network Constraint
 
 ```{r}
 
@@ -1268,7 +1342,7 @@ rplot(correlations_1800s_nodes)
 
 ### Structural equivalance
 
-#### S.E. 1000s Sedist
+#### Structural Equivalence 1000s Sedist 
 
 ```{r}
 
@@ -1285,7 +1359,7 @@ plot(wars_in_1000s.se, labels=wars_in_1000s.se$glabels,  cex=0.3)
 
 ```
 
-#### S.E. 1000s Average
+#### Structural Equivalence 1000s Average
 
 ```{r}
 
