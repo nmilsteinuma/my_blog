@@ -5,9 +5,6 @@ description: Welcome to my rebuilt blog for DACSS Social Networks, Text-as-Data,
   Massachusetts Amherst
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
-```
 
 Noah Milstein
  (857) 259-0812 | linkedin.com/in/noah-milstein-/ | nmilstein2017@gmail.com | https://github.com/nmilsteinuma
