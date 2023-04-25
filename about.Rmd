@@ -8,3 +8,53 @@ description: Welcome to my rebuilt blog for DACSS Social Networks, Text-as-Data,
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
+
+Noah Milstein
+ (857) 259-0812 | linkedin.com/in/noah-milstein-/ | nmilstein2017@gmail.com | https://github.com/nmilsteinuma
+
+Adaptable Masters’ graduate student graduating in May, seeking a position that allows me to apply my research skills to create useable data, analyze with computational techniques, interpret outcomes, and visualize.
+
+SKILLS  
+Skills: Python (NumPy, Pandasand analysis along with visualization), R (Tidyverse, Web Scraping, Text Analysis, Regression, Network Analysis, Machine Learning, Visualization with ggplot2, and Dashboarding), Excel (Data Analysis, Pivot Tables), Github.
+
+EDUCATION  
+University of Massachusetts Amherst								                         Amherst, MA
+School of Social and Behavioral Sciences                                                                                                                           Expected May 2023
+Master of Science in Data Analytics and Computational Social Science.
+•	Overall GPA 3.89
+Relevant Coursework: Machine Learning, Political Network Analysis, Text as Data, Quantitative Analysis, Probability Theory	
+
+University of Massachusetts Amherst	
+Bachelor of Arts Major in Economics, Magna Cum Laude, with department honors from Phi Beta Kappa                     Graduated May 2021                                                   
+•	Overall GPA: 3.93, Phi Sigma Pi Scholarship Chair, WMUA Member
+
+ACTIVITES AND PROJECTS
+UMass Landscape Architecture and Regional Planning					    Amherst, MA Winter 2022 – Present	
+Climate Migration Project
+•	Generated data using census and commercial housing data in R and FEMA data in QGIS to analyze underlying migration patterns and probable change while collaborating with qualitative researchers to expand data applicability. 
+•	Collaborated with an interdisciplinary group of researchers to analyze and predict migration in the Northeast due to climate change.
+
+UMass DACSS 									        Amherst, MA Summer – Fall 2022	
+Department Financial Dashboard Project           
+•	Cleaned, analyzed, and visualized cash flows from university data while integrating projection algorithms with historical student data.	                                     
+•	Created and developed a financial dashboard for the department using flexdashboard and shiny.
+•	Acted as the group leader delegating tasks to the other two team members and communicating progress.
+
+Scholarship Chair Phi Sigma Pi Beta Upsilon
+Executive Council Member and Scholarship Chair						    Fall 2019 – Spring 2021
+•	Coordinated and planned events related to scholarship including study groups, a professional development and resume workshops. 
+•	Adapted my role during covid to fit the diverse academic and regional backgrounds of the group.
+
+WORK EXPERIENCE
+UMass Landscape Architecture and Regional Planning					    		   Amherst, MA 
+Job-Board Web Scraping Project 								           Winter 2022 – Present	
+•	Coded algorithms in R software using rvest to scrape job board information stored in HTML which was then tabulated and analyzed using text-analysis packages including quanteda, plyr and tidytext.
+•	Communicated and integrated stakeholder input to adjust the algorithms and correct data to better serve their needs. 
+
+Burlington Wine and spirits	    Burlington, MA
+Sales Associate	August 2020 – Present
+•	INCREASED SALES OF FINE WINES BY UTILIZING KNOWLEDGE OF REGIONS, FLAVOR, AND PRICE WITH THE STATED TASTES OF THE CUSTOMERS.
+
+Harvard University, Samuel Laboratory							                     Cambridge, MA	                      
+Research Intern									                        July 2015 – August 2017 
+•	Conducted research on C. Elegans and Drosophila behavior using 3-D imagining and predictive software in MATLAB.

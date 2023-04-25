@@ -70,7 +70,7 @@ wars_in_1000s$"In-list"<- sapply(wars_in_1000s$"In-list",
 # This procedure is repeated 8 times.
 
 wars_in_1100s <- read_excel("~/Desktop/Spring 2022/Networks/wars_in_1100s.xlsx")
-
+wars_in_1100s
 wars_in_1100s$"Out" <- sapply(wars_in_1100s$"Out",
                                     function(x) { gsub("[\r\n]", "", x) })
 wars_in_1100s$"In"<- sapply(wars_in_1100s$"In",
@@ -3679,6 +3679,48 @@ ggplot(aes(x=reorder(name, -outdegree), y=outdegree))+
         y = "Total Expense (USD)",
         x = "Primary Expense Category") + 
   theme_minimal(base_size=1,  base_family="Georgia")
+
+```
+
+```{r}
+
+
+triad_census_1000s <- sna::triad.census(wars_in_1000s_network)
+triad_census_1100s <- sna::triad.census(wars_in_1100s_network)
+triad_census_1200s <- sna::triad.census(wars_in_1200s_network)
+triad_census_1300s <- sna::triad.census(wars_in_1300s_network)
+triad_census_1400s <- sna::triad.census(wars_in_1400s_network)
+triad_census_1500s <- sna::triad.census(wars_in_1500s_network)
+triad_census_1600s <- sna::triad.census(wars_in_1600s_network)
+triad_census_1700s <- sna::triad.census(wars_in_1700s_network)
+triad_census_1800s <- sna::triad.census(wars_in_1800s_network)
+
+
+all_century_triads <- rbind(
+as_tibble(sna::triad.census(wars_in_1000s_network)),
+as_tibble(sna::triad.census(wars_in_1100s_network)),
+as_tibble(sna::triad.census(wars_in_1200s_network)),
+as_tibble(sna::triad.census(wars_in_1300s_network)),
+as_tibble(sna::triad.census(wars_in_1400s_network)),
+as_tibble(sna::triad.census(wars_in_1500s_network)),
+as_tibble(sna::triad.census(wars_in_1600s_network)),
+as_tibble(sna::triad.census(wars_in_1700s_network)),
+as_tibble(sna::triad.census(wars_in_1800s_network)))
+
+mdf <- all_century_triads/rowSums(all_century_triads)
+mdf
+```
+
+Transitive  030T, 120D, 120U, 300
+
+unique vector with all names of groups, code nodes not edges.
+
+
+My dataset seems to have the problem of vacuous transitivity.
+
+```{r}
+
+wars_in_1800s <- read_excel("~/Desktop/Spring 2022/Networks/wars_in_1800s.xlsx")
 
 ```
 

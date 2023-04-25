@@ -1,0 +1,190 @@
+---
+title: "Conflict Research Sheets"
+description: |
+  A short description of the post.
+author:
+  - name: Noah Milstein
+    url: {}
+date: 2023-03-04
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+```{r}
+library(googlesheets4)
+library(dplyr)
+library(ggmap)
+library(stringr)
+library(igraph)
+library(ggplot2)
+library(maps)
+library(mapdata)
+library(leaflet)
+```
+
+```{r}
+wars_in_1800s_sheet <- read_sheet("https://docs.google.com/spreadsheets/d/1Oz1QOoSrbXQDQZKtnTrHr72mfS_bGMEulo3z9Ryq0Bo/edit#gid=926649598", sheet = "1800s")
+
+wars_in_1700s_sheet <- read_sheet("https://docs.google.com/spreadsheets/d/1Oz1QOoSrbXQDQZKtnTrHr72mfS_bGMEulo3z9Ryq0Bo/edit#gid=926649598", sheet = "1700s")
+
+wars_in_1600s_sheet <- read_sheet("https://docs.google.com/spreadsheets/d/1Oz1QOoSrbXQDQZKtnTrHr72mfS_bGMEulo3z9Ryq0Bo/edit#gid=926649598", sheet = "1600s")
+
+wars_in_1500s_sheet <- read_sheet("https://docs.google.com/spreadsheets/d/1Oz1QOoSrbXQDQZKtnTrHr72mfS_bGMEulo3z9Ryq0Bo/edit#gid=926649598", sheet = "1500s")
+
+wars_in_1400s_sheet <- read_sheet("https://docs.google.com/spreadsheets/d/1Oz1QOoSrbXQDQZKtnTrHr72mfS_bGMEulo3z9Ryq0Bo/edit#gid=926649598", sheet = "1400s")
+
+wars_in_1300s_sheet <- read_sheet("https://docs.google.com/spreadsheets/d/1Oz1QOoSrbXQDQZKtnTrHr72mfS_bGMEulo3z9Ryq0Bo/edit#gid=926649598", sheet = "1300s")
+
+wars_in_1200s_sheet <- read_sheet("https://docs.google.com/spreadsheets/d/1Oz1QOoSrbXQDQZKtnTrHr72mfS_bGMEulo3z9Ryq0Bo/edit#gid=926649598", sheet = "1200s")
+
+wars_in_1100s_sheet <- read_sheet("https://docs.google.com/spreadsheets/d/1Oz1QOoSrbXQDQZKtnTrHr72mfS_bGMEulo3z9Ryq0Bo/edit#gid=926649598", sheet = "1100s")
+
+wars_in_1000s_sheet <- read_sheet("https://docs.google.com/spreadsheets/d/1Oz1QOoSrbXQDQZKtnTrHr72mfS_bGMEulo3z9Ryq0Bo/edit#gid=926649598", sheet = "1000s")
+```
+
+
+```{r}
+full_tibble <- rbind(wars_in_1000s_sheet, wars_in_1100s_sheet, wars_in_1200s_sheet, wars_in_1300s_sheet, wars_in_1400s_sheet, wars_in_1500s_sheet, wars_in_1600s_sheet, wars_in_1700s_sheet, wars_in_1800s_sheet)
+
+```
+
+```{r}
+library(dplyr)
+```
+
+Here, I want to consolidate countries to help with later data legibility 
+
+consideration so far:
+Kingdom of England
+England
+Great Britain
+
+```{r}
+
+full_tibble$"in-list" <- sapply(full_tibble$"in-list",
+                                    function(x) { gsub("[\r\n]", "", x) })
+
+full_tibble$"out-list" <- sapply(full_tibble$"out-list",
+                                    function(x) { gsub("[\r\n]", "", x) })
+
+full_tibble$"name" <- sapply(full_tibble$"name",
+                                    function(x) { gsub("[\r\n]", "", x) })
+
+full_tibble$"name" <- str_trim(full_tibble$"name")
+
+full_tibble %>% 
+  group_by(`in-list`) %>% 
+  tally() %>%
+  arrange(desc(n))
+
+full_tibble %>% 
+  group_by(`out-list`) %>% 
+  tally() %>%
+  arrange(desc(n))
+
+full_tibble
+```
+
+```{r}
+library(igraph)
+```
+
+
+```{r}
+
+wars_in_1000s_edgelist <- as.matrix(wars_in_1000s_sheet[,c(6,7)])
+
+wars_in_1000s_edgelist_network_edgelist <- graph.edgelist(wars_in_1000s_edgelist, directed=TRUE)
+
+wars_in_1000s.ig<-graph_from_data_frame(wars_in_1000s)
+
+wars_in_1000s_network <- asNetwork(wars_in_1000s.ig)
+```
+
+
+```{r}
+# Load the googledrive package and authenticate
+library(googledrive)
+drive_auth()
+
+# Find all files with "ged" in the name
+all_files <- drive_find(pattern = "ged")
+
+# Filter for CSV files
+csv_files <- all_files[grep(".csv", all_files$name), ]
+csv_files
+# Use lapply() to read in each CSV file, with error handling
+data <- lapply(pull(csv_files, id), function(file_id) {
+  tryCatch({
+    file_content <- drive_download(as_id(file_id))
+    read.csv(text = file_content)
+  }, error = function(e) {
+    warning(paste("Unable to read file", file_id))
+    NULL
+  })
+})
+
+# Filter out any NULL elements from the data list
+data <- data[!sapply(data, is.null)]
+
+# Write each CSV file to a local directory
+lapply(data, function(df) {
+  write.csv(df, file = "path/to/output/file.csv", row.names = FALSE)
+})
+```
+```{r}
+list.files(pattern = ".csv")
+
+```
+
+```{r}
+data <- lapply(list.files(pattern = ".csv"), read.csv)
+combined_data <- Reduce(function(x, y) merge(x, y, all = TRUE), data)
+head(combined_data)
+
+```
+
+
+```{r}
+tg <- combined_data %>% 
+  as_tbl_graph(directed = FALSE)
+
+g <- graph_from_data_frame(combined_data, directed = FALSE)
+attr_cols <- setdiff(names(combined_data), c("side_a", "side_b"))
+
+edge_attr(g) <- as.data.frame(combined_data[attr_cols])
+```
+
+
+```{r}
+map_leaflet<- leaflet(combined_data) %>% addTiles()
+map_leaflet <- map_leaflet %>% addMarkers(lng = ~lon, lat = ~lat,popup = ~`name`)
+
+```
+
+
+```{r}
+
+combined_data <- filter(combined_data, is.numeric(lon), is.numeric(lat))
+df_clean <- na.omit(combined_data[, c("lat", "lon", "year")])
+
+cols <- colorRampPalette(c("pink", "red"))(length(unique(df_clean$year)))
+
+map("world", col = "gray30", fill = TRUE, bg = "lightsteelblue1", xlim = c(-20, 170), ylim= c(-60, 50), lwd = 0.05, mar = rep(0, 4), resolution = 100 , myborder = 0.001)
+
+points(df_clean$lon, df_clean$lat, pch = 20, col = cols[as.numeric(factor(df_clean$year))] , cex=0.1)
+
+points(mean(df_clean$lon), mean(df_clean$lat), pch = 20, col = "green" , cex=1)
+
+legend("topright", legend = sort(unique(df_clean$year)), 
+       fill = colorRampPalette(c("pink", "red"))(length(unique(df_clean$year))), 
+       title = "Year", cex = 0.4, bty = "n")
+
+
+```
+
+```{r}
+combined_data
+```
+
